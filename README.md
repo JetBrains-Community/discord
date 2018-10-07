@@ -6,7 +6,7 @@ The unofficial, community Discord server for JetBrains - The Python bot behind i
 
 ## Community Discord Server
 
-We have a (at this time) unofficial, community driven server on Discord for all users of JetBrains to hang out on.
+We have an unofficial, community driven server on Discord for all users of JetBrains to hang out on.
 The server has dedicated channels for each product that JetBrains produce as well as some key channels under the Open Source category for major open source projects run by JetBrains.
 We also have quite a few JetBrains staff with us on the server, here to hang out and chat with us.
 
