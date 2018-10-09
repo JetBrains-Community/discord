@@ -47,8 +47,12 @@ if __name__ == '__main__':
     @bot.command()
     @commands.check(lambda ctx: ctx.author.id == 193060889111298048)
     async def roles(ctx: commands.Context):
+        # color = discord.Colour(0x18d68c)  # Normal
+        color = discord.Colour(0xFB5502)  # Halloween
+        # Create product roles
         current = {f.name.lower().strip(): f for f in ctx.guild.emojis}
         roles = {f.name.strip(): f for f in ctx.guild.roles}
+        positions = []
         icons = os.listdir('icons')
         for icon in list(sorted(icons.copy(), key=lambda x: x.lower().strip())):
             if icon.endswith(".png") and icon.startswith("icon_"):
@@ -56,9 +60,7 @@ if __name__ == '__main__':
                     "-", "").lower().strip()
                 if iconname in current.keys():
                     rolename = icon.split("icon_", 1)[1].split(".png", 1)[0].replace("_", " ").strip()
-                    # color = discord.Colour(0x18d68c)
-                    color = discord.Colour(0xFB5502)
-                    if not rolename in roles.keys():
+                    if rolename not in roles.keys():
                         print(icon, 1)
                         await ctx.guild.create_role(name=rolename, permissions=discord.Permissions.none(), color=color,
                                                     hoist=False, mentionable=False)
@@ -68,6 +70,19 @@ if __name__ == '__main__':
                         if role.color != color:
                             print(icon, 2.1)
                             await role.edit(color=color)
+                    positions.append(role.position)
+        # Create hide role
+        if "Hide Unsubscribed Channels" not in roles.keys():
+            print(3.1)
+            role = await ctx.guild.create_role(name="Hide Unsubscribed Channels",
+                                               permissions=discord.Permissions.none(),
+                                               color=color, hoist=False, mentionable=False)
+        else:
+            role = roles["Hide Unsubscribed Channels"]
+        positions = min(positions)
+        if role.position != positions:
+            print(3.2)
+            await role.edit(position=positions)
         await ctx.send("Done")
 
 
@@ -96,6 +111,7 @@ if __name__ == '__main__':
             for key in category_map.keys():
                 if key in categories.keys():
                     await categories[key].set_permissions(mods, send_messages=True)
+        hide = [f for f in ctx.guild.roles if f.name.strip() == 'Hide Unsubscribed Channels'][0]
         current = {f.name.lower().strip(): f for f in ctx.guild.emojis}
         roles = {f.name.strip(): f for f in ctx.guild.roles}
         icons = os.listdir('icons')
@@ -113,7 +129,7 @@ if __name__ == '__main__':
                             0] in categories.keys() else default_category
                         channels = {f.name.lower().strip(): f for f in ctx.guild.text_channels if
                                     f.category and f.category == category}
-                        if not rolename.lower().replace(" ", "-") in channels.keys():
+                        if rolename.lower().replace(" ", "-") not in channels.keys():
                             channel = await ctx.guild.create_text_channel(rolename.lower().replace(" ", "-"),
                                                                           category=category)
                             print(icon, 2.1)
@@ -121,14 +137,15 @@ if __name__ == '__main__':
                             channel = channels[rolename.lower().replace(" ", "-")]
                         await channel.set_permissions(ctx.guild.default_role, send_messages=False)
                         role = roles[rolename]
-                        await channel.set_permissions(role, send_messages=True)
+                        await channel.set_permissions(role, send_messages=True, read_messages=True)
+                        await channel.set_permissions(hide, read_messages=False)
                         if mods:
-                            await channel.set_permissions(mods, send_messages=True)
+                            await channel.set_permissions(mods, send_messages=True, read_messages=True)
                             print(icon, 2.2)
-                        title = title_map[
-                            category.name.lower().strip()] if category.name.lower().strip() in title_map.keys() else default_title
-                        title = "{0} \N{PUBLIC ADDRESS LOUDSPEAKER} Unlock this channel using #unlock-channels - {1} {0}".format(
-                            str(current[iconname]), title.format(rolename))
+                        title = title_map[category.name.lower().strip()] if category.name.lower().strip() in \
+                                                                            title_map.keys() else default_title
+                        title = "{0} \N{PUBLIC ADDRESS LOUDSPEAKER} Unlock this channel using #unlock-channels - {1} " \
+                                "{0}".format(str(current[iconname]), title.format(rolename))
                         if channel.topic != title:
                             await channel.edit(topic=title)
                             print(icon, 2.3)
@@ -155,15 +172,12 @@ if __name__ == '__main__':
             await channel.set_permissions(ctx.guild.default_role, send_messages=False)
             async for message in channel.history(limit=None):
                 await message.delete()
-            await channel.send("React to the following messages with JetBrains product and project emoji to unlock the "
-                               "relevant discussion channels in this server.\n\nClick on one of the reactions already "
-                               "on the messages to unlock the role. Remove your reaction to remove your role.\n\n"
-                               "Reactions not working for you? Head over to {} and type `r.roles` to use commands "
-                               "instead.\n\nWant to hide the channels you aren't active in? Mute the channels by right "
-                               "clicking and ticking mute (click the channel name on mobile and open notification "
-                               "settings to mute it). Once the channels are muted right click on the channel list and "
-                               "tick Hide Muted Channels to make them disappear (on mobile, press the server name and "
-                               "then use the Hide Muted Channels option shown).".format(channels['off-topic'].mention))
+            offtopic = channels['off-topic']
+            await channel.send("**React to the following messages with JetBrains product and project emoji to unlock "
+                               "the relevant discussion channels in this server.**\n\nClick on one of the reactions "
+                               "already on the messages to unlock the role. Remove your reaction to remove your role."
+                               "\n\nReactions not working for you? Head over to {} and type `r.roles` to use commands "
+                               "instead.".format(offtopic.mention))
             # Create db connection for Restarter's react roles from db.txt
             with open("db.txt", "r") as f:
                 db = [str(f).strip("\n\r") for f in f.readlines()]
@@ -189,6 +203,30 @@ if __name__ == '__main__':
                                 # channel, emoji, role, rolename, icon name
                                 data.append([channels[rolename.lower().replace(" ", "-")], current[iconname], role,
                                              rolename.replace(" ", "-"), icon])
+
+            async def do_res_role(role_id: int, guild_id: int, message_id: int, emoji: str, alias: str):
+                await cursor.execute("INSERT INTO restarter_reactroles (message,emoji,role,guild)"
+                                     " VALUES (%s,%s,%s,%s)", (message_id, emoji, role_id, guild_id))
+                await cursor.execute("INSERT INTO restarter_roles (guild,role,alias) VALUES (%s,%s,%s)",
+                                     (guild_id, role_id, alias))
+                await conn.commit()
+
+            """
+            message = await channel.send("Want to hide the channels you aren't active in? Mute the channels by right "
+                                         "clicking and ticking mute (click the channel name on mobile and open "
+                                         "notification settings to mute it). Once the channels are muted right click "
+                                         "on the channel list and tick Hide Muted Channels to make them disappear (on "
+                                         "mobile, press the server name and then use the Hide Muted Channels option "
+                                         "shown).")
+            """
+            message = await channel.send("Want to hide the channels you aren't active in? React to this message with "
+                                         "\N{NO ENTRY SIGN} to hide any product channel you aren't 'subscribed' to "
+                                         "using the roles below. Remove your reaction to show all JetBrains product "
+                                         "channels again. Can't use reactions, head to {} and use 'r.hide' to toggle "
+                                         "the role.".format(offtopic.mention))
+            await message.add_reaction("\N{NO ENTRY SIGN}")
+            await do_res_role(roles["Hide Unsubscribed Channels"].id, ctx.guild.id, message.id,
+                              "\N{NO ENTRY SIGN}".encode('ascii', 'namereplace').decode(), "hide")
             counter = 0
             message = None
             content = []
@@ -202,12 +240,7 @@ if __name__ == '__main__':
                 counter += 1
                 content.append(str(item[1]) + " - " + item[0].mention)
                 await message.add_reaction(item[1])
-                await cursor.execute("INSERT INTO restarter_reactroles (message,emoji,role,guild)"
-                                     " VALUES (%s,%s,%s,%s)", (message.id, str(item[1]),
-                                                               item[2].id, ctx.guild.id))
-                await cursor.execute("INSERT INTO restarter_roles (guild,role,alias) VALUES (%s,%s,%s)",
-                                     (ctx.guild.id, item[2].id, item[3]))
-                await conn.commit()
+                await do_res_role(item[2].id, ctx.guild.id, message.id, str(item[1]), item[3])
             await cursor.close()
             conn.close()
             if message and content:
