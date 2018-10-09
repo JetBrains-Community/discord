@@ -76,7 +76,7 @@ if __name__ == '__main__':
             print(3.1)
             role = await ctx.guild.create_role(name="Hide Unsubscribed Channels",
                                                permissions=discord.Permissions.none(),
-                                               color=color, hoist=False, mentionable=False)
+                                               color=discord.Colour(0x7D7D7D), hoist=False, mentionable=False)
         else:
             role = roles["Hide Unsubscribed Channels"]
         positions = min(positions)
