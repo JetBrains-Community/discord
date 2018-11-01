@@ -1,5 +1,7 @@
 [![unofficial JetBrains project](https://goo.gl/uHwC96)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
-[![JetBrains community Discord](https://goo.gl/xe5fjk)](https://discord.gg/yBQKN5b)
+[![JetBrains Community Discord](https://goo.gl/xe5fjk)](https://discord.gg/yBQKN5b)
+
+[![JetBrains Community](jetbrains_logos/brand.png)](https://discord.gg/yBQKN5b)
 
 # JetBrains Community Discord
 The unofficial, [community Discord server for JetBrains](https://discord.gg/yBQKN5b) - The Python bot behind it
