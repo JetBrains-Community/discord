@@ -47,8 +47,8 @@ if __name__ == '__main__':
     @bot.command()
     @commands.check(lambda ctx: ctx.author.id == 193060889111298048)
     async def roles(ctx: commands.Context):
-        # color = discord.Colour(0x18d68c)  # Normal
-        color = discord.Colour(0xFB5502)  # Halloween
+        color = discord.Colour(0x18d68c)  # Normal
+        # color = discord.Colour(0xFB5502)  # Halloween
         # Create product roles
         current = {f.name.lower().strip(): f for f in ctx.guild.emojis}
         roles = {f.name.strip(): f for f in ctx.guild.roles}
