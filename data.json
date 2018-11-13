@@ -5,10 +5,11 @@
         "role_name": "AppCode",
         "channel_name": "appcode",
         "category_name": "Products",
-        "subreddit": "",
+        "subreddit": "AppCode",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/objc/",
+        "issue_tracker": "OC",
+        "aliases": ["objc"]
     },
     {
         "icon_path": "icon_CLion.png",
@@ -18,8 +19,9 @@
         "category_name": "Products",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/clion/",
+        "issue_tracker": "CPP",
+        "aliases": []
     },
     {
         "icon_path": "icon_DataGrip.png",
@@ -27,10 +29,11 @@
         "role_name": "DataGrip",
         "channel_name": "datagrip",
         "category_name": "Products",
-        "subreddit": "",
+        "subreddit": "DataGrip",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/datagrip/",
+        "issue_tracker": "DBE",
+        "aliases": []
     },
     {
         "icon_path": "icon_dotCover.png",
@@ -40,8 +43,9 @@
         "category_name": "Products",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/dotcover/",
+        "issue_tracker": "DCVR",
+        "aliases": []
     },
     {
         "icon_path": "icon_dotMemory.png",
@@ -51,8 +55,9 @@
         "category_name": "Products",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/dotmemory/",
+        "issue_tracker": "DMRY",
+        "aliases": []
     },
     {
         "icon_path": "icon_dotPeek.png",
@@ -62,8 +67,9 @@
         "category_name": "Products",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/decompiler/",
+        "issue_tracker": "DOTP",
+        "aliases": []
     },
     {
         "icon_path": "icon_dotTrace.png",
@@ -73,8 +79,9 @@
         "category_name": "Products",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/profiler/",
+        "issue_tracker": "DTRC",
+        "aliases": []
     },
     {
         "icon_path": "icon_GoLand.png",
@@ -82,10 +89,11 @@
         "role_name": "GoLand",
         "channel_name": "goland",
         "category_name": "Products",
-        "subreddit": "",
+        "subreddit": "Goland",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/go/",
+        "issue_tracker": "GO",
+        "aliases": ["go"]
     },
     {
         "icon_path": "icon_Hub.png",
@@ -95,8 +103,9 @@
         "category_name": "Products",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/hub/",
+        "issue_tracker": "JPS",
+        "aliases": []
     },
     {
         "icon_path": "icon_IntelliJ_Community.png",
@@ -105,9 +114,10 @@
         "channel_name": "intellij-community",
         "category_name": "Open Source",
         "subreddit": "",
-        "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "github": "intellij-community",
+        "product_page": "https://www.jetbrains.com/idea/",
+        "issue_tracker": "IDEA",
+        "aliases": ["intellij ce", "idea ce"]
     },
     {
         "icon_path": "icon_IntelliJ_IDEA.png",
@@ -117,8 +127,9 @@
         "category_name": "Products",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/idea/",
+        "issue_tracker": "IDEA",
+        "aliases": ["intellij", "idea"]
     },
     {
         "icon_path": "icon_Kotlin.png",
@@ -127,9 +138,10 @@
         "channel_name": "kotlin",
         "category_name": "Open Source",
         "subreddit": "",
-        "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "github": "kotlin",
+        "product_page": "https://kotlinlang.org/",
+        "issue_tracker": "KT",
+        "aliases": []
     },
     {
         "icon_path": "icon_MPS.png",
@@ -137,10 +149,11 @@
         "role_name": "MPS",
         "channel_name": "mps",
         "category_name": "Open Source",
-        "subreddit": "",
-        "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "subreddit": "jetbrains_mps",
+        "github": "MPS",
+        "product_page": "https://www.jetbrains.com/mps/",
+        "issue_tracker": "MPS",
+        "aliases": []
     },
     {
         "icon_path": "icon_PhpStorm.png",
@@ -150,8 +163,9 @@
         "category_name": "Products",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/phpstorm/",
+        "issue_tracker": "WI",
+        "aliases": ["php"]
     },
     {
         "icon_path": "icon_PyCharm.png",
@@ -159,10 +173,23 @@
         "role_name": "PyCharm",
         "channel_name": "pycharm",
         "category_name": "Products",
-        "subreddit": "",
+        "subreddit": "pycharm",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/pycharm/",
+        "issue_tracker": "PY",
+        "aliases": ["python", "py"]
+    },
+    {
+        "icon_path": "icon_PyCharm_Community.png",
+        "emoji_name": "pycharmcommunity",
+        "role_name": "PyCharm Community",
+        "channel_name": "pycharm-community",
+        "category_name": "Open Source",
+        "subreddit": "pycharm",
+        "github": "intellij-community/tree/master/python",
+        "product_page": "https://www.jetbrains.com/pycharm/",
+        "issue_tracker": "PY",
+        "aliases": ["pycharm ce"]
     },
     {
         "icon_path": "icon_PyCharm_Edu.png",
@@ -170,10 +197,11 @@
         "role_name": "PyCharm Edu",
         "channel_name": "pycharm-edu",
         "category_name": "Products",
-        "subreddit": "",
+        "subreddit": "pycharm",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/education/#lang=python&role=learner",
+        "issue_tracker": "PY",
+        "aliases": []
     },
     {
         "icon_path": "icon_ReSharper.png",
@@ -183,8 +211,9 @@
         "category_name": "Products",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/resharper/",
+        "issue_tracker": "RSRP",
+        "aliases": []
     },
     {
         "icon_path": "icon_ReSharper_CPP.png",
@@ -194,8 +223,9 @@
         "category_name": "Products",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/resharper-cpp/",
+        "issue_tracker": "RSCPP",
+        "aliases": []
     },
     {
         "icon_path": "icon_Rider.png",
@@ -203,10 +233,11 @@
         "role_name": "Rider",
         "channel_name": "rider",
         "category_name": "Products",
-        "subreddit": "",
+        "subreddit": "JetBrains_Rider",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/rider/",
+        "issue_tracker": "RIDER",
+        "aliases": []
     },
     {
         "icon_path": "icon_Ring_UI.png",
@@ -215,9 +246,10 @@
         "channel_name": "ring-ui",
         "category_name": "Open Source",
         "subreddit": "",
-        "github": "",
+        "github": "ring-ui",
         "product_page": "",
-        "issue_tracker": ""
+        "issue_tracker": "RG",
+        "aliases": []
     },
     {
         "icon_path": "icon_RubyMine.png",
@@ -225,10 +257,11 @@
         "role_name": "RubyMine",
         "channel_name": "rubymine",
         "category_name": "Products",
-        "subreddit": "",
+        "subreddit": "RubyMine",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/ruby/",
+        "issue_tracker": "RUBY",
+        "aliases": ["ruby"]
     },
     {
         "icon_path": "icon_TeamCity.png",
@@ -236,10 +269,23 @@
         "role_name": "TeamCity",
         "channel_name": "teamcity",
         "category_name": "Products",
+        "subreddit": "teamcity",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/teamcity/",
+        "issue_tracker": "TW",
+        "aliases": []
+    },
+    {
+        "icon_path": "icon_Toolbox.png",
+        "emoji_name": "toolbox",
+        "role_name": "",
+        "channel_name": "",
+        "category_name": "",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/toolbox/app/",
+        "issue_tracker": "ALL",
+        "aliases": []
     },
     {
         "icon_path": "icon_Upsource.png",
@@ -249,8 +295,9 @@
         "category_name": "Products",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/upsource/",
+        "issue_tracker": "UP",
+        "aliases": []
     },
     {
         "icon_path": "icon_WebStorm.png",
@@ -260,8 +307,9 @@
         "category_name": "Products",
         "subreddit": "",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/webstorm/",
+        "issue_tracker": "WEB",
+        "aliases": ["web"]
     },
     {
         "icon_path": "icon_YouTrack.png",
@@ -269,9 +317,10 @@
         "role_name": "YouTrack",
         "channel_name": "youtrack",
         "category_name": "Products",
-        "subreddit": "",
+        "subreddit": "YouTrack",
         "github": "",
-        "product_page": "",
-        "issue_tracker": ""
+        "product_page": "https://www.jetbrains.com/youtrack/",
+        "issue_tracker": "JT",
+        "aliases": ["yt", "track"]
     }
 ]
