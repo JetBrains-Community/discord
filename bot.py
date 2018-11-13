@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import logging
 import os
+import json
 
 import aiomysql
 import discord
@@ -245,6 +246,35 @@ if __name__ == '__main__':
             conn.close()
             if message and content:
                 await message.edit(content="\n".join(content))
+        await ctx.send("Done")
+
+
+    # Get a JSON data dump for new bot
+    @bot.command()
+    @commands.check(lambda ctx: ctx.author.id == 193060889111298048)
+    async def dump(ctx: commands.Context):
+        data = []
+        icons = os.listdir('icons')
+        open_source = ["intellij-community", "kotlin", "ring-ui", "mps"]
+        for icon in list(sorted(icons.copy(), key=lambda x: x.lower().strip())):
+            if icon.endswith(".png") and icon.startswith("icon_"):
+                iconname = icon.split("icon_", 1)[1].split(".png", 1)[0].replace("_", "").replace("-",
+                                                                                                  "").lower().strip()
+                rolename = icon.split("icon_", 1)[1].split(".png", 1)[0].replace("_", " ").strip()
+                channelname = icon.split("icon_", 1)[1].split(".png", 1)[0].replace("_", "-").lower().strip()
+                data.append({
+                    "icon_path": icon,
+                    "emoji_name": iconname,
+                    "role_name": rolename,
+                    "channel_name": channelname,
+                    "category_name": "Products" if channelname not in open_source else "Open Source",
+                    "subreddit": "",
+                    "github": "",
+                    "product_page": "",
+                    "issue_tracker": ""
+                })
+        with open('data.json', 'w') as outfile:
+            json.dump(data, outfile, indent=4)
         await ctx.send("Done")
 
 
