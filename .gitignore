@@ -1,5 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Custom
+token_dev.txt
 token.txt
 db.txt
 
@@ -160,3 +161,4 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+/token_dev.txt
