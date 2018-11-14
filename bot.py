@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import json
 import logging
+import os
 
 import discord
 from discord.ext import commands
@@ -14,14 +15,14 @@ class JetBrains(commands.Bot):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.data = {}
+        self.data = []
         self.jb_guild_id = 433980600391696384
         self.jb_invite = "https://discord.gg/zTUTh2P"
 
     # Load the latest data into the bot
     def load_data(self):
         with open('data.json') as fl:
-            self.data = {f['channel_name']: f for f in json.load(fl)}
+            self.data = json.load(fl)
 
     # Emoji in a dictionary
     def emoji_dict(self, guild: discord.Guild) -> dict:
@@ -80,15 +81,21 @@ class JetBrains(commands.Bot):
                     return channels[0]
         return None
 
+    # Find an emoji
+    def product_emoji(self, name: str) -> str:
+        if name:
+            emoji = self.emoji_dict(self.get_guild(self.jb_guild_id))
+            if name in emoji:
+                return str(emoji[name])
+        return ""
+
     # Main custom group
     def group_callback(self, data):
         async def func(ctx: commands.Context):
-            guild = self.get_guild(self.jb_guild_id)
-            emoji = self.emoji_dict(guild)
-            emoji = emoji[data['emoji_name']] if data['emoji_name'] in emoji else ""
-            message = [str(emoji) + " **" + data['name'] + "**"]
+            message = [self.product_emoji(data['emoji_name']) + " **" + data['name'] + "**"]
             if data['description']:
                 message.append("*" + data['description'] + "*")
+            message.append(("-" * len(message[-1])))
             if data['subreddit']:
                 message.append("\N{OPEN BOOK} Subreddit: " + self.reddit_url(data['subreddit']))
             if data['github']:
@@ -109,9 +116,7 @@ class JetBrains(commands.Bot):
     # Custom reddit callback
     def reddit_callback(self, data):
         async def func(ctx: commands.Context):
-            emoji = self.emoji_dict(self.get_guild(self.jb_guild_id))
-            emoji = emoji[data['emoji_name']] if data['emoji_name'] in emoji else ""
-            message = [str(emoji) + " " + data['name'] + " - Subreddit"]
+            message = [self.product_emoji(data['emoji_name']) + " " + data['name'] + " - Subreddit"]
             if data['subreddit']:
                 message.append("**" + self.reddit_url(data['subreddit']) + "**")
             else:
@@ -123,9 +128,7 @@ class JetBrains(commands.Bot):
     # GitHub custom callback
     def github_callback(self, data):
         async def func(ctx: commands.Context):
-            emoji = self.emoji_dict(self.get_guild(self.jb_guild_id))
-            emoji = emoji[data['emoji_name']] if data['emoji_name'] in emoji else ""
-            message = [str(emoji) + " " + data['name'] + " - GitHub"]
+            message = [self.product_emoji(data['emoji_name']) + " " + data['name'] + " - GitHub"]
             if data['github']:
                 message.append("**" + self.github_url(data['github']) + "**")
             else:
@@ -137,9 +140,7 @@ class JetBrains(commands.Bot):
     # Custom product page callback
     def page_callback(self, data):
         async def func(ctx: commands.Context):
-            emoji = self.emoji_dict(self.get_guild(self.jb_guild_id))
-            emoji = emoji[data['emoji_name']] if data['emoji_name'] in emoji else ""
-            message = [str(emoji) + " " + data['name'] + " - Product Page"]
+            message = [self.product_emoji(data['emoji_name']) + " " + data['name'] + " - Product Page"]
             if data['product_page']:
                 message.append("**" + self.product_url(data['product_page']) + "**")
             else:
@@ -151,9 +152,7 @@ class JetBrains(commands.Bot):
     # Issue tracker callback
     def issue_callback(self, data):
         async def func(ctx: commands.Context):
-            emoji = self.emoji_dict(self.get_guild(self.jb_guild_id))
-            emoji = emoji[data['emoji_name']] if data['emoji_name'] in emoji else ""
-            message = [str(emoji) + " " + data['name'] + " - Issue Tracker"]
+            message = [self.product_emoji(data['emoji_name']) + " " + data['name'] + " - Issue Tracker"]
             if data['issue_tracker']:
                 message.append("**" + self.issue_url(data['issue_tracker']) + "**")
             else:
@@ -165,10 +164,7 @@ class JetBrains(commands.Bot):
     # Channel callback
     def channel_callback(self, data):
         async def func(ctx: commands.Context):
-            guild = self.get_guild(self.jb_guild_id)
-            emoji = self.emoji_dict(guild)
-            emoji = emoji[data['emoji_name']] if data['emoji_name'] in emoji else ""
-            message = [str(emoji) + " " + data['name'] + " - Discord Channel"]
+            message = [self.product_emoji(data['emoji_name']) + " " + data['name'] + " - Discord Channel"]
             channel = self.product_channel(data['channel_name'], data['category_name'])
             if channel:
                 message.append("**Please chat about " + data['name'] + " in " + channel.mention + "**" +
@@ -181,12 +177,13 @@ class JetBrains(commands.Bot):
 
     # Register all custom commands
     def create_customs(self):
-        for item in self.data.values():
+        for item in self.data:
             group = commands.Group(
                 name=item['name'].replace(" ", "-").lower().strip(),
                 aliases=item['aliases'],
                 invoke_without_command=True,
                 case_insensitive=True,
+                help="Provides information about " + item['name'],
                 callback=self.group_callback(item)
             )
 
@@ -248,7 +245,57 @@ if __name__ == '__main__':
 
     # Create the bot instance
     bot = JetBrains(command_prefix="?")
-    # bot.remove_command('help')
+
+
+    # General information command
+    @bot.command(aliases=['info', 'about', 'invite', 'add'])
+    async def information(ctx: commands.Context):
+        """
+        Information about JetBot and the JetBrains Community Discord Server
+        """
+        message = []
+
+        message.append(bot.product_emoji("jetbrainscommunity") + " **JetBrains Server Bot (JetBot)**")
+        message.append("*The bot responsible for providing information in, and managing, the JetBrains server.*")
+        message.append("View all the commands for JetBrains product and project inforamtion JetBot has in the help "
+                       "command `?help`.")
+        message.append("\N{LINK SYMBOL} You can use JetBot in your server, invite it with: <https://discordapp.com/"
+                       "oauth2/authorize?client_id=" + str(bot.user.id) + "&scope=bot&permissions=8>")
+
+        message.append("")
+
+        message.append(bot.product_emoji("jetbrainscommunity") + " **JetBrains Community Discord Server**")
+        message.append("The community home of all the JetBrains products and projects on Discord.")
+        message.append("Are you currently a user of JetBrains products or projects?")
+        message.append("Would you like to learn more about what JetBrains offers and what licensing options there are?")
+        message.append("> Talk to fellow users of the JetBrains software packages and get help with problems you may "
+                       "have.")
+        message.append("> Chat with other developers, see what they're working on using JetBrains tools and bounce "
+                       "ideas around.")
+        message.append("\N{BLACK RIGHTWARDS ARROW} **Join the JetBrains Community Discord server: <" + bot.jb_invite +
+                       ">**")
+
+        await ctx.send("\n".join(message))
+
+
+    # Add emoji
+    @bot.command()
+    @commands.check(bot.admin_check)
+    async def emoji(ctx: commands.Context):
+        """
+        Admin command: Update emoji on the JetBrains server
+        """
+        guild = bot.get_guild(bot.jb_guild_id)
+        if guild:
+            new = []
+            for item in bot.data:
+                if item['icon_path'] and item['emoji_name']:
+                    if not bot.product_emoji(item['emoji_name']):
+                        if os.path.isfile("icons/"+item['icon_path']):
+                            with open("icons/" + item['icon_path'], "rb") as f:
+                                await guild.create_custom_emoji(name=item['emoji_name'], image=f.read())
+                            new.append(item['emoji_name'])
+        await ctx.send("Done\n" + "\n".join([bot.product_emoji(f) for f in new]))
 
     # Start the bot with token from token.txt
     with open("token.txt", "r") as f:
