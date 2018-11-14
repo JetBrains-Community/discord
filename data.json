@@ -1,5 +1,6 @@
 [
     {
+        "name": "AppCode",
         "icon_path": "icon_AppCode.png",
         "emoji_name": "appcode",
         "role_name": "AppCode",
@@ -8,10 +9,12 @@
         "subreddit": "AppCode",
         "github": "",
         "product_page": "https://www.jetbrains.com/objc/",
+        "description": "Smart IDE for iOS/macOS development",
         "issue_tracker": "OC",
         "aliases": ["objc"]
     },
     {
+        "name": "CLion",
         "icon_path": "icon_CLion.png",
         "emoji_name": "clion",
         "role_name": "CLion",
@@ -20,10 +23,12 @@
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/clion/",
+        "description": "A cross-platform IDE for C and C++",
         "issue_tracker": "CPP",
         "aliases": []
     },
     {
+        "name": "DataGrip",
         "icon_path": "icon_DataGrip.png",
         "emoji_name": "datagrip",
         "role_name": "DataGrip",
@@ -32,10 +37,12 @@
         "subreddit": "DataGrip",
         "github": "",
         "product_page": "https://www.jetbrains.com/datagrip/",
+        "description": "Many databases, one tool",
         "issue_tracker": "DBE",
         "aliases": []
     },
     {
+        "name": "dotCover",
         "icon_path": "icon_dotCover.png",
         "emoji_name": "dotcover",
         "role_name": "dotCover",
@@ -44,10 +51,12 @@
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/dotcover/",
+        "description": "The .NET Unit Test Runner and Code Coverage Tool",
         "issue_tracker": "DCVR",
         "aliases": []
     },
     {
+        "name": "dotMemory",
         "icon_path": "icon_dotMemory.png",
         "emoji_name": "dotmemory",
         "role_name": "dotMemory",
@@ -56,10 +65,12 @@
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/dotmemory/",
+        "description": "The .NET Memory Profiler",
         "issue_tracker": "DMRY",
         "aliases": []
     },
     {
+        "name": "dotPeek",
         "icon_path": "icon_dotPeek.png",
         "emoji_name": "dotpeek",
         "role_name": "dotPeek",
@@ -68,10 +79,12 @@
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/decompiler/",
+        "description": "Free .NET Decompiler and Assembly Browser",
         "issue_tracker": "DOTP",
         "aliases": []
     },
     {
+        "name": "dotTrace",
         "icon_path": "icon_dotTrace.png",
         "emoji_name": "dottrace",
         "role_name": "dotTrace",
@@ -80,10 +93,12 @@
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/profiler/",
+        "description": ".NET Performance Profiler",
         "issue_tracker": "DTRC",
         "aliases": []
     },
     {
+        "name": "GoLand",
         "icon_path": "icon_GoLand.png",
         "emoji_name": "goland",
         "role_name": "GoLand",
@@ -92,10 +107,12 @@
         "subreddit": "Goland",
         "github": "",
         "product_page": "https://www.jetbrains.com/go/",
+        "description": "A Clever IDE to Go",
         "issue_tracker": "GO",
         "aliases": ["go"]
     },
     {
+        "name": "Hub",
         "icon_path": "icon_Hub.png",
         "emoji_name": "hub",
         "role_name": "Hub",
@@ -104,10 +121,12 @@
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/hub/",
+        "description": "JetBrains Team Tools, Integrated",
         "issue_tracker": "JPS",
         "aliases": []
     },
     {
+        "name": "IntelliJ Community",
         "icon_path": "icon_IntelliJ_Community.png",
         "emoji_name": "intellijcommunity",
         "role_name": "IntelliJ Community",
@@ -116,10 +135,12 @@
         "subreddit": "",
         "github": "intellij-community",
         "product_page": "https://www.jetbrains.com/idea/",
+        "description": "Capable and Ergonomic IDE for JVM - Free Community Edition",
         "issue_tracker": "IDEA",
         "aliases": ["intellij ce", "idea ce"]
     },
     {
+        "name": "IntelliJ IDEA",
         "icon_path": "icon_IntelliJ_IDEA.png",
         "emoji_name": "intellijidea",
         "role_name": "IntelliJ IDEA",
@@ -128,10 +149,12 @@
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/idea/",
+        "description": "Capable and Ergonomic IDE for JVM - Ultimate",
         "issue_tracker": "IDEA",
         "aliases": ["intellij", "idea"]
     },
     {
+        "name": "Kotlin",
         "icon_path": "icon_Kotlin.png",
         "emoji_name": "kotlin",
         "role_name": "Kotlin",
@@ -140,10 +163,12 @@
         "subreddit": "",
         "github": "kotlin",
         "product_page": "https://kotlinlang.org/",
+        "description": "Statically typed programming language for the JVM, Android and the browser.",
         "issue_tracker": "KT",
         "aliases": []
     },
     {
+        "name": "MPS",
         "icon_path": "icon_MPS.png",
         "emoji_name": "mps",
         "role_name": "MPS",
@@ -152,10 +177,12 @@
         "subreddit": "jetbrains_mps",
         "github": "MPS",
         "product_page": "https://www.jetbrains.com/mps/",
+        "description": "Create your own domain-specific language",
         "issue_tracker": "MPS",
         "aliases": []
     },
     {
+        "name": "PhpStorm",
         "icon_path": "icon_PhpStorm.png",
         "emoji_name": "phpstorm",
         "role_name": "PhpStorm",
@@ -164,10 +191,12 @@
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/phpstorm/",
+        "description": "The Lightning-Smart PHP IDE",
         "issue_tracker": "WI",
         "aliases": ["php"]
     },
     {
+        "name": "PyCharm",
         "icon_path": "icon_PyCharm.png",
         "emoji_name": "pycharm",
         "role_name": "PyCharm",
@@ -176,10 +205,12 @@
         "subreddit": "pycharm",
         "github": "",
         "product_page": "https://www.jetbrains.com/pycharm/",
+        "description": "The Python IDE for Professional Developers",
         "issue_tracker": "PY",
         "aliases": ["python", "py", "pyc"]
     },
     {
+        "name": "PyCharm Community",
         "icon_path": "icon_PyCharm_Community.png",
         "emoji_name": "pycharmcommunity",
         "role_name": "PyCharm Community",
@@ -188,10 +219,12 @@
         "subreddit": "pycharm",
         "github": "intellij-community/tree/master/python",
         "product_page": "https://www.jetbrains.com/pycharm/",
+        "description": "The Python IDE for Professional Developers - Free Community Edition",
         "issue_tracker": "PY",
         "aliases": ["pycharm ce"]
     },
     {
+        "name": "PyCharm Edu",
         "icon_path": "icon_PyCharm_Edu.png",
         "emoji_name": "pycharmedu",
         "role_name": "PyCharm Edu",
@@ -200,10 +233,12 @@
         "subreddit": "pycharm",
         "github": "",
         "product_page": "https://www.jetbrains.com/education/#lang=python&role=learner",
+        "description": "The Python IDE for Professional Developers - Tools dedicated for education",
         "issue_tracker": "PY",
         "aliases": []
     },
     {
+        "name": "ReSharper",
         "icon_path": "icon_ReSharper.png",
         "emoji_name": "resharper",
         "role_name": "ReSharper",
@@ -212,22 +247,40 @@
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/resharper/",
+        "description": "The Visual Studio Extension for .NET Developers",
         "issue_tracker": "RSRP",
         "aliases": []
     },
     {
+        "name": "ReSharper C++",
         "icon_path": "icon_ReSharper_CPP.png",
         "emoji_name": "resharpercpp",
-        "role_name": "ReSharper CPP",
+        "role_name": "ReSharper C++",
         "channel_name": "resharper-cpp",
         "category_name": "Products",
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/resharper-cpp/",
+        "description": "The Visual Studio Extension for C++ Developers",
         "issue_tracker": "RSCPP",
         "aliases": []
     },
     {
+        "name": "ReSharper Ultimate",
+        "icon_path": "icon_ReSharper.png",
+        "emoji_name": "resharper",
+        "role_name": "",
+        "channel_name": "",
+        "category_name": "",
+        "subreddit": "",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/dotnet/",
+        "description": "Many .NET developer tools, one license",
+        "issue_tracker": "",
+        "aliases": ["dotnet"]
+    },
+    {
+        "name": "Rider",
         "icon_path": "icon_Rider.png",
         "emoji_name": "rider",
         "role_name": "Rider",
@@ -236,10 +289,12 @@
         "subreddit": "JetBrains_Rider",
         "github": "",
         "product_page": "https://www.jetbrains.com/rider/",
+        "description": "A fast & powerful, cross-platform .NET IDE",
         "issue_tracker": "RIDER",
         "aliases": []
     },
     {
+        "name": "Ring UI",
         "icon_path": "icon_Ring_UI.png",
         "emoji_name": "ringui",
         "role_name": "Ring UI",
@@ -247,11 +302,13 @@
         "category_name": "Open Source",
         "subreddit": "",
         "github": "ring-ui",
-        "product_page": "",
+        "product_page": "https://jetbrains.github.io/ring-ui",
+        "description": "A collection of JetBrains Web UI components",
         "issue_tracker": "RG",
         "aliases": []
     },
     {
+        "name": "RubyMine",
         "icon_path": "icon_RubyMine.png",
         "emoji_name": "rubymine",
         "role_name": "RubyMine",
@@ -260,10 +317,12 @@
         "subreddit": "RubyMine",
         "github": "",
         "product_page": "https://www.jetbrains.com/ruby/",
+        "description": "The most intelligent Ruby and Rails IDE developed",
         "issue_tracker": "RUBY",
         "aliases": ["ruby"]
     },
     {
+        "name": "TeamCity",
         "icon_path": "icon_TeamCity.png",
         "emoji_name": "teamcity",
         "role_name": "TeamCity",
@@ -272,10 +331,12 @@
         "subreddit": "teamcity",
         "github": "",
         "product_page": "https://www.jetbrains.com/teamcity/",
+        "description": "Powerful Continuous Integration out of the box",
         "issue_tracker": "TW",
         "aliases": []
     },
     {
+        "name": "Toolbox",
         "icon_path": "icon_Toolbox.png",
         "emoji_name": "toolbox",
         "role_name": "",
@@ -284,10 +345,12 @@
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/toolbox/app/",
+        "description": "A control panel for your tools and projects",
         "issue_tracker": "ALL",
         "aliases": []
     },
     {
+        "name": "Upsource",
         "icon_path": "icon_Upsource.png",
         "emoji_name": "upsource",
         "role_name": "Upsource",
@@ -296,10 +359,12 @@
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/upsource/",
+        "description": "Code review, team collaboration, project analytics",
         "issue_tracker": "UP",
         "aliases": []
     },
     {
+        "name": "WebStorm",
         "icon_path": "icon_WebStorm.png",
         "emoji_name": "webstorm",
         "role_name": "WebStorm",
@@ -308,10 +373,12 @@
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/webstorm/",
+        "description": "The smartest JavaScript IDE",
         "issue_tracker": "WEB",
         "aliases": ["web"]
     },
     {
+        "name": "YouTrack",
         "icon_path": "icon_YouTrack.png",
         "emoji_name": "youtrack",
         "role_name": "YouTrack",
@@ -320,6 +387,7 @@
         "subreddit": "YouTrack",
         "github": "",
         "product_page": "https://www.jetbrains.com/youtrack/",
+        "description": "The issue tracker designed for agile software teams",
         "issue_tracker": "JT",
         "aliases": ["yt", "track"]
     }
