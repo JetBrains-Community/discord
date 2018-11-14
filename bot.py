@@ -249,7 +249,6 @@ if __name__ == '__main__':
     bot = JetBrains(command_prefix="?")
 
 
-    # General information command
     @bot.command(aliases=['info', 'about', 'invite', 'add'])
     async def information(ctx: commands.Context):
         """
@@ -280,7 +279,44 @@ if __name__ == '__main__':
         await ctx.send("\n".join(message))
 
 
-    # Add emoji
+    @bot.command(aliases=['licensing', 'buy', 'shop', 'store', 'student'])
+    async def license(ctx: commands.Context):
+        """
+        Information about JetBrains product licensing options
+        """
+        message = []
+
+        message.append(bot.product_emoji("jetbrains") + " **JetBrains Product Licensing Options**")
+        message.append("")
+
+        message.append("`Student Licensing`")
+        message.append("As a student in higher education you can request a free student license to use all JetBrains "
+                       "products.")
+        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/student/>")
+        message.append("\N{CLIPBOARD} Request Form: <https://www.jetbrains.com/shop/eform/students>")
+        message.append("")
+
+        message.append("`Open Source Licensing`")
+        message.append("Do you actively maintain an open source project? If so, you may be able to get a free license "
+                       "to all JetBrains products.")
+        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/buy/opensource/>")
+        message.append("\N{CLIPBOARD} Request Form: <https://www.jetbrains.com/shop/eform/opensource>")
+        message.append("")
+
+        message.append("`Personal Licenses`")
+        message.append("As a normal, personal, user of JetBrains products, you can buy an all products license or a "
+                       "specific license for the JetBrains products you use.")
+        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/store/#edition=personal>")
+        message.append("")
+
+        message.append("`Organization Licenses`")
+        message.append("If you run an organization, there is different pricing and licensing packages available for "
+                       "all JetBrains products individually and as a whole.")
+        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/store/#edition=commercial>")
+
+        await ctx.send("\n".join(message))
+
+
     @bot.command()
     @commands.check(bot.admin_check)
     async def emoji(ctx: commands.Context):
