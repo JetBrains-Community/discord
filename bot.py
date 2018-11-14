@@ -189,7 +189,7 @@ class JetBrains(commands.Bot):
 
             reddit = commands.Command(
                 name="reddit",
-                aliases=["subreddit", "r"],
+                aliases=["subreddit", "r", "sub"],
                 callback=self.reddit_callback(item)
             )
             group.add_command(reddit)
@@ -203,14 +203,14 @@ class JetBrains(commands.Bot):
 
             page = commands.Command(
                 name="page",
-                aliases=["url", "product", "site", "website", "jb", "jetbrains"],
+                aliases=["url", "product", "site", "website", "jb", "jetbrains", "link"],
                 callback=self.page_callback(item)
             )
             group.add_command(page)
 
             issue = commands.Command(
                 name="issue",
-                aliases=["issues", "track", "tracker", "youtrack", "yt"],
+                aliases=["issues", "track", "tracker", "youtrack", "yt", "bug", "bugs", "report", "reports"],
                 callback=self.issue_callback(item)
             )
             group.add_command(issue)
