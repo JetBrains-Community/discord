@@ -177,7 +177,7 @@
         "github": "",
         "product_page": "https://www.jetbrains.com/pycharm/",
         "issue_tracker": "PY",
-        "aliases": ["python", "py"]
+        "aliases": ["python", "py", "pyc"]
     },
     {
         "icon_path": "icon_PyCharm_Community.png",

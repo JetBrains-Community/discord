@@ -32,20 +32,20 @@ class JetBrains(commands.Bot):
         return data
 
     # Custom text for subreddit
-    def text_subreddit(self, data: str) -> str:
-        return "\N{OPEN BOOK} Subreddit: <https://reddit.com/r/" + data + ">"
+    def reddit_url(self, data: str) -> str:
+        return "<https://reddit.com/r/" + data + ">"
 
     # Custom text for github
-    def text_github(self, data: str) -> str:
-        return "\N{PACKAGE} GitHub: <https://github.com/JetBrains/" + data + ">"
+    def github_url(self, data: str) -> str:
+        return "<https://github.com/JetBrains/" + data + ">"
 
     # Custom text for product
-    def text_product(self, data: str) -> str:
-        return "\N{LINK SYMBOL} Product Page: <" + data + ">"
+    def product_url(self, data: str) -> str:
+        return "<" + data + ">"
 
     # Custom text for issues
-    def text_issues(self, data: str) -> str:
-        return "\N{LEFT-POINTING MAGNIFYING GLASS} Issue Tracker: <https://youtrack.jetbrains.com/issues/" + data + ">"
+    def issue_url(self, data: str) -> str:
+        return "<https://youtrack.jetbrains.com/issues/" + data + ">"
 
     # Register all custom commands
     def create_customs(self):
@@ -54,18 +54,17 @@ class JetBrains(commands.Bot):
                 async def func(ctx: commands.Context):
                     emoji = self.emoji_dict(self.get_guild(433980600391696384))
                     emoji = emoji[data['emoji_name']] if data['emoji_name'] in emoji else ""
-                    message = []
-                    message.append(str(emoji) + " **" + data['role_name'] + "**")
+                    message = [str(emoji) + " **" + data['role_name'] + "**"]
                     if data['subreddit']:
-                        message.append(self.text_subreddit(data['subreddit']))
+                        message.append("\N{OPEN BOOK} Subreddit: " + self.reddit_url(data['subreddit']))
                     if data['github']:
-                        message.append(self.text_github(data['github']))
+                        message.append("\N{PACKAGE} GitHub: " + self.github_url(data['github']))
                     if data['product_page']:
-                        message.append(self.text_product(data['product_page']))
+                        message.append("\N{LINK SYMBOL} Product Page: " + self.product_url(data['product_page']))
                     if data['issue_tracker']:
-                        message.append(self.text_issues(data['issue_tracker']))
-                    message = "\n".join(message)
-                    await ctx.send(message)
+                        message.append("\N{LEFT-POINTING MAGNIFYING GLASS} Issue Tracker: " + self.issue_url(
+                            data['issue_tracker']))
+                    await ctx.send("\n".join(message))
 
                 return func
 
@@ -79,57 +78,81 @@ class JetBrains(commands.Bot):
 
             def reddit_callback(data):
                 async def func(ctx: commands.Context):
-                    # TODO: this (emoji product - type \n **<link>**) [must handle none]
-                    pass
+                    emoji = self.emoji_dict(self.get_guild(433980600391696384))
+                    emoji = emoji[data['emoji_name']] if data['emoji_name'] in emoji else ""
+                    message = [str(emoji) + " " + data['role_name'] + " - Subreddit"]
+                    if data['subreddit']:
+                        message.append("**" + self.reddit_url(data['subreddit']) + "**")
+                    else:
+                        message.append("*No known subreddit*")
+                    await ctx.send("\n".join(message))
 
                 return func
 
             reddit = commands.Command(
                 name="reddit",
                 aliases=["subreddit", "r"],
-                callback=reddit_callback
+                callback=reddit_callback(item)
             )
             group.add_command(reddit)
 
             def github_callback(data):
                 async def func(ctx: commands.Context):
-                    # TODO: this (emoji product - type \n **<link>**) [must handle none]
-                    pass
+                    emoji = self.emoji_dict(self.get_guild(433980600391696384))
+                    emoji = emoji[data['emoji_name']] if data['emoji_name'] in emoji else ""
+                    message = [str(emoji) + " " + data['role_name'] + " - GitHub"]
+                    if data['github']:
+                        message.append("**" + self.github_url(data['github']) + "**")
+                    else:
+                        message.append("*No known github*")
+                    await ctx.send("\n".join(message))
 
                 return func
 
             github = commands.Command(
                 name="github",
                 aliases=["git", "gh"],
-                callback=github_callback
+                callback=github_callback(item)
             )
             group.add_command(github)
 
             def page_callback(data):
                 async def func(ctx: commands.Context):
-                    # TODO: this (emoji product - type \n **<link>**) [must handle none]
-                    pass
+                    emoji = self.emoji_dict(self.get_guild(433980600391696384))
+                    emoji = emoji[data['emoji_name']] if data['emoji_name'] in emoji else ""
+                    message = [str(emoji) + " " + data['role_name'] + " - Product Page"]
+                    if data['product_page']:
+                        message.append("**" + self.github_url(data['product_page']) + "**")
+                    else:
+                        message.append("*No known product page*")
+                    await ctx.send("\n".join(message))
 
                 return func
 
             page = commands.Command(
                 name="page",
                 aliases=["url", "product", "site", "website", "jb", "jetbrains"],
-                callback=page_callback
+                callback=page_callback(item)
             )
             group.add_command(page)
 
             def issue_callback(data):
                 async def func(ctx: commands.Context):
-                    # TODO: this (emoji product - type \n **<link>**) [must handle none]
-                    pass
+                    emoji = self.emoji_dict(self.get_guild(433980600391696384))
+                    emoji = emoji[data['emoji_name']] if data['emoji_name'] in emoji else ""
+                    message = [str(emoji) + " " + data['role_name'] + " - Issue Tracker"]
+                    if data['issue_tracker']:
+                        message.append("**" + self.issue_url(data['issue_tracker']) + "**")
+                    else:
+                        message.append("*No known issue tracker*")
+                    await ctx.send("\n".join(message))
 
                 return func
 
             issue = commands.Command(
                 name="issue",
                 aliases=["issues", "track", "tracker", "youtrack", "yt"],
-                callback=issue_callback
+                callback=issue_callback(item)
             )
             group.add_command(issue)
 
