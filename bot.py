@@ -108,7 +108,8 @@ class JetBrains(commands.Bot):
             channel = self.product_channel(data['channel_name'], data['category_name'])
             if channel:
                 message.append("\N{PAGE FACING UP} Discord Channel: " + channel.mention +
-                               (" - Join with " + self.jb_invite if ctx.guild.id != self.jb_guild_id else ""))
+                               ("" if ctx.guild and ctx.guild.id == self.jb_guild_id else " - Join with " +
+                                                                                          self.jb_invite))
             await ctx.send("\n".join(message))
 
         return func
@@ -168,7 +169,8 @@ class JetBrains(commands.Bot):
             channel = self.product_channel(data['channel_name'], data['category_name'])
             if channel:
                 message.append("**Please chat about " + data['name'] + " in " + channel.mention + "**" +
-                               (" - Join with " + self.jb_invite if ctx.guild.id != self.jb_guild_id else ""))
+                               ("" if ctx.guild and ctx.guild.id == self.jb_guild_id else " - Join with " +
+                                                                                          self.jb_invite))
             else:
                 message.append("*Sorry, there is no channel*")
             await ctx.send("\n".join(message))
@@ -291,11 +293,12 @@ if __name__ == '__main__':
             for item in bot.data:
                 if item['icon_path'] and item['emoji_name']:
                     if not bot.product_emoji(item['emoji_name']):
-                        if os.path.isfile("icons/"+item['icon_path']):
+                        if os.path.isfile("icons/" + item['icon_path']):
                             with open("icons/" + item['icon_path'], "rb") as f:
                                 await guild.create_custom_emoji(name=item['emoji_name'], image=f.read())
                             new.append(item['emoji_name'])
         await ctx.send("Done\n" + "\n".join([bot.product_emoji(f) for f in new]))
+
 
     # Start the bot with token from token.txt
     with open("token.txt", "r") as f:
