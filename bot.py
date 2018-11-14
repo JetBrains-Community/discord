@@ -249,7 +249,7 @@ if __name__ == '__main__':
     bot = JetBrains(command_prefix="?")
 
 
-    @bot.command(aliases=['info', 'about', 'invite', 'add'])
+    @bot.command(aliases=['info', 'about', 'invite', 'add', 'server', 'support', 'jetbot', 'jetbrains'])
     async def information(ctx: commands.Context):
         """
         Information about JetBot and the JetBrains Community Discord Server
@@ -275,6 +275,14 @@ if __name__ == '__main__':
                        "ideas around.")
         message.append("\N{BLACK RIGHTWARDS ARROW} **Join the JetBrains Community Discord server: <" + bot.jb_invite +
                        ">**")
+
+        message.append("")
+
+        message.append(bot.product_emoji("jetbrains") + " **JetBrains s.r.o**")
+        message.append("JetBrains is a cutting-edge software vendor specializing in the creation of intelligent "
+                       "development tools, including IntelliJ IDEA – the leading Java IDE, and the Kotlin programming "
+                       "language.")
+        message.append("\N{LINK SYMBOL} You can find out more on their website: <https://www.jetbrains.com/>")
 
         await ctx.send("\n".join(message))
 
