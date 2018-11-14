@@ -321,7 +321,7 @@ if __name__ == '__main__':
         return message
 
 
-    @bot.group(aliases=['licensing', 'buy', 'shop', 'store', 'student'],
+    @bot.group(aliases=['licensing', 'buy', 'shop', 'store'],
                invoke_without_command=True, case_insensitive=True)
     async def license(ctx: commands.Context):
         """
@@ -351,6 +351,11 @@ if __name__ == '__main__':
         await ctx.send("\n".join(message))
 
 
+    @bot.command(help=license_student.help, aliases=license_student.aliases)
+    async def student(ctx: commands.Context):
+        await ctx.invoke(license_student)
+
+
     @license.command(name="opensource", aliases=["open", "os"])
     async def license_opensource(ctx: commands.Context):
         """
@@ -360,6 +365,11 @@ if __name__ == '__main__':
         message.append(bot.product_emoji("jetbrains") + " **JetBrains Open Source Licensing**")
         message.extend(license_t_opensource(False))
         await ctx.send("\n".join(message))
+
+
+    @bot.command(help=license_opensource.help, aliases=license_opensource.aliases)
+    async def opensource(ctx: commands.Context):
+        await ctx.invoke(license_opensource)
 
 
     @license.command(name="personal", aliases=["normal", "home"])
