@@ -279,41 +279,108 @@ if __name__ == '__main__':
         await ctx.send("\n".join(message))
 
 
-    @bot.command(aliases=['licensing', 'buy', 'shop', 'store', 'student'])
+    def license_t_student(title: bool = True) -> list:
+        message = []
+        if title:
+            message.append("`Student Licensing`")
+        message.append("As a student in higher education you can request a free student license to use all JetBrains "
+                       "products.")
+        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/student/>")
+        message.append("\N{CLIPBOARD} Request Form: <https://www.jetbrains.com/shop/eform/students>")
+        return message
+
+
+    def license_t_opensource(title: bool = True) -> list:
+        message = []
+        if title:
+            message.append("`Open Source Licensing`")
+        message.append("Do you actively maintain an open source project? If so, you may be able to get a free license "
+                       "to all JetBrains products.")
+        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/buy/opensource/>")
+        message.append("\N{CLIPBOARD} Request Form: <https://www.jetbrains.com/shop/eform/opensource>")
+        return message
+
+
+    def license_t_personal(title: bool = True) -> list:
+        message = []
+        if title:
+            message.append("`Personal Licenses`")
+        message.append("As a normal, personal, user of JetBrains products, you can buy an all products license or a "
+                       "specific license for the JetBrains products you use.")
+        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/store/#edition=personal>")
+        return message
+
+
+    def license_t_organization(title: bool = True) -> list:
+        message = []
+        if title:
+            message.append("`Organization Licenses`")
+        message.append("If you run an organization, there is different pricing and licensing packages available for "
+                       "all JetBrains products individually and as a whole.")
+        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/store/#edition=commercial>")
+        return message
+
+
+    @bot.group(aliases=['licensing', 'buy', 'shop', 'store', 'student'],
+               invoke_without_command=True, case_insensitive=True)
     async def license(ctx: commands.Context):
         """
         Information about JetBrains product licensing options
         """
         message = []
-
         message.append(bot.product_emoji("jetbrains") + " **JetBrains Product Licensing Options**")
         message.append("")
-
-        message.append("`Student Licensing`")
-        message.append("As a student in higher education you can request a free student license to use all JetBrains "
-                       "products.")
-        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/student/>")
-        message.append("\N{CLIPBOARD} Request Form: <https://www.jetbrains.com/shop/eform/students>")
+        message.extend(license_t_student())
         message.append("")
-
-        message.append("`Open Source Licensing`")
-        message.append("Do you actively maintain an open source project? If so, you may be able to get a free license "
-                       "to all JetBrains products.")
-        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/buy/opensource/>")
-        message.append("\N{CLIPBOARD} Request Form: <https://www.jetbrains.com/shop/eform/opensource>")
+        message.extend(license_t_opensource())
         message.append("")
-
-        message.append("`Personal Licenses`")
-        message.append("As a normal, personal, user of JetBrains products, you can buy an all products license or a "
-                       "specific license for the JetBrains products you use.")
-        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/store/#edition=personal>")
+        message.extend(license_t_personal())
         message.append("")
+        message.extend(license_t_organization())
+        await ctx.send("\n".join(message))
 
-        message.append("`Organization Licenses`")
-        message.append("If you run an organization, there is different pricing and licensing packages available for "
-                       "all JetBrains products individually and as a whole.")
-        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/store/#edition=commercial>")
 
+    @license.command(name="student", aliases=["school"])
+    async def license_student(ctx: commands.Context):
+        """
+        Information about JetBrains student licensing
+        """
+        message = []
+        message.append(bot.product_emoji("jetbrains") + " **JetBrains Student Licensing**")
+        message.extend(license_t_student(False))
+        await ctx.send("\n".join(message))
+
+
+    @license.command(name="opensource", aliases=["open", "os"])
+    async def license_opensource(ctx: commands.Context):
+        """
+        Information about JetBrains open source licensing
+        """
+        message = []
+        message.append(bot.product_emoji("jetbrains") + " **JetBrains Open Source Licensing**")
+        message.extend(license_t_opensource(False))
+        await ctx.send("\n".join(message))
+
+
+    @license.command(name="personal", aliases=["normal", "home"])
+    async def license_personal(ctx: commands.Context):
+        """
+        Information about JetBrains personal licensing
+        """
+        message = []
+        message.append(bot.product_emoji("jetbrains") + " **JetBrains Personal Licenses**")
+        message.extend(license_t_personal(False))
+        await ctx.send("\n".join(message))
+
+
+    @license.command(name="organization", aliases=["organisation", "business", "work"])
+    async def license_organization(ctx: commands.Context):
+        """
+        Information about JetBrains organization licensing
+        """
+        message = []
+        message.append(bot.product_emoji("jetbrains") + " **JetBrains Organization Licenses**")
+        message.extend(license_t_organization(False))
         await ctx.send("\n".join(message))
 
 
