@@ -1,8 +1,12 @@
 from __future__ import unicode_literals
 
+import asyncio
+import datetime
 import json
 import logging
 import os
+import sys
+import time
 
 import discord
 from discord.ext import commands
@@ -18,6 +22,24 @@ class JetBrains(commands.Bot):
         self.data = []
         self.jb_guild_id = 433980600391696384
         self.jb_invite = "https://discord.gg/zTUTh2P"
+        self.loop.create_task(self.status_loop())
+
+    async def status_loop(self):
+        await self.wait_until_ready()
+        while not self.is_closed():
+            guild = self.get_guild(self.jb_guild_id)
+            playing = "JetBrains users"
+            users = ""
+            if guild:
+                users = "{:,} ".format(guild.member_count)
+            try:
+                await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
+                                                                     name=users+playing),
+                                           status=discord.Status.online)
+            except:
+                pass
+
+            await asyncio.sleep(5 * 60)
 
     # Load the latest data into the bot
     def load_data(self):
@@ -185,7 +207,7 @@ class JetBrains(commands.Bot):
                 aliases=item['aliases'],
                 invoke_without_command=True,
                 case_insensitive=True,
-                help="Provides information about " + item['name'],
+                help="Info about " + item['name'],
                 callback=self.group_callback(item)
             )
 
@@ -245,14 +267,20 @@ class JetBrains(commands.Bot):
 
 if __name__ == '__main__':
 
+    # Dev Mode
+    dev_mode = False
+    if (len(sys.argv) > 1 and sys.argv[1] and sys.argv[1].strip() == "dev") or dev_mode:
+        dev_mode = True
+
     # Create the bot instance
     bot = JetBrains(command_prefix="?")
 
 
-    @bot.command(aliases=['info', 'about', 'invite', 'add', 'server', 'support', 'jetbot', 'jetbrains'])
+    @bot.command(aliases=['info', 'about', 'invite', 'add', 'author', 'owner', 'server', 'support',
+                          'jetbot', 'jetbrains'])
     async def information(ctx: commands.Context):
         """
-        Information about JetBot and the JetBrains Community Discord Server
+        JetBot & JetBrains Community Discord Server info
         """
         message = []
 
@@ -261,7 +289,9 @@ if __name__ == '__main__':
         message.append("View all the commands for JetBrains product and project inforamtion JetBot has in the help "
                        "command `?help`.")
         message.append("\N{LINK SYMBOL} You can use JetBot in your server, invite it with: <https://discordapp.com/"
-                       "oauth2/authorize?client_id=" + str(bot.user.id) + "&scope=bot&permissions=8>")
+                       "oauth2/authorize?client_id=" + str(bot.user.id) + "&scope=bot&permissions=8>.")
+        message.append("*JetBot was created and is maintained by IPv4#0001 but is open source at <https://github.com/"
+                       "MattIPv4/JetBrains-Community-Discord>.*")
 
         message.append("")
 
@@ -333,7 +363,7 @@ if __name__ == '__main__':
                invoke_without_command=True, case_insensitive=True)
     async def license(ctx: commands.Context):
         """
-        Information about JetBrains product licensing options
+        JetBrains product licensing options
         """
         message = []
         message.append(bot.product_emoji("jetbrains") + " **JetBrains Product Licensing Options**")
@@ -351,7 +381,7 @@ if __name__ == '__main__':
     @license.command(name="student", aliases=["school"])
     async def license_student(ctx: commands.Context):
         """
-        Information about JetBrains student licensing
+        JetBrains student licensing info
         """
         message = []
         message.append(bot.product_emoji("jetbrains") + " **JetBrains Student Licensing**")
@@ -367,7 +397,7 @@ if __name__ == '__main__':
     @license.command(name="opensource", aliases=["open", "os"])
     async def license_opensource(ctx: commands.Context):
         """
-        Information about JetBrains open source licensing
+        JetBrains open source licensing info
         """
         message = []
         message.append(bot.product_emoji("jetbrains") + " **JetBrains Open Source Licensing**")
@@ -383,7 +413,7 @@ if __name__ == '__main__':
     @license.command(name="personal", aliases=["normal", "home"])
     async def license_personal(ctx: commands.Context):
         """
-        Information about JetBrains personal licensing
+        JetBrains personal licensing info
         """
         message = []
         message.append(bot.product_emoji("jetbrains") + " **JetBrains Personal Licenses**")
@@ -394,7 +424,7 @@ if __name__ == '__main__':
     @license.command(name="organization", aliases=["organisation", "business", "work"])
     async def license_organization(ctx: commands.Context):
         """
-        Information about JetBrains organization licensing
+        JetBrains organization licensing info
         """
         message = []
         message.append(bot.product_emoji("jetbrains") + " **JetBrains Organization Licenses**")
@@ -403,10 +433,33 @@ if __name__ == '__main__':
 
 
     @bot.command()
+    async def ping(ctx: commands.Context):
+        """
+        Ping JetBot to test response time
+        """
+        latency = (datetime.datetime.utcnow() - ctx.message.created_at).total_seconds() * 1000
+
+        before = time.monotonic()
+        msg = await ctx.send("Pinging...")
+        after = time.monotonic()
+
+        heartbeat = (after - before) * 1000
+        wslatency = bot.latency * 1000
+
+        message = ["**JetBot Ping**"]
+        message.append(("-" * len(message[-1])))
+        message.append("\N{STOPWATCH} Latency: {:.0f}ms".format(latency))
+        message.append("\N{BEATING HEART} Heartbeat: {:.0f}ms".format(heartbeat))
+        message.append("\N{ANTENNA WITH BARS} WS Latency: {:.0f}ms".format(wslatency))
+
+        await msg.edit(content="\n".join(message))
+
+
+    @bot.command()
     @commands.check(bot.admin_check)
     async def emoji(ctx: commands.Context):
         """
-        Admin command: Update emoji on the JetBrains server
+        Admin: Update emoji on the JetBrains server
         """
         guild = bot.get_guild(bot.jb_guild_id)
         if guild:
@@ -422,7 +475,7 @@ if __name__ == '__main__':
 
 
     # Start the bot with token from token.txt
-    with open("token.txt", "r") as f:
+    with open("token" + ("_dev" if dev_mode else "") + ".txt", "r") as f:
         token = [str(f).strip("\n\r") for f in f.readlines()]
     bot.run(token[0])
 
