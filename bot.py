@@ -34,7 +34,7 @@ class JetBrains(commands.Bot):
                 users = "{:,} ".format(guild.member_count)
             try:
                 await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
-                                                                     name=users+playing),
+                                                                     name=users + playing),
                                            status=discord.Status.online)
             except:
                 pass
@@ -453,6 +453,24 @@ if __name__ == '__main__':
         message.append("\N{ANTENNA WITH BARS} WS Latency: {:.0f}ms".format(wslatency))
 
         await msg.edit(content="\n".join(message))
+
+
+    @bot.command()
+    async def users(ctx: commands.Context, target: discord.Member = None):
+        """
+        Find JetBrains IDE users mutual with the bot and target
+        """
+        if not target: target = ctx.author
+        found = []
+        for member in bot.get_all_members():
+            if member not in found:
+                if member.activity and "jetbrains" in member.activity.name.lower():
+                    if member.guild.get_member(target.id):
+                        if member not in bot.get_guild(433980600391696384).members:
+                            found.append(member)
+        await ctx.send("**JetBrains IDE Users not in the JetBrains Community Discord Server**\n" + ("\n".join(
+            ["{0.mention} {0.name}#{0.discriminator} {0.id} `{1}`".format(f, f.activity.name) for f in found]
+        ) or "None"))
 
 
     @bot.command()
