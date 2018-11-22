@@ -478,15 +478,19 @@ if __name__ == '__main__':
         """
         if not target: target = ctx.author
         found = []
+        test_strings = [f['name'].lower() for f in bot.data]
+        test_strings.append("jetbrains")
         for member in bot.get_all_members():
             if member not in found:
-                if member.activity and "jetbrains" in member.activity.name.lower():
+                if member.activity and any(f in member.activity.name.lower() for f in test_strings):
                     if member.guild.get_member(target.id):
                         if member not in bot.get_guild(433980600391696384).members:
                             found.append(member)
-        await ctx.send("**JetBrains IDE Users not in the JetBrains Community Discord Server**\n" + ("\n".join(
-            ["{0.mention} {0.name}#{0.discriminator} {0.id} `{1}`".format(f, f.activity.name) for f in found]
-        ) or "None"))
+        await ctx.send("**JetBrains IDE Users not in the JetBrains Community Discord Server**\n*Users that are in"
+                       " mutual servers with you and JetBot*\n" + ("\n".join(
+            ["{0.mention} `{0.name}#{0.discriminator}` `{0.id}` `{1}`".format(f, f.activity.name) for f in found]
+        ) or "`No users were found :(`") + "\nWhy not ask them if they'd like to join our community? They can use the"
+                                           " invite <" + bot.jb_invite + ">.")
 
 
     @bot.command()
