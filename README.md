@@ -1,14 +1,16 @@
 [![JetBrains Community](jetbrains_logos/brand.png)](https://discord.gg/yBQKN5b)
 
 # JetBot - JetBrains Community Discord
-The JetBrains Community Discord Server - JetBot, the Python bot behind it
+The [JetBrains Community Discord Server](https://discord.gg/yBQKN5b) - JetBot, the Python bot behind it
 
-## Community Discord Server
+## [Community Discord Server](https://discord.gg/yBQKN5b)
 
-We have an unofficial, community driven server on Discord for all users of JetBrains to hang out on.
-The server has dedicated channels for each product that JetBrains produce as well as some key channels under the Open
- Source category for major open source projects run by JetBrains.
-We also have quite a few JetBrains staff with us on the server, here to hang out and chat with us.
+We have an [unofficial, community driven server on Discord](https://discord.gg/yBQKN5b) for all users of JetBrains to
+ hang out on.
+[The server](https://discord.gg/yBQKN5b) has dedicated channels for each product that JetBrains produce as well as some
+ key channels under the Open Source category for major open source projects run by JetBrains.
+We also have quite a few JetBrains staff with us on [the server](https://discord.gg/yBQKN5b) here to hang out and chat
+ with us, the community.
 
 *This server is not a JetBrains official support channel, it is a community run server for the JetBrains community to
  chill in.*
@@ -30,7 +32,8 @@ Please [join the server](https://discord.gg/yBQKN5b) to see what it is used to m
 
 ### Images
 
-All JetBrains assets are copyright JetBrains s.r.o. Find out more on their [press page](https://www.jetbrains.com/company/press/).
+All JetBrains assets are copyright JetBrains s.r.o.
+Find out more on their [press page](https://www.jetbrains.com/company/press/).
 
-The badges at the top of this readme are not official JetBrains badges and are there as a parody of the real JetBrains
- open source repositories.
+The JetBrains Community branding was created by JetBrains for the JetBrains Community (Discord server and other related
+ projects).

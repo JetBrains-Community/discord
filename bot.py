@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 import time
+import traceback
 
 import discord
 from discord.ext import commands
@@ -254,6 +255,21 @@ class JetBrains(commands.Bot):
             return True
         return False
 
+    # Ignore some errors
+    async def on_command_error(self, ctx: commands.Context, error):
+        if hasattr(ctx.command, 'on_error'):
+            return
+
+        ignored = (commands.CommandNotFound, commands.DisabledCommand)
+        error = getattr(error, 'original', error)
+
+        if isinstance(error, ignored):
+            return
+
+        # Unhandled error
+        lines = traceback.format_exception(type(error), error, error.__traceback__)
+        print(''.join(lines))
+
     # Acknowledge bot is ready to go
     async def on_ready(self):
         print('Logged in as')
@@ -495,7 +511,7 @@ if __name__ == '__main__':
     # Start the bot with token from token.txt
     with open("token" + ("_dev" if dev_mode else "") + ".txt", "r") as f:
         token = [str(f).strip("\n\r") for f in f.readlines()]
-    bot.run(token[0])
+    bot.run(token[0], reconnect=False)
 
 else:
     print('Run this by itself')
