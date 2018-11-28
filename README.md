@@ -1,6 +1,6 @@
-[![JetBrains Community](jetbrains_logos/brand.png)](https://discord.gg/yBQKN5b)
+[![JetBrains Community](https://jetbrains-community.github.io/brand/brand/brand.png)](https://jetbrains-community.github.io/)
 
-# JetBot - JetBrains Community Discord
+# JetBrains Community - Discord (JetBot)
 The [JetBrains Community Discord Server](https://discord.gg/yBQKN5b) - JetBot, the Python bot behind it
 
 ## [Community Discord Server](https://discord.gg/yBQKN5b)
