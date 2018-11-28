@@ -221,7 +221,7 @@
         "product_page": "https://www.jetbrains.com/pycharm/",
         "description": "The Python IDE for Professional Developers - Free Community Edition",
         "issue_tracker": "PY",
-        "aliases": ["pycharm ce"]
+        "aliases": ["pycharmce", "pycharm-ce", "pyc-ce", "py-ce", "pyce"]
     },
     {
         "name": "PyCharm Edu",
