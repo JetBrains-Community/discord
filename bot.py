@@ -5,6 +5,7 @@ import datetime
 import json
 import logging
 import os
+import re
 import sys
 import time
 import traceback
@@ -34,9 +35,9 @@ class JetBrains(commands.Bot):
             if guild:
                 users = "{:,} ".format(guild.member_count)
             try:
-                await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
-                                                                     name=users + playing),
-                                           status=discord.Status.online)
+                await self.change_presence(
+                    activity=discord.Activity(type=discord.ActivityType.watching, name=users + playing),
+                    status=discord.Status.online)
             except:
                 pass
 
@@ -64,7 +65,7 @@ class JetBrains(commands.Bot):
             return data
         for category in guild.categories:
             if category.name not in data:
-                data[category.name] = category
+                data[category.name.lower()] = category
         return data
 
     # Channels in a dictionary
@@ -98,8 +99,9 @@ class JetBrains(commands.Bot):
         if name and category:
             guild = self.get_guild(self.jb_guild_id)
             categories = self.category_dict(guild)
-            if category in categories:
-                channels = [f for f in guild.text_channels if f.name == name and f.category == categories[category]]
+            if category.lower() in categories:
+                channels = [f for f in guild.text_channels if
+                            f.name == name and f.category == categories[category.lower()]]
                 if channels:
                     return channels[0]
         return None
@@ -269,6 +271,44 @@ class JetBrains(commands.Bot):
         # Unhandled error
         lines = traceback.format_exception(type(error), error, error.__traceback__)
         print(''.join(lines))
+
+    # Staff email verification
+    async def email_verify(self, message: discord.message):
+        guild = self.get_guild(self.jb_guild_id)
+        if guild:
+            channel = [f for f in guild.text_channels if f.name.lower().strip() == "staff-verify"]
+            if channel:
+                channel = channel[0]
+                if message.channel.id == channel.id:
+                    pattern = re.compile("(?:.*\s+)*(\S+@jetbrains\.com).*", re.DOTALL)
+                    match = pattern.match(message.content)
+                    if not match:
+                        try:
+                            await message.author.send("Sorry, I could not find a valid JetBrains email in the message"
+                                                      " you sent to {}.".format(channel.mention))
+                        except:
+                            pass
+                    else:
+                        try:
+                            await message.author.send("Thank you, your email ({}) has been passed onto the server"
+                                                      " admins for verification!".format(match.group(1)))
+                        except:
+                            pass
+                        role = [f for f in guild.roles if f.name.lower().strip() == "admin"]
+                        channel = self.product_channel("chat", "admins")
+                        if channel:
+                            await channel.send("{0.mention} `{0.name}#{0.discriminator} {0.id}` has requested"
+                                               " JetBrains staff verification with the email `{1}` {2}".format(
+                                message.author, match.group(1), role[0].mention if role else ""))
+                    await message.delete()
+
+    # Handle messages
+    async def on_message(self, message: discord.Message):
+        if message.author.bot:
+            return
+
+        await self.email_verify(message)
+        await self.process_commands(message)
 
     # Acknowledge bot is ready to go
     async def on_ready(self):
