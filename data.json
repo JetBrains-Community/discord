@@ -42,6 +42,20 @@
         "aliases": []
     },
     {
+        "name": "Datalore",
+        "icon_path": "icon_Datalore.png",
+        "emoji_name": "datalore",
+        "role_name": "Datalore",
+        "channel_name": "datalore",
+        "category_name": "Products",
+        "subreddit": "Datalore",
+        "github": "",
+        "product_page": "https://datalore.io/",
+        "description": "An intelligent web application for data analysis",
+        "issue_tracker": "",
+        "aliases": []
+    },
+    {
         "name": "dotCover",
         "icon_path": "icon_dotCover.png",
         "emoji_name": "dotcover",
