@@ -517,21 +517,36 @@ if __name__ == '__main__':
         Find JetBrains IDE users mutual with the bot and target
         """
         if not target: target = ctx.author
-        found = []
-        test_strings = [f['name'].lower() for f in bot.data]
+        test_strings = [f['name'].lower() for f in bot.data if len(f['name'].lower()) > 3]  # "hub" matches badly
         test_strings.append("jetbrains")
+
+        found = []
         for member in bot.get_all_members():
-            if member not in found:
-                if member.status is not discord.Status.offline:
-                    if member.activity and any(f in member.activity.name.lower() for f in test_strings):
-                        if member.guild.get_member(target.id):
-                            if member not in bot.get_guild(433980600391696384).members:
-                                found.append(member)
-        await ctx.send("**JetBrains IDE Users not in the JetBrains Community Discord Server**\n*Users that are in"
-                       " mutual servers with you and JetBot*\n" + ("\n".join(
-            ["{0.mention} `{0.name}#{0.discriminator}` `{0.id}` `{1}`".format(f, f.activity.name) for f in found]
-        ) or "`No users were found :(`") + "\nWhy not ask them if they'd like to join our community? They can use the"
-                                           " invite <" + bot.jb_invite + ">.")
+            if member not in [f[0] for f in found]:
+                if member.status is not discord.Status.offline and member.activity:
+                    matches = [f for f in test_strings if f in member.activity.name.lower()]
+                    if matches:
+                        if member.guild.get_member(target.id) and member not in bot.get_guild(
+                                433980600391696384).members:
+                            found.append([member, matches[0]])  # save the user and the match
+
+        header = "**JetBrains IDE Users not in the JetBrains Community Discord Server**" \
+                 "\n*Users that are in mutual servers with you and JetBot*" \
+                 "\nWhy not ask them if they'd like to join our community?" \
+                 " They can use the invite <" + bot.jb_invite + ">."
+
+        found = ["\n{0.mention} `{0.name}#{0.discriminator}` `{0.id}` Playing: `{1}` Match: `{2}`".format(
+            f[0], f[0].activity.name, f[1]) for f in found] or ["\n`No users were found :(`"]
+
+        msg = ""
+        msg += header
+        for item in found:
+            if len(msg + item) > 2000:
+                await ctx.send(msg)
+                msg = ""
+            msg += item
+        if msg:
+            await ctx.send(msg)
 
 
     @bot.command()
