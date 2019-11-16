@@ -21,7 +21,7 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
         else:
             pip = "./venv/bin/pip"
         proc = Popen([pip, "install", "setuptools", "wheel",
-                      "git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py[voice]",
+                      "discord.py",
                       "PyNaCL==1.1.2", "aiomysql"])
         proc.communicate()
 
