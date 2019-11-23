@@ -206,46 +206,46 @@ class JetBrains(commands.Bot):
     def create_customs(self):
         for item in self.data:
             group = commands.Group(
+                self.group_callback(item),
                 name=item['name'].replace(" ", "-").lower().strip(),
                 aliases=item['aliases'],
                 invoke_without_command=True,
                 case_insensitive=True,
-                help="Info about " + item['name'],
-                callback=self.group_callback(item)
+                help="Info about " + item['name']
             )
 
             reddit = commands.Command(
+                self.reddit_callback(item),
                 name="reddit",
-                aliases=["subreddit", "r", "sub"],
-                callback=self.reddit_callback(item)
+                aliases=["subreddit", "r", "sub"]
             )
             group.add_command(reddit)
 
             github = commands.Command(
+                self.github_callback(item),
                 name="github",
-                aliases=["git", "gh"],
-                callback=self.github_callback(item)
+                aliases=["git", "gh"]
             )
             group.add_command(github)
 
             page = commands.Command(
+                self.page_callback(item),
                 name="page",
-                aliases=["url", "product", "site", "website", "jb", "jetbrains", "link"],
-                callback=self.page_callback(item)
+                aliases=["url", "product", "site", "website", "jb", "jetbrains", "link"]
             )
             group.add_command(page)
 
             issue = commands.Command(
+                self.issue_callback(item),
                 name="issue",
-                aliases=["issues", "track", "tracker", "youtrack", "yt", "bug", "bugs", "report", "reports"],
-                callback=self.issue_callback(item)
+                aliases=["issues", "track", "tracker", "youtrack", "yt", "bug", "bugs", "report", "reports"]
             )
             group.add_command(issue)
 
             channel = commands.Command(
+                self.channel_callback(item),
                 name="channel",
-                aliases=["chan", "chat", "text", "discord"],
-                callback=self.channel_callback(item)
+                aliases=["chan", "chat", "text", "discord"]
             )
             group.add_command(channel)
 
