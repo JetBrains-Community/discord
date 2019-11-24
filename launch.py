@@ -20,9 +20,7 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
             pip = "./venv/Scripts/pip.exe"
         else:
             pip = "./venv/bin/pip"
-        proc = Popen([pip, "install", "setuptools", "wheel",
-                      "discord.py",
-                      "PyNaCL==1.1.2", "aiomysql"])
+        proc = Popen([pip, "install", "setuptools", "wheel", "discord.py", "aiomysql"])
         proc.communicate()
 
 
