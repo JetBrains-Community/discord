@@ -207,7 +207,7 @@
         "product_page": "https://www.jetbrains.com/mps/",
         "description": "Create your own domain-specific language",
         "issue_tracker": "MPS",
-        "aliases": ["mps"]
+        "aliases": []
     },
     {
         "name": "PhpStorm",
@@ -263,7 +263,7 @@
         "product_page": "https://www.jetbrains.com/education/learning/python/",
         "description": "The Python IDE for Professional Developers - Tools dedicated for education",
         "issue_tracker": "PY",
-        "aliases": ["pycharmedu", "pycharm-edu", "pyc-edu", "py-edu", "pyedu"]
+        "aliases": ["pycharmedu", "pyc-edu", "py-edu", "pyedu"]
     },
     {
         "name": "ReSharper",

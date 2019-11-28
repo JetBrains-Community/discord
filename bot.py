@@ -9,6 +9,7 @@ import re
 import sys
 import time
 import traceback
+from typing import Optional
 
 import discord
 from discord.ext import commands
@@ -22,6 +23,8 @@ class JetBrains(commands.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.data = []
+        self.role_color = discord.Colour(0x18d68c)  # Normal
+        # self.role_color = discord.Colour(0xFB5502)  # Halloween
         self.jb_guild_id = 433980600391696384
         self.jb_invite = "https://discord.gg/zTUTh2P"
         self.loop.create_task(self.status_loop())
@@ -95,7 +98,7 @@ class JetBrains(commands.Bot):
         return "<https://youtrack.jetbrains.com/issues/" + data + ">"
 
     # Find a product channel
-    def product_channel(self, name: str, category: str) -> discord.TextChannel:
+    def product_channel(self, name: str, category: str) -> Optional[discord.TextChannel]:
         if name and category:
             guild = self.get_guild(self.jb_guild_id)
             categories = self.category_dict(guild)
@@ -113,6 +116,15 @@ class JetBrains(commands.Bot):
             if name in emoji:
                 return str(emoji[name])
         return ""
+
+    # Find a product role
+    def product_role(self, name: str) -> Optional[discord.Role]:
+        if name:
+            guild = self.get_guild(self.jb_guild_id)
+            role = [f for f in guild.roles if f.name == name]
+            if role:
+                return role[0]
+        return None
 
     # Main custom group
     def group_callback(self, data):
@@ -253,7 +265,7 @@ class JetBrains(commands.Bot):
 
     # Check for admin commands
     async def admin_check(self, ctx: commands.Context) -> bool:
-        if ctx.author.id in [193060889111298048]:
+        if ctx.author.id in [541305895544422430]:
             return True
         return False
 
@@ -563,9 +575,61 @@ if __name__ == '__main__':
                     if not bot.product_emoji(item['emoji_name']):
                         if os.path.isfile("icons/" + item['icon_path']):
                             with open("icons/" + item['icon_path'], "rb") as f:
+                                print("Creating icon... " + item['icon_path'])
                                 await guild.create_custom_emoji(name=item['emoji_name'], image=f.read())
                             new.append(item['emoji_name'])
+                    else:
+                        print(item['icon_path'] + " icon already exists")
         await ctx.send("Done\n" + "\n".join([bot.product_emoji(f) for f in new]))
+
+
+    @bot.command()
+    @commands.check(bot.admin_check)
+    async def roles(ctx: commands.Context):
+        """
+        Admin: Update roles on the JetBrains server
+        """
+        guild = bot.get_guild(bot.jb_guild_id)
+        if guild:
+            new = []
+            positions = []
+            # Create product roles
+            for item in bot.data:
+                if item['role_name']:
+                    role = bot.product_role(item['role_name'])
+                    if not role:
+                        print("Creating role... " + item['role_name'])
+                        role = await guild.create_role(
+                            name=item['role_name'],
+                            permissions=discord.Permissions.none(),
+                            color=bot.role_color,
+                            hoist=False,
+                            mentionable=False
+                        )
+                        new.append(role)
+                    else:
+                        print(item['role_name'] + " role already exists")
+                        if role.color != bot.role_color:
+                            await role.edit(color=bot.role_color)
+                    positions.append(role.position)
+            # Create hide role
+            role = bot.product_role("Hide Unsubscribed Channels")
+            if not role:
+                print("Creating role... Hide Unsubscribed Channels")
+                role = await guild.create_role(
+                    name="Hide Unsubscribed Channels",
+                    permissions=discord.Permissions.none(),
+                    color=discord.Colour(0x7D7D7D),
+                    hoist=False,
+                    mentionable=False
+                )
+                new.append(role)
+            else:
+                print("Hide Unsubscribed Channels role already exists")
+            positions = min(positions)
+            if role.position != positions:
+                await role.edit(position=positions)
+        await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
 
 
     # Start the bot with token from token.txt
