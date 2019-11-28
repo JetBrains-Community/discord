@@ -9,7 +9,7 @@ import re
 import sys
 import time
 import traceback
-from typing import Optional
+from typing import Dict, Optional
 
 import discord
 from discord.ext import commands
@@ -62,13 +62,13 @@ class JetBrains(commands.Bot):
         return data
 
     # Categories in a dictionary
-    def category_dict(self, guild: discord.Guild) -> dict:
+    def category_dict(self, guild: discord.Guild) -> Dict[str, discord.CategoryChannel]:
         data = {}
         if not guild:
             return data
         for category in guild.categories:
             if category.name not in data:
-                data[category.name.lower()] = category
+                data[category.name.lower().strip()] = category
         return data
 
     # Channels in a dictionary
@@ -104,7 +104,7 @@ class JetBrains(commands.Bot):
             categories = self.category_dict(guild)
             if category.lower() in categories:
                 channels = [f for f in guild.text_channels if
-                            f.name == name and f.category == categories[category.lower()]]
+                            f.name == name and f.category == categories[category.lower().strip()]]
                 if channels:
                     return channels[0]
         return None
@@ -124,6 +124,15 @@ class JetBrains(commands.Bot):
             role = [f for f in guild.roles if f.name == name]
             if role:
                 return role[0]
+        return None
+
+    # Find a category
+    def product_category(self, name: str) -> Optional[discord.CategoryChannel]:
+        if name:
+            guild = self.get_guild(self.jb_guild_id)
+            category = [f for f in guild.categories if f.name.lower().strip() == name.lower().strip()]
+            if category:
+                return category[0]
         return None
 
     # Main custom group
@@ -629,6 +638,66 @@ if __name__ == '__main__':
             positions = min(positions)
             if role.position != positions:
                 await role.edit(position=positions)
+        await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
+
+    @bot.command()
+    @commands.check(bot.admin_check)
+    async def channels(ctx: commands.Context):
+        """
+        Admin: Update channels on the JetBrains server
+        """
+        guild = bot.get_guild(bot.jb_guild_id)
+        if guild:
+            categories = {}
+            new = []
+            hide = [f for f in guild.roles if f.name.strip() == 'Hide Unsubscribed Channels'][0]
+            mods = [f for f in ctx.guild.roles if f.name.lower().strip() == '-'][0]
+            default_title = "Discuss anything about {} here."
+            title_map = {
+                'open source': "Chat about the open source project {} here.",
+                'educational': 'Chat about the educational tool {} here.'
+            }
+            # Create product channels
+            for item in bot.data:
+                if item['emoji_name'] and item['role_name'] and item['channel_name'] and item['category_name']:
+                    # Get the role and emoji
+                    role = bot.product_role(item['role_name'])
+                    emoji = bot.product_emoji(item['emoji_name'])
+                    if role and emoji:
+                        # Get the category
+                        if item['category_name'].lower().strip() in categories:
+                            category = categories[item['category_name'].lower().strip()]
+                        else:
+                            category = bot.product_category(item['category_name'])
+                            if not category:
+                                print("Creating category... " + item['category_name'])
+                                category = await guild.create_category(item['category_name'])
+                            categories[item['category_name'].lower().strip()] = category
+                        # Get the channel
+                        channel = bot.product_channel(item['channel_name'], item['category_name'])
+                        if not channel:
+                            print("Creating channel... " + item['channel_name'])
+                            channel = await guild.create_text_channel(item['channel_name'], category=category)
+                            new.append(channel)
+                        # Set permissions
+                        print("Updating channel... " + item['channel_name'] + " in " + item['category_name'])
+                        await channel.set_permissions(guild.default_role, send_messages=False)
+                        await channel.set_permissions(role, send_messages=True, read_messages=True)
+                        await channel.set_permissions(hide, read_messages=False)
+                        await channel.set_permissions(mods, send_messages=True, read_messages=True)
+                        # Set topic
+                        title = default_title
+                        if category.name.lower().strip() in title_map:
+                            title = title_map[category.name.lower().strip()]
+                        title = "{0} \N{PUBLIC ADDRESS LOUDSPEAKER} Unlock this channel using #unlock-channels - " \
+                                "{1} {0}".format(emoji, title.format(item['name']))
+                        if channel.topic != title:
+                            await channel.edit(topic=title)
+            # Set category perms
+            for item in categories.values():
+                print("Updating category... " + item.name)
+                await item.set_permissions(guild.default_role, send_messages=False)
+                await item.set_permissions(mods, send_messages=True)
         await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
 
 
