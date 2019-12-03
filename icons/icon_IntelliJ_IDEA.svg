@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="70px" height="70px" viewBox="0 0 70 70" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>intellij-idea</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="-0.0307692308%" y1="49.962069%" x2="100.052308%" y2="49.962069%" id="linearGradient-1">
+            <stop stop-color="#F97A12" offset="25.8%"></stop>
+            <stop stop-color="#B07B58" offset="45.9%"></stop>
+            <stop stop-color="#577BAE" offset="72.4%"></stop>
+            <stop stop-color="#1E7CE5" offset="91%"></stop>
+            <stop stop-color="#087CFA" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="29.3928392%" y1="34.5137881%" x2="79.5774908%" y2="77.605225%" id="linearGradient-2">
+            <stop stop-color="#F97A12" offset="0%"></stop>
+            <stop stop-color="#CB7A3E" offset="7.2%"></stop>
+            <stop stop-color="#9E7B6A" offset="15.4%"></stop>
+            <stop stop-color="#757B91" offset="24.2%"></stop>
+            <stop stop-color="#537BB1" offset="33.4%"></stop>
+            <stop stop-color="#387CCC" offset="43.2%"></stop>
+            <stop stop-color="#237CE0" offset="53.8%"></stop>
+            <stop stop-color="#147CEF" offset="65.5%"></stop>
+            <stop stop-color="#0B7CF7" offset="79.2%"></stop>
+            <stop stop-color="#087CFA" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="64.902819%" y1="97.6985981%" x2="39.5418814%" y2="-6.5864486%" id="linearGradient-3">
+            <stop stop-color="#FE315D" offset="0%"></stop>
+            <stop stop-color="#CB417E" offset="7.8%"></stop>
+            <stop stop-color="#9E4E9B" offset="16%"></stop>
+            <stop stop-color="#755BB4" offset="24.7%"></stop>
+            <stop stop-color="#5365CA" offset="33.9%"></stop>
+            <stop stop-color="#386DDB" offset="43.6%"></stop>
+            <stop stop-color="#2374E9" offset="54.1%"></stop>
+            <stop stop-color="#1478F3" offset="65.8%"></stop>
+            <stop stop-color="#0B7BF8" offset="79.4%"></stop>
+            <stop stop-color="#087CFA" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="31.4319094%" y1="24.1185944%" x2="83.0081481%" y2="132.620791%" id="linearGradient-4">
+            <stop stop-color="#FE315D" offset="0%"></stop>
+            <stop stop-color="#F63462" offset="4%"></stop>
+            <stop stop-color="#DF3A71" offset="10.4%"></stop>
+            <stop stop-color="#C24383" offset="16.7%"></stop>
+            <stop stop-color="#AD4A91" offset="29.1%"></stop>
+            <stop stop-color="#755BB4" offset="55%"></stop>
+            <stop stop-color="#1D76ED" offset="91.7%"></stop>
+            <stop stop-color="#087CFA" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="jb" transform="translate(-301.000000, -41.000000)" fill-rule="nonzero">
+            <g id="intellij-idea" transform="translate(301.000000, 41.000000)">
+                <polygon id="Path" fill="url(#linearGradient-1)" points="17.7 54.6 0.8 41.2 9.2 25.6 33.3 35"></polygon>
+                <polygon id="Path" fill="url(#linearGradient-2)" points="70 18.7 68.7 59.2 41.8 70 25.6 59.6 49.3 35 38.9 12.3 48.2 1.1"></polygon>
+                <polygon id="Path" fill="url(#linearGradient-3)" points="70 18.7 48.7 43.9 38.9 12.3 48.2 1.1"></polygon>
+                <polygon id="Path" fill="url(#linearGradient-4)" points="33.7 58.1 5.6 68.3 10.1 52.5 16 33.1 0 27.7 10.1 0 32.1 2.7 53.7 27.4"></polygon>
+                <g id="Group" transform="translate(13.000000, 13.000000)">
+                    <polygon id="Path" fill="#000000" points="0.7 0.5 43.9 0.5 43.9 43.7 0.7 43.7"></polygon>
+                    <polygon id="Path" fill="#FFFFFF" points="4.7 35.6 20.9 35.6 20.9 38.3 4.7 38.3"></polygon>
+                    <polygon id="Path" fill="#FFFFFF" points="16.4 9.4 16.4 6.1 7.4 6.1 7.4 9.4 10 9.4 10 20.7 7.4 20.7 7.4 24 16.4 24 16.4 20.7 13.9 20.7 13.9 9.4"></polygon>
+                    <path d="M25,24.3 C23.6,24.3 22.4,24 21.5,23.5 C20.6,23 19.8,22.3 19.2,21.6 L21.7,18.8 C22.2,19.4 22.7,19.8 23.2,20.1 C23.7,20.4 24.3,20.6 24.9,20.6 C25.6,20.6 26.2,20.4 26.7,19.9 C27.1,19.4 27.3,18.7 27.3,17.6 L27.3,6.1 L31.3,6.1 L31.3,17.8 C31.3,18.9 31.2,19.8 30.9,20.6 C30.6,21.4 30.2,22 29.6,22.6 C29.1,23.1 28.4,23.6 27.6,23.8 C26.8,24.1 26,24.3 25,24.3" id="Path" fill="#FFFFFF"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

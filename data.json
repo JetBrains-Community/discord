@@ -11,7 +11,7 @@
         "product_page": "https://www.jetbrains.com/objc/",
         "description": "Smart IDE for iOS/macOS development",
         "issue_tracker": "OC",
-        "aliases": ["objc"]
+        "aliases": ["objc", "oc"]
     },
     {
         "name": "CLion",
@@ -25,7 +25,7 @@
         "product_page": "https://www.jetbrains.com/clion/",
         "description": "A cross-platform IDE for C and C++",
         "issue_tracker": "CPP",
-        "aliases": []
+        "aliases": ["cl", "cpp"]
     },
     {
         "name": "DataGrip",
@@ -39,7 +39,7 @@
         "product_page": "https://www.jetbrains.com/datagrip/",
         "description": "Many databases, one tool",
         "issue_tracker": "DBE",
-        "aliases": []
+        "aliases": ["data", "dg", "dbe"]
     },
     {
         "name": "Datalore",
@@ -53,7 +53,7 @@
         "product_page": "https://datalore.io/",
         "description": "An intelligent web application for data analysis",
         "issue_tracker": "",
-        "aliases": []
+        "aliases": ["dl"]
     },
     {
         "name": "dotCover",
@@ -67,7 +67,7 @@
         "product_page": "https://www.jetbrains.com/dotcover/",
         "description": "The .NET Unit Test Runner and Code Coverage Tool",
         "issue_tracker": "DCVR",
-        "aliases": []
+        "aliases": ["dcvr"]
     },
     {
         "name": "dotMemory",
@@ -81,7 +81,7 @@
         "product_page": "https://www.jetbrains.com/dotmemory/",
         "description": "The .NET Memory Profiler",
         "issue_tracker": "DMRY",
-        "aliases": []
+        "aliases": ["dmry"]
     },
     {
         "name": "dotPeek",
@@ -95,7 +95,7 @@
         "product_page": "https://www.jetbrains.com/decompiler/",
         "description": "Free .NET Decompiler and Assembly Browser",
         "issue_tracker": "DOTP",
-        "aliases": []
+        "aliases": ["dotp"]
     },
     {
         "name": "dotTrace",
@@ -109,7 +109,7 @@
         "product_page": "https://www.jetbrains.com/profiler/",
         "description": ".NET Performance Profiler",
         "issue_tracker": "DTRC",
-        "aliases": []
+        "aliases": ["dtrc"]
     },
     {
         "name": "GoLand",
@@ -137,33 +137,47 @@
         "product_page": "https://www.jetbrains.com/hub/",
         "description": "JetBrains Team Tools, Integrated",
         "issue_tracker": "JPS",
-        "aliases": []
+        "aliases": ["jps"]
     },
     {
-        "name": "IntelliJ Community",
+        "name": "IntelliJ IDEA Community",
         "icon_path": "icon_IntelliJ_Community.png",
         "emoji_name": "intellijcommunity",
-        "role_name": "IntelliJ Community",
-        "channel_name": "intellij-community",
+        "role_name": "IntelliJ IDEA Community",
+        "channel_name": "intellij-idea-community",
         "category_name": "Open Source",
         "subreddit": "",
         "github": "intellij-community",
         "product_page": "https://www.jetbrains.com/idea/",
-        "description": "Capable and Ergonomic IDE for JVM - Free Community Edition",
+        "description": "Capable and Ergonomic Java IDE - Community Edition",
         "issue_tracker": "IDEA",
-        "aliases": ["intellij ce", "idea ce"]
+        "aliases": ["intellij-ce", "idea-ce"]
     },
     {
-        "name": "IntelliJ IDEA",
+        "name": "IntelliJ IDEA Edu",
+        "icon_path": "icon_IntelliJ_Edu.png",
+        "emoji_name": "intellijedu",
+        "role_name": "IntelliJ IDEA Edu",
+        "channel_name": "intellij-idea-edu",
+        "category_name": "Educational",
+        "subreddit": "",
+        "github": "intellij-community",
+        "product_page": "https://www.jetbrains.com/education/learning/java/",
+        "description": "Capable and Ergonomic Java IDE - Educational Edition",
+        "issue_tracker": "IDEA",
+        "aliases": ["intellij-edu", "idea-edu"]
+    },
+    {
+        "name": "IntelliJ IDEA Ultimate",
         "icon_path": "icon_IntelliJ_IDEA.png",
         "emoji_name": "intellijidea",
-        "role_name": "IntelliJ IDEA",
-        "channel_name": "intellij-idea",
+        "role_name": "IntelliJ IDEA Ultimate",
+        "channel_name": "intellij-idea-ultimate",
         "category_name": "Products",
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/idea/",
-        "description": "Capable and Ergonomic IDE for JVM - Ultimate",
+        "description": "Capable and Ergonomic Java IDE - Ultimate Edition",
         "issue_tracker": "IDEA",
         "aliases": ["intellij", "idea"]
     },
@@ -179,7 +193,7 @@
         "product_page": "https://kotlinlang.org/",
         "description": "Statically typed programming language for the JVM, Android and the browser.",
         "issue_tracker": "KT",
-        "aliases": []
+        "aliases": ["kt"]
     },
     {
         "name": "MPS",
@@ -207,7 +221,7 @@
         "product_page": "https://www.jetbrains.com/phpstorm/",
         "description": "The Lightning-Smart PHP IDE",
         "issue_tracker": "WI",
-        "aliases": ["php"]
+        "aliases": ["php", "wi"]
     },
     {
         "name": "PyCharm",
@@ -243,13 +257,13 @@
         "emoji_name": "pycharmedu",
         "role_name": "PyCharm Edu",
         "channel_name": "pycharm-edu",
-        "category_name": "Products",
+        "category_name": "Educational",
         "subreddit": "pycharm",
         "github": "",
-        "product_page": "https://www.jetbrains.com/education/#lang=python&role=learner",
+        "product_page": "https://www.jetbrains.com/education/learning/python/",
         "description": "The Python IDE for Professional Developers - Tools dedicated for education",
         "issue_tracker": "PY",
-        "aliases": []
+        "aliases": ["pycharmedu", "pyc-edu", "py-edu", "pyedu"]
     },
     {
         "name": "ReSharper",
@@ -263,7 +277,7 @@
         "product_page": "https://www.jetbrains.com/resharper/",
         "description": "The Visual Studio Extension for .NET Developers",
         "issue_tracker": "RSRP",
-        "aliases": []
+        "aliases": ["rsrp"]
     },
     {
         "name": "ReSharper C++",
@@ -277,7 +291,7 @@
         "product_page": "https://www.jetbrains.com/resharper-cpp/",
         "description": "The Visual Studio Extension for C++ Developers",
         "issue_tracker": "RSCPP",
-        "aliases": []
+        "aliases": ["rscpp"]
     },
     {
         "name": "ReSharper Ultimate",
@@ -290,7 +304,7 @@
         "github": "",
         "product_page": "https://www.jetbrains.com/dotnet/",
         "description": "Many .NET developer tools, one license",
-        "issue_tracker": "",
+        "issue_tracker": "RSRP",
         "aliases": ["dotnet"]
     },
     {
@@ -319,7 +333,7 @@
         "product_page": "https://jetbrains.github.io/ring-ui",
         "description": "A collection of JetBrains Web UI components",
         "issue_tracker": "RG",
-        "aliases": []
+        "aliases": ["ring", "rg"]
     },
     {
         "name": "RubyMine",
@@ -333,7 +347,7 @@
         "product_page": "https://www.jetbrains.com/ruby/",
         "description": "The most intelligent Ruby and Rails IDE developed",
         "issue_tracker": "RUBY",
-        "aliases": ["ruby"]
+        "aliases": ["ruby", "rm"]
     },
     {
         "name": "TeamCity",
@@ -347,21 +361,21 @@
         "product_page": "https://www.jetbrains.com/teamcity/",
         "description": "Powerful Continuous Integration out of the box",
         "issue_tracker": "TW",
-        "aliases": []
+        "aliases": ["tc", "tw"]
     },
     {
         "name": "Toolbox",
         "icon_path": "icon_Toolbox.png",
         "emoji_name": "toolbox",
-        "role_name": "",
-        "channel_name": "",
-        "category_name": "",
+        "role_name": "Toolbox",
+        "channel_name": "toolbox",
+        "category_name": "Products",
         "subreddit": "",
         "github": "",
         "product_page": "https://www.jetbrains.com/toolbox/app/",
         "description": "A control panel for your tools and projects",
         "issue_tracker": "TBX",
-        "aliases": []
+        "aliases": ["tb", "tbx"]
     },
     {
         "name": "Upsource",
@@ -375,7 +389,7 @@
         "product_page": "https://www.jetbrains.com/upsource/",
         "description": "Code review, team collaboration, project analytics",
         "issue_tracker": "UP",
-        "aliases": []
+        "aliases": ["up"]
     },
     {
         "name": "WebStorm",
@@ -403,6 +417,6 @@
         "product_page": "https://www.jetbrains.com/youtrack/",
         "description": "The issue tracker designed for agile software teams",
         "issue_tracker": "JT",
-        "aliases": ["yt", "track"]
+        "aliases": ["yt", "track", "jt"]
     }
 ]
