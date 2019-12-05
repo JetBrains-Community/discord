@@ -352,7 +352,7 @@ if __name__ == "__main__":
         dev_mode = True
 
     # Create the bot instance
-    bot = JetBrains(command_prefix="?")
+    bot = JetBrains(command_prefix="?", dev_mode=dev_mode)
 
 
     @bot.command(aliases=["info", "about", "invite", "add", "author", "owner", "server", "support",
@@ -810,7 +810,7 @@ if __name__ == "__main__":
     # Start the bot with token from token.txt
     with open("token" + ("_dev" if dev_mode else "") + ".txt", "r") as f:
         token = [str(f).strip("\n\r") for f in f.readlines()]
-    bot.run(token[0], reconnect=False, dev_mode=dev_mode)
+    bot.run(token[0], reconnect=False)
 
 else:
     print("Run this by itself")

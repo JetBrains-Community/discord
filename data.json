@@ -350,6 +350,20 @@
         "aliases": ["ruby", "rm"]
     },
     {
+        "name": "Space",
+        "icon_path": "icon_Space.png",
+        "emoji_name": "space",
+        "role_name": "Space",
+        "channel_name": "space",
+        "category_name": "Products",
+        "subreddit": "JetBrains_Space",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/space/",
+        "description": "The integrated team environment",
+        "issue_tracker": "SPA",
+        "aliases": ["spa"]
+    },
+    {
         "name": "TeamCity",
         "icon_path": "icon_TeamCity.png",
         "emoji_name": "teamcity",
