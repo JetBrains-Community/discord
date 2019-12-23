@@ -368,8 +368,8 @@ if __name__ == "__main__":
             "command `?help`.",
             "\N{LINK SYMBOL} You can use JetBot in your server, invite it with: <https://discordapp.com/"
             "oauth2/authorize?client_id=" + str(bot.user.id) + "&scope=bot&permissions=8>.",
-            "*JetBot was created and is maintained by IPv4#0001 but is open source at <https://github.com/"
-            "MattIPv4/JetBrains-Community-Discord>.*", "",
+            "*JetBot was created and is maintained by v4#1503 but is also open source at <https://github.com/"
+            "JetBrains-Community/discord>.*", "",
             bot.product_emoji("jetbrainscommunity") + " **JetBrains Community Discord Server**",
             "The community home of all the JetBrains products and projects on Discord.",
             "Are you currently a user of JetBrains products or projects?",
