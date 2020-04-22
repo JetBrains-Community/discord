@@ -740,8 +740,8 @@ if __name__ == "__main__":
             # Remove old content
             async for message in unlock.history(limit=None):
                 await message.delete()
-            await cursor.execute("DELETE FROM restarter_reactroles WHERE guild = %s", (guild.id))
-            await cursor.execute("DELETE FROM restarter_roles WHERE guild = %s", (guild.id))
+            await cursor.execute("DELETE FROM reactroles WHERE guild = %s", (guild.id))
+            await cursor.execute("DELETE FROM rolecommands WHERE guild = %s", (guild.id))
             await conn.commit()
 
             # Hide channels message
@@ -759,10 +759,9 @@ if __name__ == "__main__":
                                      " the role.".format(offtopic.mention))
             await hide.add_reaction("\N{NO ENTRY SIGN}")
             hide_role = bot.product_role("Hide Unsubscribed Channels")
-            await cursor.execute("INSERT INTO restarter_reactroles (message,emoji,role,guild) VALUES (%s,%s,%s,%s)",
-                                 (hide.id, "\N{NO ENTRY SIGN}".encode("ascii", "namereplace").decode(), hide_role.id,
-                                  guild.id))
-            await cursor.execute("INSERT INTO restarter_roles (guild,role,alias) VALUES (%s,%s,%s)",
+            await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild) VALUES (%s,%s,%s,%s)",
+                                 (hide.id, "\\U0001F6AB", hide_role.id, guild.id))
+            await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
                                  (guild.id, hide_role.id, "hide"))
             await conn.commit()
 
@@ -777,7 +776,7 @@ if __name__ == "__main__":
                     channel = bot.product_channel(item["channel_name"], item["category_name"])
                     if role and emoji and channel:
                         # Send message
-                        if counter % 5 == 0:
+                        if counter % 8 == 0:
                             if message:
                                 await message.edit(content="\n".join(content))
                                 content = []
@@ -787,9 +786,9 @@ if __name__ == "__main__":
                         print("Creating react role... " + channel.name)
                         content.append("{} - {}".format(emoji, channel.mention))
                         await message.add_reaction(emoji)
-                        await cursor.execute("INSERT INTO restarter_reactroles (message,emoji,role,guild)"
+                        await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild)"
                                              " VALUES (%s,%s,%s,%s)", (message.id, emoji, role.id, guild.id))
-                        await cursor.execute("INSERT INTO restarter_roles (guild,role,alias) VALUES (%s,%s,%s)",
+                        await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
                                              (guild.id, role.id, channel.name))
                         await conn.commit()
                         counter += 1
