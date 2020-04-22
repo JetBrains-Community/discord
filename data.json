@@ -147,7 +147,7 @@
         "channel_name": "ideavim",
         "category_name": "Open Source",
         "subreddit": "",
-        "github": "https://github.com/JetBrains/ideavim",
+        "github": "ideavim",
         "product_page": "https://plugins.jetbrains.com/plugin/164-ideavim",
         "description": "Vim emulation plug-in for IDEs based on the IntelliJ platform",
         "issue_tracker": "VIM",
