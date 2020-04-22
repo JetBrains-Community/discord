@@ -140,6 +140,20 @@
         "aliases": ["jps"]
     },
     {
+        "name": "IdeaVim",
+        "icon_path": "icon_IdeaVim.png",
+        "emoji_name": "ideavim",
+        "role_name": "IdeaVim",
+        "channel_name": "ideavim",
+        "category_name": "Open Source",
+        "subreddit": "",
+        "github": "https://github.com/JetBrains/ideavim",
+        "product_page": "https://plugins.jetbrains.com/plugin/164-ideavim",
+        "description": "Vim emulation plug-in for IDEs based on the IntelliJ platform",
+        "issue_tracker": "VIM",
+        "aliases": ["vim"]
+    },
+    {
         "name": "IntelliJ IDEA Community",
         "icon_path": "icon_IntelliJ_Community.png",
         "emoji_name": "intellijcommunity",
