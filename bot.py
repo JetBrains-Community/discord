@@ -169,7 +169,7 @@ class JetBrains(commands.Bot):
             if data["subreddit"]:
                 message.append("**" + self.reddit_url(data["subreddit"]) + "**")
             else:
-                message.append("*Sorry, there isn\"t a known subreddit*")
+                message.append("*Sorry, there isn't a known subreddit*")
             await ctx.send("\n".join(message))
 
         return func
@@ -295,11 +295,11 @@ class JetBrains(commands.Bot):
         lines = traceback.format_exception(type(error), error, error.__traceback__)
         print("".join(lines))
 
-    # Staff email verification
+    # Employee email verification
     async def email_verify(self, message: discord.message):
         guild = self.get_guild(self.jb_guild_id)
         if guild:
-            channel = [f for f in guild.text_channels if f.name.lower().strip() == "staff-verify"]
+            channel = [f for f in guild.text_channels if f.name.lower().strip() == "employee-verification"]
             if channel:
                 channel = channel[0]
                 if message.channel.id == channel.id:
@@ -307,8 +307,8 @@ class JetBrains(commands.Bot):
                     match = pattern.match(message.content)
                     if not match:
                         try:
-                            await message.author.send("Sorry, I could not find a valid JetBrains email in the message"
-                                                      " you sent to {}.".format(channel.mention))
+                            await message.author.send("Sorry, I could not find a valid JetBrains.com email in the"
+                                                      " message you sent to {}.".format(channel.mention))
                         except:
                             pass
                     else:
@@ -321,7 +321,7 @@ class JetBrains(commands.Bot):
                         channel = self.product_channel("chat", "admins")
                         if channel:
                             await channel.send("{0.mention} `{0.name}#{0.discriminator} {0.id}` has requested"
-                                               " JetBrains staff verification with the email `{1}` {2}".format(
+                                               " JetBrains employee verification with the email `{1}` {2}".format(
                                 message.author, match.group(1), role[0].mention if role else ""))
                     await message.delete()
 
@@ -338,7 +338,7 @@ class JetBrains(commands.Bot):
         print("Logged in as")
         print(bot.user.name)
         print(bot.user.id)
-        print("https://discordapp.com/oauth2/authorize?client_id=" + str(bot.user.id) + "&scope=bot&permissions=8")
+        print("https://discord.com/oauth2/authorize?client_id=" + str(bot.user.id) + "&scope=bot&permissions=8")
         print("------")
         self.load_data()
         self.create_customs()
@@ -366,7 +366,7 @@ if __name__ == "__main__":
             "*The bot responsible for providing information in, and managing, the JetBrains server.*",
             "View all the commands for JetBrains product and project inforamtion JetBot has in the help "
             "command `?help`.",
-            "\N{LINK SYMBOL} You can use JetBot in your server, invite it with: <https://discordapp.com/"
+            "\N{LINK SYMBOL} You can use JetBot in your server, invite it with: <https://discord.com/"
             "oauth2/authorize?client_id=" + str(bot.user.id) + "&scope=bot&permissions=8>.",
             "*JetBot was created and is maintained by v4#1503 but is also open source at <https://github.com/"
             "JetBrains-Community/discord>.*", "",
@@ -376,7 +376,7 @@ if __name__ == "__main__":
             "Would you like to learn more about what JetBrains offers and what licensing options there are?",
             "> Talk to fellow users of the JetBrains software packages and get help with problems you may "
             "have.",
-            "> Chat with other developers, see what they\"re working on using JetBrains tools and bounce "
+            "> Chat with other developers, see what they're working on using JetBrains tools and bounce "
             "ideas around.",
             "\N{BLACK RIGHTWARDS ARROW} **Join the JetBrains Community Discord server: <" + bot.jb_invite +
             ">**", "", bot.product_emoji("jetbrains") + " **JetBrains s.r.o**",
@@ -541,7 +541,7 @@ if __name__ == "__main__":
 
         header = "**JetBrains IDE Users not in the JetBrains Community Discord Server**" \
                  "\n*Users that are in mutual servers with you and JetBot*" \
-                 "\nWhy not ask them if they\"d like to join our community?" \
+                 "\nWhy not ask them if they'd like to join our community?" \
                  " They can use the invite <" + bot.jb_invite + ">."
 
         found = ["\n{0.mention} `{0.name}#{0.discriminator}` `{0.id}` Playing: `{1}` Match: `{2}`".format(
@@ -752,10 +752,10 @@ if __name__ == "__main__":
                                      " Remove your reaction to remove your role."
                                      "\n\nReactions not working for you? Head over to {0} and type `r.roles` to use"
                                      " commands instead."
-                                     "\n\nWant to hide the channels you aren\"t active in? React to this message with"
-                                     " \N{NO ENTRY SIGN} to hide any product channel you aren\"t \"subscribed\" to"
+                                     "\n\nWant to hide the channels you aren't active in? React to this message with"
+                                     " \N{NO ENTRY SIGN} to hide any product channel you aren't \"subscribed\" to"
                                      " using the roles below. Remove your reaction to show all JetBrains product"
-                                     " channels again. Can\"t use reactions, head to {0} and use \"r.hide\" to toggle"
+                                     " channels again. Can't use reactions, head to {0} and use \"r.hide\" to toggle"
                                      " the role.".format(offtopic.mention))
             await hide.add_reaction("\N{NO ENTRY SIGN}")
             hide_role = bot.product_role("Hide Unsubscribed Channels")
