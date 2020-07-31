@@ -128,6 +128,15 @@ class JetBrains(commands.Bot):
                 return role[0]
         return None
 
+    # Find a product update role
+    def product_update_role(self, name: str) -> Optional[discord.Role]:
+        if name:
+            guild = self.get_guild(self.jb_guild_id)
+            role = [f for f in guild.roles if f.name == name + " Updates"]
+            if role:
+                return role[0]
+        return None
+
     # Find a category
     def product_category(self, name: str) -> Optional[discord.CategoryChannel]:
         if name:
@@ -630,6 +639,39 @@ if __name__ == "__main__":
             positions = min(positions)
             if role.position != positions:
                 await role.edit(position=positions)
+
+        # Done
+        await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
+
+
+    @bot.command()
+    @commands.check(bot.admin_check)
+    async def update_roles(ctx: commands.Context):
+        """
+        Admin: Update product update roles on the JetBrains server
+        """
+        guild = bot.get_guild(bot.jb_guild_id)
+        if guild:
+            new = []
+
+            # Create product roles
+            for item in bot.data:
+                if item["role_name"]:
+                    role = bot.product_update_role(item["role_name"])
+                    if not role:
+                        print("Creating role... " + item["role_name"] + " Updates")
+                        role = await guild.create_role(
+                            name=item["role_name"] + " Updates",
+                            permissions=discord.Permissions.none(),
+                            color=bot.role_color,
+                            hoist=False,
+                            mentionable=False
+                        )
+                        new.append(role)
+                    else:
+                        print(item["role_name"] + " Updates role already exists")
+                        if role.color != bot.role_color:
+                            await role.edit(color=bot.role_color)
 
         # Done
         await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
