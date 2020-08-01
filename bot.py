@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import asyncio
 import datetime
+import html
 import json
 import logging
 import os
@@ -9,10 +10,13 @@ import re
 import sys
 import time
 import traceback
+from time import mktime
 from typing import Dict, Optional
 
+import aiohttp
 import aiomysql
 import discord
+import feedparser
 from discord.ext import commands
 
 # Logging
@@ -29,6 +33,7 @@ class JetBrains(commands.Bot):
         # self.role_color = discord.Colour(0xFB5502)  # Halloween
         self.jb_guild_id = 649591705838026794 if self.dev_mode else 433980600391696384
         self.jb_invite = "https://discord.gg/zTUTh2P"
+        self.update_check = None
         self.loop.create_task(self.status_loop())
 
     async def status_loop(self):
@@ -145,6 +150,83 @@ class JetBrains(commands.Bot):
             if category:
                 return category[0]
         return None
+
+    # Get new releases
+    async def latest_blog_releases(self, timestamp: Optional[datetime.datetime]) -> list:
+        async with aiohttp.ClientSession() as session:
+            async with session.get('https://blog.jetbrains.com/filters/releases/feed/') as r:
+                if r.status == 200:
+                    raw = await r.text()
+        feed = feedparser.parse(raw)
+        releases = [f for f in feed.entries if
+                    timestamp is None or datetime.datetime.fromtimestamp(mktime(f.published_parsed)) > timestamp]
+        releases.sort(key=lambda x: x.published_parsed, reverse=True)
+        return releases
+
+    # Check if any new update posts are needed
+    async def blog_release_updates(self):
+        product_updates = bot.product_channel("product-updates", "Information")
+        if not product_updates:
+            return
+
+        releases = await self.latest_blog_releases(self.update_check)
+        if not releases:
+            return
+
+        last_check = self.update_check
+        self.update_check = datetime.datetime.fromtimestamp(mktime(releases[0].published_parsed))
+        if last_check is None:
+            return
+
+        for release in releases:
+            # Get all the update roles to ping
+            roles = []
+            for item in self.data:
+                if not item['blog_category'] and not item['blog_tags']:
+                    continue
+
+                if item['blog_category']:
+                    if not release.link.startswith('https://blog.jetbrains.com/' + item['blog_category']):
+                        continue
+
+                if item['blog_tags']:
+                    if 'tags' not in release:
+                        continue
+
+                    tags = [f.term.lower().strip() for f in release.tags]
+                    has_all_tags = True
+                    for tag in item['blog_tags']:
+                        if tag not in tags:
+                            has_all_tags = False
+                            break
+                    if not has_all_tags:
+                        continue
+
+                role = self.product_update_role(item['name'])
+                if not role:
+                    continue
+
+                roles.append(role)
+
+            # Create the message
+            formatted = "**{}**\n<{}>\n{}\n\n{}".format(
+                discord.utils.escape_markdown(html.unescape(release.title)),
+                discord.utils.escape_markdown(release.link),
+                ", ".join([role.mention for role in roles]),
+                discord.utils.escape_markdown(html.unescape(release.summary))
+            )
+            if len(formatted) > 2000:
+                formatted = formatted[:1997] + "..."
+
+            # Send the message with pings
+            for role in roles:
+                await role.edit(mentionable=True)
+            try:
+                await product_updates.send(formatted)
+            except:
+                pass
+            for role in roles:
+                await role.edit(mentionable=True)
 
     # Main custom group
     def group_callback(self, data):
@@ -771,19 +853,19 @@ if __name__ == "__main__":
                 print("Creating channel... off-topic")
                 offtopic = await guild.create_text_channel("off-topic", category=general_category)
 
-            # Create db connection for Restarter"s react roles from db.txt
+            # Create db connection for Restarter's react roles from db.txt
             with open("db.txt", "r") as f:
                 db = [str(f).strip("\n\r") for f in f.readlines()]
             conn = await aiomysql.connect(host=db[0], port=3306, user=db[1], password=db[2], db=db[3], loop=bot.loop)
-            cursor = await conn.cursor()
+            cur = await conn.cursor()
 
             # Remove old content
             async for message in unlock.history(limit=None):
                 await message.delete()
             async for message in get_updates.history(limit=None):
                 await message.delete()
-            await cursor.execute("DELETE FROM reactroles WHERE guild = %s", (guild.id))
-            await cursor.execute("DELETE FROM rolecommands WHERE guild = %s", (guild.id))
+            await cur.execute("DELETE FROM reactroles WHERE guild = %s", (guild.id))
+            await cur.execute("DELETE FROM rolecommands WHERE guild = %s", (guild.id))
             await conn.commit()
 
             # Unlock: Get roles + hide channels message
@@ -801,10 +883,10 @@ if __name__ == "__main__":
                                      " the role.".format(offtopic.mention))
             await hide.add_reaction("\N{NO ENTRY SIGN}")
             hide_role = bot.product_role("Hide Unsubscribed Channels")
-            await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild) VALUES (%s,%s,%s,%s)",
-                                 (hide.id, "\\U0001F6AB", hide_role.id, guild.id))
-            await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
-                                 (guild.id, hide_role.id, "hide"))
+            await cur.execute("INSERT INTO reactroles (message,emoji,role,guild) VALUES (%s,%s,%s,%s)",
+                              (hide.id, "\\U0001F6AB", hide_role.id, guild.id))
+            await cur.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
+                              (guild.id, hide_role.id, "hide"))
             await conn.commit()
 
             # Get updates: Get roles message
@@ -821,59 +903,74 @@ if __name__ == "__main__":
             content = []
             updates_content = []
             counter = 0
+            updates_counter = 0
             for item in bot.data:
                 if item["emoji_name"] and item["role_name"] and item["channel_name"] and item["category_name"]:
                     role = bot.product_role(item["role_name"])
-                    updates_role = bot.product_role(item["role_name"] + " Updates")
+                    updates_role = bot.product_update_role(item["role_name"])
                     emoji = bot.product_emoji(item["emoji_name"])
                     channel = bot.product_channel(item["channel_name"], item["category_name"])
                     if role and updates_role and emoji and channel:
-                        # Send message
+                        # Send messages
                         if counter % 8 == 0:
                             if message:
-                                await message.edit(content="\n".join(content))
+                                await message.edit(content="-\n" + "\n".join(content))
                                 content = []
-                            if updates_message:
-                                await updates_message.edit(content="\n".join(updates_content))
-                                updates_content = []
                             message = await unlock.send("Generating react roles...")
+                        if updates_counter % 8 == 0:
+                            if updates_message:
+                                await updates_message.edit(content="-\n" + "\n".join(updates_content))
+                                updates_content = []
                             updates_message = await get_updates.send("Generating react roles...")
 
                         # Add next product
                         print("Creating react role... " + channel.name)
                         content.append("{} - {}".format(emoji, channel.mention))
-                        updates_content.append("{} - {}".format(emoji, item["name"] + " Updates"))
-                        await message.add_reaction(emoji)
-                        await updates_message.add_reaction(emoji)
-
-                        await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild)"
-                                             " VALUES (%s,%s,%s,%s)", (message.id, emoji, role.id, guild.id))
-                        await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
-                                             (guild.id, role.id, channel.name))
-
-                        await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild)"
-                                             " VALUES (%s,%s,%s,%s)", (updates_message.id, emoji, updates_role.id, guild.id))
-                        await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
-                                             (guild.id, updates_role.id, channel.name+"-updates"))
-                        await conn.commit()
-
                         counter += 1
+                        await message.add_reaction(emoji)
+
+                        await cur.execute("INSERT INTO reactroles (message,emoji,role,guild) VALUES (%s,%s,%s,%s)",
+                                          (message.id, emoji, role.id, guild.id))
+                        await cur.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
+                                          (guild.id, role.id, channel.name))
+
+                        # Add next update
+                        if item["blog_category"] or item["blog_tags"]:
+                            updates_content.append("{} - {}".format(emoji, item["name"] + " Updates"))
+                            updates_counter += 1
+                            await updates_message.add_reaction(emoji)
+                            await cur.execute("INSERT INTO reactroles (message,emoji,role,guild) VALUES (%s,%s,%s,%s)",
+                                              (updates_message.id, emoji, updates_role.id, guild.id))
+                            await cur.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
+                                              (guild.id, updates_role.id, channel.name + "-updates"))
+
+                        await conn.commit()
 
             # Final messages
             if message:
                 if content:
-                    await message.edit(content="\n".join(content))
+                    await message.edit(content="-\n" + "\n".join(content))
                 else:
                     await message.delete()
             if updates_message:
                 if updates_content:
-                    await updates_message.edit(content="\n".join(updates_content))
+                    await updates_message.edit(content="-\n" + "\n".join(updates_content))
                 else:
                     await updates_message.delete()
-            await cursor.close()
+            await cur.close()
             conn.close()
 
         # Done
+        await ctx.send("Done")
+
+
+    @bot.command()
+    @commands.check(bot.admin_check)
+    async def check(ctx: commands.Context):
+        """
+        Admin: Manually check the blog for any updates released
+        """
+        await bot.blog_release_updates()
         await ctx.send("Done")
 
 

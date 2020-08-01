@@ -11,6 +11,8 @@
         "product_page": "https://www.jetbrains.com/objc/",
         "description": "Smart IDE for iOS/macOS development",
         "issue_tracker": "OC",
+        "blog_category": "objc",
+        "blog_tags": [],
         "aliases": ["objc", "oc"]
     },
     {
@@ -25,6 +27,8 @@
         "product_page": "https://www.jetbrains.com/clion/",
         "description": "A cross-platform IDE for C and C++",
         "issue_tracker": "CPP",
+        "blog_category": "clion",
+        "blog_tags": [],
         "aliases": ["cl", "cpp"]
     },
     {
@@ -39,6 +43,8 @@
         "product_page": "https://www.jetbrains.com/datagrip/",
         "description": "Many databases, one tool",
         "issue_tracker": "DBE",
+        "blog_category": "datagrip",
+        "blog_tags": [],
         "aliases": ["data", "dg", "dbe"]
     },
     {
@@ -53,6 +59,8 @@
         "product_page": "https://datalore.io/",
         "description": "An intelligent web application for data analysis",
         "issue_tracker": "",
+        "blog_category": "",
+        "blog_tags": [],
         "aliases": ["dl"]
     },
     {
@@ -67,6 +75,8 @@
         "product_page": "https://www.jetbrains.com/dotcover/",
         "description": "The .NET Unit Test Runner and Code Coverage Tool",
         "issue_tracker": "DCVR",
+        "blog_category": "",
+        "blog_tags": [],
         "aliases": ["dcvr"]
     },
     {
@@ -81,6 +91,8 @@
         "product_page": "https://www.jetbrains.com/dotmemory/",
         "description": "The .NET Memory Profiler",
         "issue_tracker": "DMRY",
+        "blog_category": "",
+        "blog_tags": [],
         "aliases": ["dmry"]
     },
     {
@@ -95,6 +107,8 @@
         "product_page": "https://www.jetbrains.com/decompiler/",
         "description": "Free .NET Decompiler and Assembly Browser",
         "issue_tracker": "DOTP",
+        "blog_category": "",
+        "blog_tags": [],
         "aliases": ["dotp"]
     },
     {
@@ -109,6 +123,8 @@
         "product_page": "https://www.jetbrains.com/profiler/",
         "description": ".NET Performance Profiler",
         "issue_tracker": "DTRC",
+        "blog_category": "",
+        "blog_tags": [],
         "aliases": ["dtrc"]
     },
     {
@@ -123,6 +139,8 @@
         "product_page": "https://www.jetbrains.com/go/",
         "description": "A Clever IDE to Go",
         "issue_tracker": "GO",
+        "blog_category": "go",
+        "blog_tags": [],
         "aliases": ["go"]
     },
     {
@@ -137,6 +155,8 @@
         "product_page": "https://www.jetbrains.com/hub/",
         "description": "JetBrains Team Tools, Integrated",
         "issue_tracker": "JPS",
+        "blog_category": "hub",
+        "blog_tags": [],
         "aliases": ["jps"]
     },
     {
@@ -151,6 +171,8 @@
         "product_page": "https://plugins.jetbrains.com/plugin/164-ideavim",
         "description": "Vim emulation plug-in for IDEs based on the IntelliJ platform",
         "issue_tracker": "VIM",
+        "blog_category": "",
+        "blog_tags": [],
         "aliases": ["vim"]
     },
     {
@@ -165,6 +187,8 @@
         "product_page": "https://www.jetbrains.com/idea/",
         "description": "Capable and Ergonomic Java IDE - Community Edition",
         "issue_tracker": "IDEA",
+        "blog_category": "idea",
+        "blog_tags": [],
         "aliases": ["intellij-ce", "idea-ce"]
     },
     {
@@ -179,6 +203,8 @@
         "product_page": "https://www.jetbrains.com/education/learning/java/",
         "description": "Capable and Ergonomic Java IDE - Educational Edition",
         "issue_tracker": "IDEA",
+        "blog_category": "idea",
+        "blog_tags": [],
         "aliases": ["intellij-edu", "idea-edu"]
     },
     {
@@ -193,6 +219,8 @@
         "product_page": "https://www.jetbrains.com/idea/",
         "description": "Capable and Ergonomic Java IDE - Ultimate Edition",
         "issue_tracker": "IDEA",
+        "blog_category": "idea",
+        "blog_tags": [],
         "aliases": ["intellij", "idea"]
     },
     {
@@ -207,6 +235,8 @@
         "product_page": "https://kotlinlang.org/",
         "description": "Statically typed programming language for the JVM, Android and the browser.",
         "issue_tracker": "KT",
+        "blog_category": "kotlin",
+        "blog_tags": [],
         "aliases": ["kt"]
     },
     {
@@ -221,6 +251,8 @@
         "product_page": "https://www.jetbrains.com/mps/",
         "description": "Create your own domain-specific language",
         "issue_tracker": "MPS",
+        "blog_category": "mps",
+        "blog_tags": [],
         "aliases": []
     },
     {
@@ -235,6 +267,8 @@
         "product_page": "https://www.jetbrains.com/phpstorm/",
         "description": "The Lightning-Smart PHP IDE",
         "issue_tracker": "WI",
+        "blog_category": "phpstorm",
+        "blog_tags": [],
         "aliases": ["php", "wi"]
     },
     {
@@ -249,6 +283,8 @@
         "product_page": "https://www.jetbrains.com/pycharm/",
         "description": "The Python IDE for Professional Developers",
         "issue_tracker": "PY",
+        "blog_category": "pycharm",
+        "blog_tags": [],
         "aliases": ["python", "py", "pyc"]
     },
     {
@@ -263,6 +299,8 @@
         "product_page": "https://www.jetbrains.com/pycharm/",
         "description": "The Python IDE for Professional Developers - Free Community Edition",
         "issue_tracker": "PY",
+        "blog_category": "pycharm",
+        "blog_tags": [],
         "aliases": ["pycharmce", "pycharm-ce", "pyc-ce", "py-ce", "pyce"]
     },
     {
@@ -277,6 +315,8 @@
         "product_page": "https://www.jetbrains.com/education/learning/python/",
         "description": "The Python IDE for Professional Developers - Tools dedicated for education",
         "issue_tracker": "PY",
+        "blog_category": "pycharm",
+        "blog_tags": [],
         "aliases": ["pycharmedu", "pyc-edu", "py-edu", "pyedu"]
     },
     {
@@ -291,6 +331,8 @@
         "product_page": "https://www.jetbrains.com/resharper/",
         "description": "The Visual Studio Extension for .NET Developers",
         "issue_tracker": "RSRP",
+        "blog_category": "",
+        "blog_tags": [],
         "aliases": ["rsrp"]
     },
     {
@@ -305,6 +347,8 @@
         "product_page": "https://www.jetbrains.com/resharper-cpp/",
         "description": "The Visual Studio Extension for C++ Developers",
         "issue_tracker": "RSCPP",
+        "blog_category": "rscpp",
+        "blog_tags": [],
         "aliases": ["rscpp"]
     },
     {
@@ -319,6 +363,8 @@
         "product_page": "https://www.jetbrains.com/dotnet/",
         "description": "Many .NET developer tools, one license",
         "issue_tracker": "RSRP",
+        "blog_category": "",
+        "blog_tags": [],
         "aliases": ["dotnet"]
     },
     {
@@ -333,6 +379,8 @@
         "product_page": "https://www.jetbrains.com/rider/",
         "description": "A fast & powerful, cross-platform .NET IDE",
         "issue_tracker": "RIDER",
+        "blog_category": "dotnet",
+        "blog_tags": ["rider"],
         "aliases": []
     },
     {
@@ -347,6 +395,8 @@
         "product_page": "https://jetbrains.github.io/ring-ui",
         "description": "A collection of JetBrains Web UI components",
         "issue_tracker": "RG",
+        "blog_category": "",
+        "blog_tags": [],
         "aliases": ["ring", "rg"]
     },
     {
@@ -361,6 +411,8 @@
         "product_page": "https://www.jetbrains.com/ruby/",
         "description": "The most intelligent Ruby and Rails IDE developed",
         "issue_tracker": "RUBY",
+        "blog_category": "ruby",
+        "blog_tags": [],
         "aliases": ["ruby", "rm"]
     },
     {
@@ -375,6 +427,8 @@
         "product_page": "https://www.jetbrains.com/space/",
         "description": "The integrated team environment",
         "issue_tracker": "SPA",
+        "blog_category": "space",
+        "blog_tags": [],
         "aliases": ["spa"]
     },
     {
@@ -389,6 +443,8 @@
         "product_page": "https://www.jetbrains.com/teamcity/",
         "description": "Powerful Continuous Integration out of the box",
         "issue_tracker": "TW",
+        "blog_category": "teamcity",
+        "blog_tags": [],
         "aliases": ["tc", "tw"]
     },
     {
@@ -403,6 +459,8 @@
         "product_page": "https://www.jetbrains.com/toolbox/app/",
         "description": "A control panel for your tools and projects",
         "issue_tracker": "TBX",
+        "blog_category": "blog",
+        "blog_tags": ["jetbrains-toolbox"],
         "aliases": ["tb", "tbx"]
     },
     {
@@ -417,6 +475,8 @@
         "product_page": "https://www.jetbrains.com/upsource/",
         "description": "Code review, team collaboration, project analytics",
         "issue_tracker": "UP",
+        "blog_category": "upsource",
+        "blog_tags": [],
         "aliases": ["up"]
     },
     {
@@ -431,6 +491,8 @@
         "product_page": "https://www.jetbrains.com/webstorm/",
         "description": "The smartest JavaScript IDE",
         "issue_tracker": "WEB",
+        "blog_category": "webstorm",
+        "blog_tags": [],
         "aliases": ["web"]
     },
     {
@@ -445,6 +507,8 @@
         "product_page": "https://www.jetbrains.com/youtrack/",
         "description": "The issue tracker designed for agile software teams",
         "issue_tracker": "JT",
+        "blog_category": "youtrack",
+        "blog_tags": [],
         "aliases": ["yt", "track", "jt"]
     }
 ]
