@@ -605,6 +605,7 @@ if __name__ == "__main__":
             # Create product roles
             for item in bot.data:
                 if item["role_name"]:
+                    # Channel role
                     role = bot.product_role(item["role_name"])
                     if not role:
                         print("Creating role... " + item["role_name"])
@@ -621,6 +622,23 @@ if __name__ == "__main__":
                         if role.color != bot.role_color:
                             await role.edit(color=bot.role_color)
                     positions.append(role.position)
+
+                    # Updates role
+                    update_role = bot.product_update_role(item["role_name"])
+                    if not update_role:
+                        print("Creating role... " + item["role_name"] + " Updates")
+                        update_role = await guild.create_role(
+                            name=item["role_name"] + " Updates",
+                            permissions=discord.Permissions.none(),
+                            color=bot.role_color,
+                            hoist=False,
+                            mentionable=False
+                        )
+                        new.append(update_role)
+                    else:
+                        print(item["role_name"] + " Updates role already exists")
+                        if update_role.color != bot.role_color:
+                            await update_role.edit(color=bot.role_color)
 
             # Create hide role
             role = bot.product_role("Hide Unsubscribed Channels")
@@ -639,39 +657,6 @@ if __name__ == "__main__":
             positions = min(positions)
             if role.position != positions:
                 await role.edit(position=positions)
-
-        # Done
-        await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
-
-
-    @bot.command()
-    @commands.check(bot.admin_check)
-    async def update_roles(ctx: commands.Context):
-        """
-        Admin: Update product update roles on the JetBrains server
-        """
-        guild = bot.get_guild(bot.jb_guild_id)
-        if guild:
-            new = []
-
-            # Create product roles
-            for item in bot.data:
-                if item["role_name"]:
-                    role = bot.product_update_role(item["role_name"])
-                    if not role:
-                        print("Creating role... " + item["role_name"] + " Updates")
-                        role = await guild.create_role(
-                            name=item["role_name"] + " Updates",
-                            permissions=discord.Permissions.none(),
-                            color=bot.role_color,
-                            hoist=False,
-                            mentionable=False
-                        )
-                        new.append(role)
-                    else:
-                        print(item["role_name"] + " Updates role already exists")
-                        if role.color != bot.role_color:
-                            await role.edit(color=bot.role_color)
 
         # Done
         await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
@@ -768,6 +753,19 @@ if __name__ == "__main__":
                 print("Creating channel... unlock-channels")
                 unlock = await guild.create_text_channel("unlock-channels", category=info_category)
             await unlock.set_permissions(ctx.guild.default_role, send_messages=False)
+
+            get_updates = bot.product_channel("get-updates", "Information")
+            if not get_updates:
+                print("Creating channel... get-updates")
+                get_updates = await guild.create_text_channel("get-updates", category=info_category)
+            await get_updates.set_permissions(ctx.guild.default_role, send_messages=False)
+
+            product_updates = bot.product_channel("product-updates", "Information")
+            if not product_updates:
+                print("Creating channel... product-updates")
+                product_updates = await guild.create_text_channel("product-updates", category=info_category)
+            await product_updates.set_permissions(ctx.guild.default_role, send_messages=False)
+
             offtopic = bot.product_channel("off-topic", "General")
             if not offtopic:
                 print("Creating channel... off-topic")
@@ -782,11 +780,13 @@ if __name__ == "__main__":
             # Remove old content
             async for message in unlock.history(limit=None):
                 await message.delete()
+            async for message in get_updates.history(limit=None):
+                await message.delete()
             await cursor.execute("DELETE FROM reactroles WHERE guild = %s", (guild.id))
             await cursor.execute("DELETE FROM rolecommands WHERE guild = %s", (guild.id))
             await conn.commit()
 
-            # Hide channels message
+            # Unlock: Get roles + hide channels message
             print("Creating react role... hide")
             hide = await unlock.send("**React to the following messages with JetBrains product and project emoji to"
                                      " unlock the relevant discussion channels in this server.**"
@@ -807,40 +807,69 @@ if __name__ == "__main__":
                                  (guild.id, hide_role.id, "hide"))
             await conn.commit()
 
+            # Get updates: Get roles message
+            await get_updates.send("**React to the following messages with JetBrains product and project emoji to get"
+                                   " pinged when new updates for that product/project are released and posted in {}.**"
+                                   "\n\nClick on one of the reactions already on the messages to unlock the role."
+                                   " Remove your reaction to remove your role."
+                                   "\n\nReactions not working for you? Head over to {} and type `r.roles` to use"
+                                   " commands instead.".format(product_updates.mention, offtopic.mention))
+
             # Generate new messages
             message = None
+            updates_message = None
             content = []
+            updates_content = []
             counter = 0
             for item in bot.data:
                 if item["emoji_name"] and item["role_name"] and item["channel_name"] and item["category_name"]:
                     role = bot.product_role(item["role_name"])
+                    updates_role = bot.product_role(item["role_name"] + " Updates")
                     emoji = bot.product_emoji(item["emoji_name"])
                     channel = bot.product_channel(item["channel_name"], item["category_name"])
-                    if role and emoji and channel:
+                    if role and updates_role and emoji and channel:
                         # Send message
                         if counter % 8 == 0:
                             if message:
                                 await message.edit(content="\n".join(content))
                                 content = []
+                            if updates_message:
+                                await updates_message.edit(content="\n".join(updates_content))
+                                updates_content = []
                             message = await unlock.send("Generating react roles...")
+                            updates_message = await get_updates.send("Generating react roles...")
 
                         # Add next product
                         print("Creating react role... " + channel.name)
                         content.append("{} - {}".format(emoji, channel.mention))
+                        updates_content.append("{} - {}".format(emoji, item["name"] + " Updates"))
                         await message.add_reaction(emoji)
+                        await updates_message.add_reaction(emoji)
+
                         await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild)"
                                              " VALUES (%s,%s,%s,%s)", (message.id, emoji, role.id, guild.id))
                         await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
                                              (guild.id, role.id, channel.name))
+
+                        await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild)"
+                                             " VALUES (%s,%s,%s,%s)", (updates_message.id, emoji, updates_role.id, guild.id))
+                        await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
+                                             (guild.id, updates_role.id, channel.name+"-updates"))
                         await conn.commit()
+
                         counter += 1
 
-            # Final message
+            # Final messages
             if message:
                 if content:
                     await message.edit(content="\n".join(content))
                 else:
                     await message.delete()
+            if updates_message:
+                if updates_content:
+                    await updates_message.edit(content="\n".join(updates_content))
+                else:
+                    await updates_message.delete()
             await cursor.close()
             conn.close()
 
@@ -849,8 +878,8 @@ if __name__ == "__main__":
 
 
     # Start the bot with token from token.txt
-    with open("token" + ("_dev" if dev_mode else "") + ".txt", "r") as f:
-        token = [str(f).strip("\n\r") for f in f.readlines()]
+    with open("token" + ("_dev" if dev_mode else "") + ".txt", "r") as file:
+        token = [str(f).strip("\n\r") for f in file.readlines()]
     bot.run(token[0], reconnect=False)
 
 else:
