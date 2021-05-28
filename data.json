@@ -252,6 +252,20 @@
         "aliases": ["php", "wi"]
     },
     {
+        "name": "Projector",
+        "icon_path": "icon_Projector.png",
+        "emoji_name": "projector",
+        "role_name": "Projector",
+        "channel_name": "projector",
+        "category_name": "Open Source",
+        "subreddit": "JetBrains_Projector",
+        "github": "https://github.com/JetBrains/projector-server",
+        "product_page": "https://lp.jetbrains.com/projector/",
+        "description": "Run JetBrains IDEs and Swing apps remotely over the network",
+        "issue_tracker": "PRJ",
+        "aliases": ["prj"]
+    },
+    {
         "name": "PyCharm",
         "icon_path": "icon_PyCharm.png",
         "emoji_name": "pycharm",
