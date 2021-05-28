@@ -56,6 +56,20 @@
         "aliases": ["dl"]
     },
     {
+        "name": "DataSpell",
+        "icon_path": "icon_DataSpell.png",
+        "emoji_name": "dataspell",
+        "role_name": "DataSpell",
+        "channel_name": "dataspell",
+        "category_name": "Products",
+        "subreddit": "dataspell",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/dataspell/",
+        "description": "A new IDE by JetBrains for data science",
+        "issue_tracker": "",
+        "aliases": ["ds"]
+    },
+    {
         "name": "dotCover",
         "icon_path": "icon_dotCover.png",
         "emoji_name": "dotcover",
