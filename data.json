@@ -56,6 +56,20 @@
         "aliases": ["dl"]
     },
     {
+        "name": "DataSpell",
+        "icon_path": "icon_DataSpell.png",
+        "emoji_name": "dataspell",
+        "role_name": "DataSpell",
+        "channel_name": "dataspell",
+        "category_name": "Products",
+        "subreddit": "dataspell",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/dataspell/",
+        "description": "A new IDE by JetBrains for data science",
+        "issue_tracker": "",
+        "aliases": ["ds"]
+    },
+    {
         "name": "dotCover",
         "icon_path": "icon_dotCover.png",
         "emoji_name": "dotcover",
@@ -236,6 +250,20 @@
         "description": "The Lightning-Smart PHP IDE",
         "issue_tracker": "WI",
         "aliases": ["php", "wi"]
+    },
+    {
+        "name": "Projector",
+        "icon_path": "icon_Projector.png",
+        "emoji_name": "projector",
+        "role_name": "Projector",
+        "channel_name": "projector",
+        "category_name": "Open Source",
+        "subreddit": "JetBrains_Projector",
+        "github": "https://github.com/JetBrains/projector-server",
+        "product_page": "https://lp.jetbrains.com/projector/",
+        "description": "Run JetBrains IDEs and Swing apps remotely over the network",
+        "issue_tracker": "PRJ",
+        "aliases": ["prj"]
     },
     {
         "name": "PyCharm",
