@@ -307,6 +307,20 @@
         "issue_tracker": "PY",
         "aliases": ["pycharmedu", "pyc-edu", "py-edu", "pyedu"]
     },
+    {   
+        "name": "Qodana",
+        "icon_path": "icon_Qodana.png",
+        "emoji_name": "qodana",
+        "role_name": "Qodana",
+        "channel_name": "qodana",
+        "category_name": "Products",
+        "subreddit": "",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/qodana/",
+        "description": "The code quality platform for your favorite CI",
+        "issue_tracker": "QD",
+        "aliases": ["qd"]
+    },
     {
         "name": "ReSharper",
         "icon_path": "icon_ReSharper.png",
