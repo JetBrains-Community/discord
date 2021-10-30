@@ -314,7 +314,7 @@
         "role_name": "Qodana",
         "channel_name": "qodana",
         "category_name": "Products",
-        "subreddit": "",
+        "subreddit": "Qodana",
         "github": "",
         "product_page": "https://www.jetbrains.com/qodana/",
         "description": "The code quality platform for your favorite CI",
