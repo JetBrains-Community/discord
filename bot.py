@@ -318,7 +318,7 @@ class JetBrains(commands.Bot):
                         except:
                             pass
                         role = [f for f in guild.roles if f.name.lower().strip() == "admin"]
-                        channel = self.product_channel("chat", "admins")
+                        channel = self.product_channel("admin-chat", "admins")
                         if channel:
                             await channel.send("{0.mention} `{0.name}#{0.discriminator} {0.id}` has requested"
                                                " JetBrains employee verification with the email `{1}` {2}".format(
