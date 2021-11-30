@@ -126,6 +126,20 @@
         "aliases": ["dtrc"]
     },
     {
+        "name": "Fleet",
+        "icon_path": "icon_Fleet.png",
+        "emoji_name": "fleet",
+        "role_name": "Fleet",
+        "channel_name": "fleet",
+        "category_name": "Products",
+        "subreddit": "Fleet",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/fleet/",
+        "description": "Next-generation IDE",
+        "issue_tracker": "FL",
+        "aliases": ["fl"]
+    },
+    {
         "name": "GoLand",
         "icon_path": "icon_GoLand.png",
         "emoji_name": "goland",
