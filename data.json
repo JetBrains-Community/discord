@@ -126,6 +126,34 @@
         "aliases": ["dtrc"]
     },
     {
+        "name": "Fleet",
+        "icon_path": "icon_Fleet.png",
+        "emoji_name": "fleet",
+        "role_name": "Fleet",
+        "channel_name": "fleet",
+        "category_name": "Products",
+        "subreddit": "Fleet",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/fleet/",
+        "description": "Next-generation IDE",
+        "issue_tracker": "FL",
+        "aliases": ["fl"]
+    },
+    {
+        "name": "Gateway",
+        "icon_path": "icon_Gateway.png",
+        "emoji_name": "gateway",
+        "role_name": "Gateway",
+        "channel_name": "gateway",
+        "category_name": "Products",
+        "subreddit": "JetBrains_Gateway",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/remote-development/gateway/",
+        "description": "Your single entry point to all remote development environments",
+        "issue_tracker": "GTW",
+        "aliases": ["gtw"]
+    },
+    {
         "name": "GoLand",
         "icon_path": "icon_GoLand.png",
         "emoji_name": "goland",
