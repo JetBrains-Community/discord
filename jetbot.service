@@ -1,0 +1,17 @@
+[Unit]
+Description=JetBot
+After=syslog.target network.target
+
+[Service]
+User=root
+Group=root
+
+Restart=always
+RestartSec=30
+
+Type=idle
+WorkingDirectory=/root/jetbot
+ExecStart=/usr/bin/python3 launch.py
+
+[Install]
+WantedBy=multi-user.target
