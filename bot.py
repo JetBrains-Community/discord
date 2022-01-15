@@ -682,22 +682,38 @@ if __name__ == "__main__":
                         await channel.set_permissions(guild.default_role, send_messages=False,
                                                       send_messages_in_threads=False, create_private_threads=False,
                                                       create_public_threads=False)
-                        await channel.set_permissions(role, send_messages=True, read_messages=True,
-                                                      send_messages_in_threads=True, create_private_threads=True,
-                                                      create_public_threads=True)
                         await channel.set_permissions(hide, read_messages=False)
-                        await channel.set_permissions(mods, send_messages=True, read_messages=True,
-                                                      send_messages_in_threads=True, create_private_threads=True,
-                                                      create_public_threads=True)
 
-                        # Set topic
-                        title = default_title
-                        if category.name.lower().strip() in title_map:
-                            title = title_map[category.name.lower().strip()]
-                        title = "{0} \N{PUBLIC ADDRESS LOUDSPEAKER} Unlock this channel using #unlock-channels - " \
-                                "{1} {0}".format(emoji, title.format(item["name"]))
-                        if channel.topic != title:
-                            await channel.edit(topic=title)
+                        # Handle read-only
+                        if "read_only" in item and item["read_only"]:
+                            # Set topic
+                            title = "{0} {1} {0}".format(emoji, item["name"])
+                            if channel.topic != title:
+                                await channel.edit(topic=title)
+
+                            # Send the read-only message
+                            last = await channel.history(limit=1).flatten()
+                            if not last or last[0].content != item["read_only"]:
+                                await channel.send(item["read_only"])
+
+                        # Handle normal
+                        else:
+                            # Set role permissions
+                            await channel.set_permissions(role, send_messages=True, read_messages=True,
+                                                          send_messages_in_threads=True, create_private_threads=True,
+                                                          create_public_threads=True)
+                            await channel.set_permissions(mods, send_messages=True, read_messages=True,
+                                                          send_messages_in_threads=True, create_private_threads=True,
+                                                          create_public_threads=True)
+
+                            # Set topic
+                            title = default_title
+                            if category.name.lower().strip() in title_map:
+                                title = title_map[category.name.lower().strip()]
+                            title = "{0} \N{PUBLIC ADDRESS LOUDSPEAKER} Unlock this channel using #unlock-channels - " \
+                                    "{1} {0}".format(emoji, title.format(item["name"]))
+                            if channel.topic != title:
+                                await channel.edit(topic=title)
 
             # Set category perms
             for item in categories.values():
@@ -778,7 +794,8 @@ if __name__ == "__main__":
             content = []
             counter = 0
             for item in bot.data:
-                if item["emoji_name"] and item["role_name"] and item["channel_name"] and item["category_name"]:
+                if item["emoji_name"] and item["role_name"] and item["channel_name"] and item["category_name"] \
+                        and not ("read_only" in item and item["read_only"]):
                     role = bot.product_role(item["role_name"])
                     emoji = bot.product_emoji(item["emoji_name"])
                     channel = bot.product_channel(item["channel_name"], item["category_name"])
