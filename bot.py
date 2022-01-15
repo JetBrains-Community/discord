@@ -11,9 +11,10 @@ import time
 import traceback
 from typing import Dict, Optional
 
-import aiomysql
-import discord
-from discord.ext import commands
+import aiopg
+from nextcord import Color, Activity, ActivityType, Status, Guild, CategoryChannel, TextChannel, Role, Message, \
+    Member, Permissions
+from nextcord.ext import commands
 
 # Logging
 logging.basicConfig(level=logging.ERROR)
@@ -25,8 +26,8 @@ class JetBrains(commands.Bot):
         super().__init__(*args, **kwargs)
         self.data = []
         self.dev_mode = kwargs.get("dev_mode", False)
-        self.role_color = discord.Colour(0x18d68c)  # Normal
-        # self.role_color = discord.Colour(0xFB5502)  # Halloween
+        self.role_color = Color(0x18d68c)  # Normal
+        # self.role_color = Color(0xFB5502)  # Halloween
         self.jb_guild_id = 649591705838026794 if self.dev_mode else 433980600391696384
         self.jb_invite = "https://discord.gg/zTUTh2P"
         self.loop.create_task(self.status_loop())
@@ -41,8 +42,8 @@ class JetBrains(commands.Bot):
                 users = "{:,} ".format(guild.member_count)
             try:
                 await self.change_presence(
-                    activity=discord.Activity(type=discord.ActivityType.watching, name=users + playing),
-                    status=discord.Status.online)
+                    activity=Activity(type=ActivityType.watching, name=users + playing),
+                    status=Status.online)
             except:
                 pass
 
@@ -54,7 +55,7 @@ class JetBrains(commands.Bot):
             self.data = json.load(fl)
 
     # Emoji in a dictionary
-    def emoji_dict(self, guild: discord.Guild) -> dict:
+    def emoji_dict(self, guild: Guild) -> dict:
         data = {}
         if not guild:
             return data
@@ -64,7 +65,7 @@ class JetBrains(commands.Bot):
         return data
 
     # Categories in a dictionary
-    def category_dict(self, guild: discord.Guild) -> Dict[str, discord.CategoryChannel]:
+    def category_dict(self, guild: Guild) -> Dict[str, CategoryChannel]:
         data = {}
         if not guild:
             return data
@@ -100,7 +101,7 @@ class JetBrains(commands.Bot):
         return "<https://youtrack.jetbrains.com/issues/" + data + ">"
 
     # Find a product channel
-    def product_channel(self, name: str, category: str) -> Optional[discord.TextChannel]:
+    def product_channel(self, name: str, category: str) -> Optional[TextChannel]:
         if name and category:
             guild = self.get_guild(self.jb_guild_id)
             categories = self.category_dict(guild)
@@ -120,7 +121,7 @@ class JetBrains(commands.Bot):
         return ""
 
     # Find a product role
-    def product_role(self, name: str) -> Optional[discord.Role]:
+    def product_role(self, name: str) -> Optional[Role]:
         if name:
             guild = self.get_guild(self.jb_guild_id)
             role = [f for f in guild.roles if f.name == name]
@@ -129,7 +130,7 @@ class JetBrains(commands.Bot):
         return None
 
     # Find a category
-    def product_category(self, name: str) -> Optional[discord.CategoryChannel]:
+    def product_category(self, name: str) -> Optional[CategoryChannel]:
         if name:
             guild = self.get_guild(self.jb_guild_id)
             category = [f for f in guild.categories if f.name.lower().strip() == name.lower().strip()]
@@ -296,7 +297,7 @@ class JetBrains(commands.Bot):
         print("".join(lines))
 
     # Employee email verification
-    async def email_verify(self, message: discord.message):
+    async def email_verify(self, message: Message):
         guild = self.get_guild(self.jb_guild_id)
         if guild:
             channel = [f for f in guild.text_channels if f.name.lower().strip() == "employee-verification"]
@@ -326,7 +327,7 @@ class JetBrains(commands.Bot):
                     await message.delete()
 
     # Handle messages
-    async def on_message(self, message: discord.Message):
+    async def on_message(self, message: Message):
         if message.author.bot:
             return
 
@@ -521,7 +522,7 @@ if __name__ == "__main__":
 
 
     @bot.command()
-    async def users(ctx: commands.Context, target: discord.Member = None):
+    async def users(ctx: commands.Context, target: Member = None):
         """
         Find JetBrains IDE users mutual with the bot and target
         """
@@ -601,7 +602,7 @@ if __name__ == "__main__":
                         print("Creating role... " + item["role_name"])
                         role = await guild.create_role(
                             name=item["role_name"],
-                            permissions=discord.Permissions.none(),
+                            permissions=Permissions.none(),
                             color=bot.role_color,
                             hoist=False,
                             mentionable=False
@@ -619,8 +620,8 @@ if __name__ == "__main__":
                 print("Creating role... Hide Unsubscribed Channels")
                 role = await guild.create_role(
                     name="Hide Unsubscribed Channels",
-                    permissions=discord.Permissions.none(),
-                    color=discord.Colour(0x7D7D7D),
+                    permissions=Permissions.none(),
+                    color=Color(0x7D7D7D),
                     hoist=False,
                     mentionable=False
                 )
@@ -678,25 +679,49 @@ if __name__ == "__main__":
 
                         # Set permissions
                         print("Updating channel... " + item["channel_name"] + " in " + item["category_name"])
-                        await channel.set_permissions(guild.default_role, send_messages=False)
-                        await channel.set_permissions(role, send_messages=True, read_messages=True)
+                        await channel.set_permissions(guild.default_role, send_messages=False,
+                                                      send_messages_in_threads=False, create_private_threads=False,
+                                                      create_public_threads=False)
                         await channel.set_permissions(hide, read_messages=False)
-                        await channel.set_permissions(mods, send_messages=True, read_messages=True)
 
-                        # Set topic
-                        title = default_title
-                        if category.name.lower().strip() in title_map:
-                            title = title_map[category.name.lower().strip()]
-                        title = "{0} \N{PUBLIC ADDRESS LOUDSPEAKER} Unlock this channel using #unlock-channels - " \
-                                "{1} {0}".format(emoji, title.format(item["name"]))
-                        if channel.topic != title:
-                            await channel.edit(topic=title)
+                        # Handle read-only
+                        if "read_only" in item and item["read_only"]:
+                            # Set topic
+                            title = "{0} {1} {0}".format(emoji, item["name"])
+                            if channel.topic != title:
+                                await channel.edit(topic=title)
+
+                            # Send the read-only message
+                            last = await channel.history(limit=1).flatten()
+                            if not last or last[0].content != item["read_only"]:
+                                await channel.send(item["read_only"])
+
+                        # Handle normal
+                        else:
+                            # Set role permissions
+                            await channel.set_permissions(role, send_messages=True, read_messages=True,
+                                                          send_messages_in_threads=True, create_private_threads=True,
+                                                          create_public_threads=True)
+                            await channel.set_permissions(mods, send_messages=True, read_messages=True,
+                                                          send_messages_in_threads=True, create_private_threads=True,
+                                                          create_public_threads=True)
+
+                            # Set topic
+                            title = default_title
+                            if category.name.lower().strip() in title_map:
+                                title = title_map[category.name.lower().strip()]
+                            title = "{0} \N{PUBLIC ADDRESS LOUDSPEAKER} Unlock this channel using #unlock-channels - " \
+                                    "{1} {0}".format(emoji, title.format(item["name"]))
+                            if channel.topic != title:
+                                await channel.edit(topic=title)
 
             # Set category perms
             for item in categories.values():
                 print("Updating category... " + item.name)
-                await item.set_permissions(guild.default_role, send_messages=False)
-                await item.set_permissions(mods, send_messages=True)
+                await item.set_permissions(guild.default_role, send_messages=False, send_messages_in_threads=False,
+                                           create_private_threads=False, create_public_threads=False)
+                await item.set_permissions(mods, send_messages=True, send_messages_in_threads=True,
+                                           create_private_threads=True, create_public_threads=True)
 
         # Done
         await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
@@ -725,24 +750,24 @@ if __name__ == "__main__":
             if not unlock:
                 print("Creating channel... unlock-channels")
                 unlock = await guild.create_text_channel("unlock-channels", category=info_category)
-            await unlock.set_permissions(ctx.guild.default_role, send_messages=False)
+            await unlock.set_permissions(ctx.guild.default_role, send_messages=False, send_messages_in_threads=False,
+                                         create_private_threads=False, create_public_threads=False, add_reactions=False)
             offtopic = bot.product_channel("off-topic", "General")
             if not offtopic:
                 print("Creating channel... off-topic")
                 offtopic = await guild.create_text_channel("off-topic", category=general_category)
 
-            # Create db connection for Restarter"s react roles from db.txt
+            # Create db connection for Restarter's react roles from db.txt
             with open("db.txt", "r") as f:
                 db = [str(f).strip("\n\r") for f in f.readlines()]
-            conn = await aiomysql.connect(host=db[0], port=3306, user=db[1], password=db[2], db=db[3], loop=bot.loop)
+            conn = await aiopg.connect(host=db[0], user=db[1], password=db[2], database=db[3])
             cursor = await conn.cursor()
 
             # Remove old content
             async for message in unlock.history(limit=None):
                 await message.delete()
-            await cursor.execute("DELETE FROM reactroles WHERE guild = %s", (guild.id))
-            await cursor.execute("DELETE FROM rolecommands WHERE guild = %s", (guild.id))
-            await conn.commit()
+            await cursor.execute("DELETE FROM reactroles WHERE guild = %s", (guild.id,))
+            await cursor.execute("DELETE FROM rolecommands WHERE guild = %s", (guild.id,))
 
             # Hide channels message
             print("Creating react role... hide")
@@ -759,18 +784,18 @@ if __name__ == "__main__":
                                      " the role.".format(offtopic.mention))
             await hide.add_reaction("\N{NO ENTRY SIGN}")
             hide_role = bot.product_role("Hide Unsubscribed Channels")
-            await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild) VALUES (%s,%s,%s,%s)",
-                                 (hide.id, "\\U0001F6AB", hide_role.id, guild.id))
+            await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild,channel) VALUES (%s,%s,%s,%s,%s)",
+                                 (hide.id, "\\U0001F6AB", hide_role.id, guild.id, unlock.id,))
             await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
-                                 (guild.id, hide_role.id, "hide"))
-            await conn.commit()
+                                 (guild.id, hide_role.id, "hide",))
 
             # Generate new messages
             message = None
             content = []
             counter = 0
             for item in bot.data:
-                if item["emoji_name"] and item["role_name"] and item["channel_name"] and item["category_name"]:
+                if item["emoji_name"] and item["role_name"] and item["channel_name"] and item["category_name"] \
+                        and not ("read_only" in item and item["read_only"]):
                     role = bot.product_role(item["role_name"])
                     emoji = bot.product_emoji(item["emoji_name"])
                     channel = bot.product_channel(item["channel_name"], item["category_name"])
@@ -786,11 +811,11 @@ if __name__ == "__main__":
                         print("Creating react role... " + channel.name)
                         content.append("{} - {}".format(emoji, channel.mention))
                         await message.add_reaction(emoji)
-                        await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild)"
-                                             " VALUES (%s,%s,%s,%s)", (message.id, emoji, role.id, guild.id))
+                        await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild,channel)"
+                                             " VALUES (%s,%s,%s,%s,%s)",
+                                             (message.id, emoji, role.id, guild.id, unlock.id,))
                         await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
-                                             (guild.id, role.id, channel.name))
-                        await conn.commit()
+                                             (guild.id, role.id, channel.name,))
                         counter += 1
 
             # Final message
@@ -799,7 +824,7 @@ if __name__ == "__main__":
                     await message.edit(content="\n".join(content))
                 else:
                     await message.delete()
-            await cursor.close()
+            cursor.close()
             conn.close()
 
         # Done

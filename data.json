@@ -434,6 +434,21 @@
         "aliases": ["ruby", "rm"]
     },
     {
+        "name": "Scala",
+        "icon_path": "icon_IntelliJ_Scala.png",
+        "emoji_name": "scala",
+        "role_name": "Scala",
+        "channel_name": "scala",
+        "category_name": "Open Source",
+        "subreddit": "",
+        "github": "https://github.com/JetBrains/intellij-scala",
+        "product_page": "",
+        "description": "Scala plugin for IntelliJ IDEA",
+        "issue_tracker": "SCL",
+        "aliases": ["scl"],
+        "read_only": "Join folks developing and using the Scala plugin in their dedicated Discord server: https://discord.gg/aUKpZzeHCK"
+    },
+    {
         "name": "Space",
         "icon_path": "icon_Space.png",
         "emoji_name": "space",
