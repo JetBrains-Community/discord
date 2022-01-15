@@ -12,8 +12,9 @@ import traceback
 from typing import Dict, Optional
 
 import aiomysql
-import discord
-from discord.ext import commands
+from nextcord import Color, Activity, ActivityType, Status, Guild, CategoryChannel, TextChannel, Role, Message, \
+    Member, Permissions
+from nextcord.ext import commands
 
 # Logging
 logging.basicConfig(level=logging.ERROR)
@@ -25,8 +26,8 @@ class JetBrains(commands.Bot):
         super().__init__(*args, **kwargs)
         self.data = []
         self.dev_mode = kwargs.get("dev_mode", False)
-        self.role_color = discord.Colour(0x18d68c)  # Normal
-        # self.role_color = discord.Colour(0xFB5502)  # Halloween
+        self.role_color = Color(0x18d68c)  # Normal
+        # self.role_color = Color(0xFB5502)  # Halloween
         self.jb_guild_id = 649591705838026794 if self.dev_mode else 433980600391696384
         self.jb_invite = "https://discord.gg/zTUTh2P"
         self.loop.create_task(self.status_loop())
@@ -41,8 +42,8 @@ class JetBrains(commands.Bot):
                 users = "{:,} ".format(guild.member_count)
             try:
                 await self.change_presence(
-                    activity=discord.Activity(type=discord.ActivityType.watching, name=users + playing),
-                    status=discord.Status.online)
+                    activity=Activity(type=ActivityType.watching, name=users + playing),
+                    status=Status.online)
             except:
                 pass
 
@@ -54,7 +55,7 @@ class JetBrains(commands.Bot):
             self.data = json.load(fl)
 
     # Emoji in a dictionary
-    def emoji_dict(self, guild: discord.Guild) -> dict:
+    def emoji_dict(self, guild: Guild) -> dict:
         data = {}
         if not guild:
             return data
@@ -64,7 +65,7 @@ class JetBrains(commands.Bot):
         return data
 
     # Categories in a dictionary
-    def category_dict(self, guild: discord.Guild) -> Dict[str, discord.CategoryChannel]:
+    def category_dict(self, guild: Guild) -> Dict[str, CategoryChannel]:
         data = {}
         if not guild:
             return data
@@ -100,7 +101,7 @@ class JetBrains(commands.Bot):
         return "<https://youtrack.jetbrains.com/issues/" + data + ">"
 
     # Find a product channel
-    def product_channel(self, name: str, category: str) -> Optional[discord.TextChannel]:
+    def product_channel(self, name: str, category: str) -> Optional[TextChannel]:
         if name and category:
             guild = self.get_guild(self.jb_guild_id)
             categories = self.category_dict(guild)
@@ -120,7 +121,7 @@ class JetBrains(commands.Bot):
         return ""
 
     # Find a product role
-    def product_role(self, name: str) -> Optional[discord.Role]:
+    def product_role(self, name: str) -> Optional[Role]:
         if name:
             guild = self.get_guild(self.jb_guild_id)
             role = [f for f in guild.roles if f.name == name]
@@ -129,7 +130,7 @@ class JetBrains(commands.Bot):
         return None
 
     # Find a category
-    def product_category(self, name: str) -> Optional[discord.CategoryChannel]:
+    def product_category(self, name: str) -> Optional[CategoryChannel]:
         if name:
             guild = self.get_guild(self.jb_guild_id)
             category = [f for f in guild.categories if f.name.lower().strip() == name.lower().strip()]
@@ -296,7 +297,7 @@ class JetBrains(commands.Bot):
         print("".join(lines))
 
     # Employee email verification
-    async def email_verify(self, message: discord.message):
+    async def email_verify(self, message: Message):
         guild = self.get_guild(self.jb_guild_id)
         if guild:
             channel = [f for f in guild.text_channels if f.name.lower().strip() == "employee-verification"]
@@ -326,7 +327,7 @@ class JetBrains(commands.Bot):
                     await message.delete()
 
     # Handle messages
-    async def on_message(self, message: discord.Message):
+    async def on_message(self, message: Message):
         if message.author.bot:
             return
 
@@ -521,7 +522,7 @@ if __name__ == "__main__":
 
 
     @bot.command()
-    async def users(ctx: commands.Context, target: discord.Member = None):
+    async def users(ctx: commands.Context, target: Member = None):
         """
         Find JetBrains IDE users mutual with the bot and target
         """
@@ -601,7 +602,7 @@ if __name__ == "__main__":
                         print("Creating role... " + item["role_name"])
                         role = await guild.create_role(
                             name=item["role_name"],
-                            permissions=discord.Permissions.none(),
+                            permissions=Permissions.none(),
                             color=bot.role_color,
                             hoist=False,
                             mentionable=False
@@ -619,8 +620,8 @@ if __name__ == "__main__":
                 print("Creating role... Hide Unsubscribed Channels")
                 role = await guild.create_role(
                     name="Hide Unsubscribed Channels",
-                    permissions=discord.Permissions.none(),
-                    color=discord.Colour(0x7D7D7D),
+                    permissions=Permissions.none(),
+                    color=Color(0x7D7D7D),
                     hoist=False,
                     mentionable=False
                 )
