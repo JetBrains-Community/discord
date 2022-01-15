@@ -679,10 +679,16 @@ if __name__ == "__main__":
 
                         # Set permissions
                         print("Updating channel... " + item["channel_name"] + " in " + item["category_name"])
-                        await channel.set_permissions(guild.default_role, send_messages=False)
-                        await channel.set_permissions(role, send_messages=True, read_messages=True)
+                        await channel.set_permissions(guild.default_role, send_messages=False,
+                                                      send_messages_in_threads=False, create_private_threads=False,
+                                                      create_public_threads=False)
+                        await channel.set_permissions(role, send_messages=True, read_messages=True,
+                                                      send_messages_in_threads=True, create_private_threads=True,
+                                                      create_public_threads=True)
                         await channel.set_permissions(hide, read_messages=False)
-                        await channel.set_permissions(mods, send_messages=True, read_messages=True)
+                        await channel.set_permissions(mods, send_messages=True, read_messages=True,
+                                                      send_messages_in_threads=True, create_private_threads=True,
+                                                      create_public_threads=True)
 
                         # Set topic
                         title = default_title
@@ -696,8 +702,10 @@ if __name__ == "__main__":
             # Set category perms
             for item in categories.values():
                 print("Updating category... " + item.name)
-                await item.set_permissions(guild.default_role, send_messages=False)
-                await item.set_permissions(mods, send_messages=True)
+                await item.set_permissions(guild.default_role, send_messages=False, send_messages_in_threads=False,
+                                           create_private_threads=False, create_public_threads=False)
+                await item.set_permissions(mods, send_messages=True, send_messages_in_threads=True,
+                                           create_private_threads=True, create_public_threads=True)
 
         # Done
         await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
@@ -726,7 +734,8 @@ if __name__ == "__main__":
             if not unlock:
                 print("Creating channel... unlock-channels")
                 unlock = await guild.create_text_channel("unlock-channels", category=info_category)
-            await unlock.set_permissions(ctx.guild.default_role, send_messages=False)
+            await unlock.set_permissions(ctx.guild.default_role, send_messages=False, send_messages_in_threads=False,
+                                         create_private_threads=False, create_public_threads=False, add_reactions=False)
             offtopic = bot.product_channel("off-topic", "General")
             if not offtopic:
                 print("Creating channel... off-topic")
