@@ -11,7 +11,7 @@ import time
 import traceback
 from typing import Dict, Optional
 
-import aiomysql
+import aiopg
 from nextcord import Color, Activity, ActivityType, Status, Guild, CategoryChannel, TextChannel, Role, Message, \
     Member, Permissions
 from nextcord.ext import commands
@@ -732,18 +732,17 @@ if __name__ == "__main__":
                 print("Creating channel... off-topic")
                 offtopic = await guild.create_text_channel("off-topic", category=general_category)
 
-            # Create db connection for Restarter"s react roles from db.txt
+            # Create db connection for Restarter's react roles from db.txt
             with open("db.txt", "r") as f:
                 db = [str(f).strip("\n\r") for f in f.readlines()]
-            conn = await aiomysql.connect(host=db[0], port=3306, user=db[1], password=db[2], db=db[3], loop=bot.loop)
+            conn = await aiopg.connect(host=db[0], user=db[1], password=db[2], database=db[3])
             cursor = await conn.cursor()
 
             # Remove old content
             async for message in unlock.history(limit=None):
                 await message.delete()
-            await cursor.execute("DELETE FROM reactroles WHERE guild = %s", (guild.id))
-            await cursor.execute("DELETE FROM rolecommands WHERE guild = %s", (guild.id))
-            await conn.commit()
+            await cursor.execute("DELETE FROM reactroles WHERE guild = %s", (guild.id,))
+            await cursor.execute("DELETE FROM rolecommands WHERE guild = %s", (guild.id,))
 
             # Hide channels message
             print("Creating react role... hide")
@@ -760,11 +759,10 @@ if __name__ == "__main__":
                                      " the role.".format(offtopic.mention))
             await hide.add_reaction("\N{NO ENTRY SIGN}")
             hide_role = bot.product_role("Hide Unsubscribed Channels")
-            await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild) VALUES (%s,%s,%s,%s)",
-                                 (hide.id, "\\U0001F6AB", hide_role.id, guild.id))
+            await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild,channel) VALUES (%s,%s,%s,%s,%s)",
+                                 (hide.id, "\\U0001F6AB", hide_role.id, guild.id, unlock.id,))
             await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
-                                 (guild.id, hide_role.id, "hide"))
-            await conn.commit()
+                                 (guild.id, hide_role.id, "hide",))
 
             # Generate new messages
             message = None
@@ -787,11 +785,11 @@ if __name__ == "__main__":
                         print("Creating react role... " + channel.name)
                         content.append("{} - {}".format(emoji, channel.mention))
                         await message.add_reaction(emoji)
-                        await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild)"
-                                             " VALUES (%s,%s,%s,%s)", (message.id, emoji, role.id, guild.id))
+                        await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild,channel)"
+                                             " VALUES (%s,%s,%s,%s,%s)",
+                                             (message.id, emoji, role.id, guild.id, unlock.id,))
                         await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
-                                             (guild.id, role.id, channel.name))
-                        await conn.commit()
+                                             (guild.id, role.id, channel.name,))
                         counter += 1
 
             # Final message
@@ -800,7 +798,7 @@ if __name__ == "__main__":
                     await message.edit(content="\n".join(content))
                 else:
                     await message.delete()
-            await cursor.close()
+            cursor.close()
             conn.close()
 
         # Done
