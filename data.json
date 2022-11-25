@@ -390,6 +390,19 @@
         "aliases": []
     },
     {
+        "name": "RiderFlow",
+        "icon_path": "icon_RiderFlow.png",
+        "emoji_name": "riderflow",
+        "channel_name": "riderflow",
+        "category_name": "Products",
+        "subreddit": "",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/riderflow/",
+        "description": "A scenery tool to build and manage your 3D space",
+        "issue_tracker": "RF",
+        "aliases": ["rf"]
+    },
+    {
         "name": "Ring UI",
         "icon_path": "icon_Ring_UI.png",
         "emoji_name": "ringui",
