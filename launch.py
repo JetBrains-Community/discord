@@ -20,7 +20,7 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
             pip = "./venv/Scripts/pip.exe"
         else:
             pip = "./venv/bin/pip"
-        proc = Popen([pip, "install", "setuptools", "wheel", "nextcord"])
+        proc = Popen([pip, "install", "setuptools", "wheel", "discord.py"])
         proc.communicate()
 
 
