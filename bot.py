@@ -11,7 +11,6 @@ import time
 import traceback
 from typing import Dict, Optional
 
-import aiopg
 from nextcord import Color, Activity, ActivityType, Status, Guild, CategoryChannel, TextChannel, Role, Message, \
     Member, Permissions
 from nextcord.ext import commands
@@ -26,8 +25,6 @@ class JetBrains(commands.Bot):
         super().__init__(*args, **kwargs)
         self.data = []
         self.dev_mode = kwargs.get("dev_mode", False)
-        self.role_color = Color(0x18d68c)  # Normal
-        # self.role_color = Color(0xFB5502)  # Halloween
         self.jb_guild_id = 649591705838026794 if self.dev_mode else 433980600391696384
         self.jb_invite = "https://discord.gg/zTUTh2P"
         self.loop.create_task(self.status_loop())
@@ -119,15 +116,6 @@ class JetBrains(commands.Bot):
             if name in emoji:
                 return str(emoji[name])
         return ""
-
-    # Find a product role
-    def product_role(self, name: str) -> Optional[Role]:
-        if name:
-            guild = self.get_guild(self.jb_guild_id)
-            role = [f for f in guild.roles if f.name == name]
-            if role:
-                return role[0]
-        return None
 
     # Find a category
     def product_category(self, name: str) -> Optional[CategoryChannel]:
@@ -585,68 +573,14 @@ if __name__ == "__main__":
 
     @bot.command()
     @commands.check(bot.admin_check)
-    async def roles(ctx: commands.Context):
-        """
-        Admin: Update roles on the JetBrains server
-        """
-        guild = bot.get_guild(bot.jb_guild_id)
-        if guild:
-            new = []
-            positions = []
-
-            # Create product roles
-            for item in bot.data:
-                if item["role_name"]:
-                    role = bot.product_role(item["role_name"])
-                    if not role:
-                        print("Creating role... " + item["role_name"])
-                        role = await guild.create_role(
-                            name=item["role_name"],
-                            permissions=Permissions.none(),
-                            color=bot.role_color,
-                            hoist=False,
-                            mentionable=False
-                        )
-                        new.append(role)
-                    else:
-                        print(item["role_name"] + " role already exists")
-                        if role.color != bot.role_color:
-                            await role.edit(color=bot.role_color)
-                    positions.append(role.position)
-
-            # Create hide role
-            role = bot.product_role("Hide Unsubscribed Channels")
-            if not role:
-                print("Creating role... Hide Unsubscribed Channels")
-                role = await guild.create_role(
-                    name="Hide Unsubscribed Channels",
-                    permissions=Permissions.none(),
-                    color=Color(0x7D7D7D),
-                    hoist=False,
-                    mentionable=False
-                )
-                new.append(role)
-            else:
-                print("Hide Unsubscribed Channels role already exists")
-            positions = min(positions)
-            if role.position != positions:
-                await role.edit(position=positions)
-
-        # Done
-        await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
-
-
-    @bot.command()
-    @commands.check(bot.admin_check)
     async def channels(ctx: commands.Context):
         """
         Admin: Update channels on the JetBrains server
         """
+        new = []
         guild = bot.get_guild(bot.jb_guild_id)
         if guild:
             categories = {}
-            new = []
-            hide = [f for f in guild.roles if f.name.strip() == "Hide Unsubscribed Channels"][0]
             mods = [f for f in ctx.guild.roles if f.name.lower().strip() == "-"][0]
             default_title = "Discuss anything about {} here."
             title_map = {
@@ -655,180 +589,67 @@ if __name__ == "__main__":
             }
             # Create product channels
             for item in bot.data:
-                if item["emoji_name"] and item["role_name"] and item["channel_name"] and item["category_name"]:
-                    # Get the role and emoji
-                    role = bot.product_role(item["role_name"])
-                    emoji = bot.product_emoji(item["emoji_name"])
-                    if role and emoji:
-                        # Get the category
-                        if item["category_name"].lower().strip() in categories:
-                            category = categories[item["category_name"].lower().strip()]
-                        else:
-                            category = bot.product_category(item["category_name"])
-                            if not category:
-                                print("Creating category... " + item["category_name"])
-                                category = await guild.create_category(item["category_name"])
-                            categories[item["category_name"].lower().strip()] = category
+                if item["channel_name"] and item["category_name"]:
+                    # Get the category
+                    if item["category_name"].lower().strip() in categories:
+                        category = categories[item["category_name"].lower().strip()]
+                    else:
+                        category = bot.product_category(item["category_name"])
+                        if not category:
+                            print("Creating category... " + item["category_name"])
+                            category = await guild.create_category(item["category_name"])
+                        categories[item["category_name"].lower().strip()] = category
 
-                        # Get the channel
-                        channel = bot.product_channel(item["channel_name"], item["category_name"])
-                        if not channel:
-                            print("Creating channel... " + item["channel_name"])
-                            channel = await guild.create_text_channel(item["channel_name"], category=category)
-                            new.append(channel)
+                    # Get the channel
+                    channel = bot.product_channel(item["channel_name"], item["category_name"])
+                    if not channel:
+                        print("Creating channel... " + item["channel_name"])
+                        channel = await guild.create_text_channel(item["channel_name"], category=category)
+                        new.append(channel)
+
+                    # Set permissions
+                    print("Updating channel... " + item["channel_name"] + " in " + item["category_name"])
+                    for overwrite in channel.overwrites:
+                        await channel.set_permissions(overwrite, overwrite=None)
+                    await channel.edit(slowmode_delay=5, sync_permissions=True)
+
+                    # Handle read-only
+                    if "read_only" in item and item["read_only"]:
+                        # Send the read-only message
+                        last = await channel.history(limit=1).flatten()
+                        if not last or last[0].content != item["read_only"]:
+                            await channel.send(item["read_only"])
+
+                        # Set the topic
+                        product_emoji = bot.product_emoji(item["emoji_name"])
+                        title = "{0} {1} {0}".format(product_emoji, item["name"]) if product_emoji else item["name"]
+                        if channel.topic != title:
+                            await channel.edit(topic=title)
 
                         # Set permissions
-                        print("Updating channel... " + item["channel_name"] + " in " + item["category_name"])
-                        await channel.set_permissions(guild.default_role, send_messages=False,
-                                                      send_messages_in_threads=False, create_private_threads=False,
+                        await channel.set_permissions(guild.default_role,
+                                                      send_messages=False,
+                                                      send_messages_in_threads=False,
+                                                      create_private_threads=False,
                                                       create_public_threads=False)
-                        await channel.set_permissions(hide, read_messages=False)
-
-                        # Handle read-only
-                        if "read_only" in item and item["read_only"]:
-                            # Set topic
-                            title = "{0} {1} {0}".format(emoji, item["name"])
-                            if channel.topic != title:
-                                await channel.edit(topic=title)
-
-                            # Send the read-only message
-                            last = await channel.history(limit=1).flatten()
-                            if not last or last[0].content != item["read_only"]:
-                                await channel.send(item["read_only"])
-
-                        # Handle normal
-                        else:
-                            # Set role permissions
-                            await channel.set_permissions(role, send_messages=True, read_messages=True,
-                                                          send_messages_in_threads=True, create_private_threads=True,
-                                                          create_public_threads=True)
-                            await channel.set_permissions(mods, send_messages=True, read_messages=True,
-                                                          send_messages_in_threads=True, create_private_threads=True,
-                                                          create_public_threads=True)
-
-                            # Set topic
-                            title = default_title
-                            if category.name.lower().strip() in title_map:
-                                title = title_map[category.name.lower().strip()]
-                            title = "{0} \N{PUBLIC ADDRESS LOUDSPEAKER} Unlock this channel using #unlock-channels - " \
-                                    "{1} {0}".format(emoji, title.format(item["name"]))
-                            if channel.topic != title:
-                                await channel.edit(topic=title)
+                    else:
+                        # Set the topic
+                        product_category = category.name.lower().strip()
+                        product_emoji = bot.product_emoji(item["emoji_name"])
+                        title = title_map[product_category] if product_category in title_map else default_title
+                        title = title.format(item["name"])
+                        title = "{0} {1} {0}".format(product_emoji, title) if product_emoji else title
+                        if channel.topic != title:
+                            await channel.edit(topic=title)
 
             # Set category perms
-            for item in categories.values():
-                print("Updating category... " + item.name)
-                await item.set_permissions(guild.default_role, send_messages=False, send_messages_in_threads=False,
-                                           create_private_threads=False, create_public_threads=False)
-                await item.set_permissions(mods, send_messages=True, send_messages_in_threads=True,
-                                           create_private_threads=True, create_public_threads=True)
+            for category in categories.values():
+                print("Updating category... " + category.name)
+                for overwrite in category.overwrites:
+                    await category.set_permissions(overwrite, overwrite=None)
 
         # Done
         await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
-
-
-    @bot.command()
-    @commands.check(bot.admin_check)
-    async def reactions(ctx: commands.Context):
-        """
-        Admin: Update reaction roles on the JetBrains server
-        """
-        guild = bot.get_guild(bot.jb_guild_id)
-        if guild:
-            # Get the categories
-            info_category = bot.product_category("Information")
-            if not info_category:
-                print("Creating category... Information")
-                info_category = await guild.create_category("Information")
-            general_category = bot.product_category("General")
-            if not general_category:
-                print("Creating category... General")
-                general_category = await guild.create_category("General")
-
-            # Get the channels
-            unlock = bot.product_channel("unlock-channels", "Information")
-            if not unlock:
-                print("Creating channel... unlock-channels")
-                unlock = await guild.create_text_channel("unlock-channels", category=info_category)
-            await unlock.set_permissions(ctx.guild.default_role, send_messages=False, send_messages_in_threads=False,
-                                         create_private_threads=False, create_public_threads=False, add_reactions=False)
-            offtopic = bot.product_channel("off-topic", "General")
-            if not offtopic:
-                print("Creating channel... off-topic")
-                offtopic = await guild.create_text_channel("off-topic", category=general_category)
-
-            # Create db connection for Restarter's react roles from db.txt
-            with open("db.txt", "r") as f:
-                db = [str(f).strip("\n\r") for f in f.readlines()]
-            conn = await aiopg.connect(host=db[0], user=db[1], password=db[2], database=db[3])
-            cursor = await conn.cursor()
-
-            # Remove old content
-            async for message in unlock.history(limit=None):
-                await message.delete()
-            await cursor.execute("DELETE FROM reactroles WHERE guild = %s", (guild.id,))
-            await cursor.execute("DELETE FROM rolecommands WHERE guild = %s", (guild.id,))
-
-            # Hide channels message
-            print("Creating react role... hide")
-            hide = await unlock.send("**React to the following messages with JetBrains product and project emoji to"
-                                     " unlock the relevant discussion channels in this server.**"
-                                     "\n\nClick on one of the reactions already on the messages to unlock the role."
-                                     " Remove your reaction to remove your role."
-                                     "\n\nReactions not working for you? Head over to {0} and type `r.roles` to use"
-                                     " commands instead."
-                                     "\n\nWant to hide the channels you aren't active in? React to this message with"
-                                     " \N{NO ENTRY SIGN} to hide any product channel you aren't \"subscribed\" to"
-                                     " using the roles below. Remove your reaction to show all JetBrains product"
-                                     " channels again. Can't use reactions, head to {0} and use \"r.hide\" to toggle"
-                                     " the role.".format(offtopic.mention))
-            await hide.add_reaction("\N{NO ENTRY SIGN}")
-            hide_role = bot.product_role("Hide Unsubscribed Channels")
-            await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild,channel) VALUES (%s,%s,%s,%s,%s)",
-                                 (hide.id, "\\U0001F6AB", hide_role.id, guild.id, unlock.id,))
-            await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
-                                 (guild.id, hide_role.id, "hide",))
-
-            # Generate new messages
-            message = None
-            content = []
-            counter = 0
-            for item in bot.data:
-                if item["emoji_name"] and item["role_name"] and item["channel_name"] and item["category_name"] \
-                        and not ("read_only" in item and item["read_only"]):
-                    role = bot.product_role(item["role_name"])
-                    emoji = bot.product_emoji(item["emoji_name"])
-                    channel = bot.product_channel(item["channel_name"], item["category_name"])
-                    if role and emoji and channel:
-                        # Send message
-                        if counter % 8 == 0:
-                            if message:
-                                await message.edit(content="\n".join(content))
-                                content = []
-                            message = await unlock.send("Generating react roles...")
-
-                        # Add next product
-                        print("Creating react role... " + channel.name)
-                        content.append("{} - {}".format(emoji, channel.mention))
-                        await message.add_reaction(emoji)
-                        await cursor.execute("INSERT INTO reactroles (message,emoji,role,guild,channel)"
-                                             " VALUES (%s,%s,%s,%s,%s)",
-                                             (message.id, emoji, role.id, guild.id, unlock.id,))
-                        await cursor.execute("INSERT INTO rolecommands (guild,role,alias) VALUES (%s,%s,%s)",
-                                             (guild.id, role.id, channel.name,))
-                        counter += 1
-
-            # Final message
-            if message:
-                if content:
-                    await message.edit(content="\n".join(content))
-                else:
-                    await message.delete()
-            cursor.close()
-            conn.close()
-
-        # Done
-        await ctx.send("Done")
 
 
     # Start the bot with token from token.txt
