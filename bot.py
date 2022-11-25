@@ -22,7 +22,7 @@ class JetBrains(commands.Bot):
         self.data = []
         self.dev_mode = kwargs.get("dev_mode", False)
         self.jb_guild_id = 649591705838026794 if self.dev_mode else 433980600391696384
-        self.jb_invite = "https://discord.gg/zTUTh2P"
+        self.jb_invite = "https://discord.gg/jetbrains"
 
     @tasks.loop(minutes=5)
     async def status_loop(self):
