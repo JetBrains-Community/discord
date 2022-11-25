@@ -24,19 +24,26 @@ class JetBrains(commands.Bot):
         self.jb_guild_id = 649591705838026794 if self.dev_mode else 433980600391696384
         self.jb_invite = "https://discord.gg/jetbrains"
 
+    # Start the loops on boot
+    async def setup_hook(self) -> None:
+        self.status_loop.start()
+
+    # Set the bot status once every five minutes
     @tasks.loop(minutes=5)
     async def status_loop(self):
         guild = self.get_guild(self.jb_guild_id)
-        playing = "JetBrains users"
-        users = ""
-        if guild:
-            users = "{:,} ".format(guild.member_count)
-        try:
-            await self.change_presence(
-                activity=Activity(type=ActivityType.watching, name=users + playing),
-                status=Status.online)
-        except:
-            pass
+        if not guild:
+            guild = await self.fetch_guild(self.jb_guild_id)
+
+        users = "{:,} ".format(guild.member_count) if guild else ""
+        await self.change_presence(
+            activity=Activity(type=ActivityType.watching, name=users + "JetBrains users"),
+            status=Status.online)
+
+    # Wait for bot to connect before running status loop
+    @status_loop.before_loop
+    async def before_status_loop(self):
+        await self.wait_until_ready()
 
     # Load the latest data into the bot
     def load_data(self):
