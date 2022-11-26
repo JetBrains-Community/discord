@@ -13,6 +13,19 @@
         "aliases": ["objc", "oc"]
     },
     {
+        "name": "Aqua",
+        "icon_path": "icon_Aqua.png",
+        "emoji_name": "aqua",
+        "channel_name": "aqua",
+        "category_name": "Products",
+        "subreddit": "",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/aqua/",
+        "description": "A powerful IDE for test automation",
+        "issue_tracker": "AQUA",
+        "aliases": ["aq", "qa"]
+    },
+    {
         "name": "CLion",
         "icon_path": "icon_CLion.png",
         "emoji_name": "clion",
@@ -375,6 +388,19 @@
         "description": "A fast & powerful, cross-platform .NET IDE",
         "issue_tracker": "RIDER",
         "aliases": []
+    },
+    {
+        "name": "RiderFlow",
+        "icon_path": "icon_RiderFlow.png",
+        "emoji_name": "riderflow",
+        "channel_name": "riderflow",
+        "category_name": "Products",
+        "subreddit": "",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/riderflow/",
+        "description": "A scenery tool to build and manage your 3D space",
+        "issue_tracker": "RF",
+        "aliases": ["rf"]
     },
     {
         "name": "Ring UI",
