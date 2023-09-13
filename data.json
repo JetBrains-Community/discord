@@ -434,7 +434,7 @@
         "emoji_name": "rustrover",
         "channel_name": "rustrover",
         "category_name": "Products",
-        "subreddit": "",
+        "subreddit": "RustRover",
         "github": "",
         "product_page": "https://www.jetbrains.com/rust/",
         "description": "A Standalone IDE for Rust",
