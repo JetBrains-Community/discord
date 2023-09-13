@@ -429,6 +429,19 @@
         "aliases": ["ruby", "rm"]
     },
     {
+        "name": "RustRover",
+        "icon_path": "icon_RustRover.png",
+        "emoji_name": "rustrover",
+        "channel_name": "rustrover",
+        "category_name": "Products",
+        "subreddit": "",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/rust/",
+        "description": "A Standalone IDE for Rust",
+        "issue_tracker": "RUST",
+        "aliases": ["rust", "rr"]
+    },
+    {
         "name": "Scala",
         "icon_path": "icon_IntelliJ_Scala.png",
         "emoji_name": "scala",
