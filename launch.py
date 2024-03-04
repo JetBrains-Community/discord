@@ -20,7 +20,7 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
             pip = "./venv/Scripts/pip.exe"
         else:
             pip = "./venv/bin/pip"
-        proc = Popen([pip, "install", "setuptools", "wheel", "discord.py"])
+        proc = Popen([pip, "install", "-U", "-r", "requirements.txt"])
         proc.communicate()
 
 
@@ -33,7 +33,7 @@ def run():
         path = "venv/bin/python3"
 
     print("\n\nSpawning (w/ autoreboot): {} {}\n\n".format(os.path.abspath(path), "bot.py"))
-    proc = Popen([os.path.abspath(path), "bot.py"],
+    proc = Popen([os.path.abspath(path), "bot.py", *sys.argv[1:]],
                  cwd=os.getcwd(), env=env)
 
     result = proc.communicate()
