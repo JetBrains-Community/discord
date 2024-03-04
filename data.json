@@ -521,6 +521,19 @@
         "aliases": ["web"]
     },
     {
+        "name": "Writerside",
+        "icon_path": "icon_Writerside.png",
+        "emoji_name": "writerside",
+        "channel_name": "writerside",
+        "category_name": "Products",
+        "subreddit": "",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/writerside/",
+        "description": "A technical authoring and publishing environment",
+        "issue_tracker": "WRS",
+        "aliases": ["writer", "wrs"]
+    },
+    {
         "name": "YouTrack",
         "icon_path": "icon_YouTrack.png",
         "emoji_name": "youtrack",
