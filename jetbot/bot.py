@@ -4,12 +4,13 @@ import json
 import logging
 import os
 import re
-import sys
 import traceback
 from typing import Optional
 
 from discord import Activity, ActivityType, Status, CategoryChannel, TextChannel, Message, Intents
 from discord.ext import commands, tasks
+
+from jetbot.config import Config
 
 # Logging
 logging.basicConfig(level=logging.ERROR)
@@ -18,11 +19,9 @@ logging.basicConfig(level=logging.ERROR)
 class JetBrains(commands.Bot):
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         self.data = []
-        self.dev_mode = kwargs.get("dev_mode", False)
-        self.jb_guild_id = 649591705838026794 if self.dev_mode else 433980600391696384
-        self.jb_invite = "https://discord.gg/jetbrains"
+        self.config = kwargs.pop("config")
+        super().__init__(*args, **kwargs, command_prefix=commands.when_mentioned_or(*self.config.prefixes))
 
     # Start the loops on boot
     async def setup_hook(self) -> None:
@@ -31,9 +30,9 @@ class JetBrains(commands.Bot):
     # Set the bot status once every five minutes
     @tasks.loop(minutes=5)
     async def status_loop(self):
-        guild = self.get_guild(self.jb_guild_id)
+        guild = self.get_guild(self.config.guild)
         if not guild:
-            guild = await self.fetch_guild(self.jb_guild_id)
+            guild = await self.fetch_guild(self.config.guild)
 
         users = "{:,} ".format(guild.member_count) if guild else ""
         await self.change_presence(
@@ -69,9 +68,9 @@ class JetBrains(commands.Bot):
     # Find a product channel
     async def product_channel(self, name: str, category: str) -> Optional[TextChannel]:
         if name and category:
-            guild = self.get_guild(self.jb_guild_id)
+            guild = self.get_guild(self.config.guild)
             if not guild:
-                guild = await self.fetch_guild(self.jb_guild_id)
+                guild = await self.fetch_guild(self.config.guild)
 
             text_channels = guild.text_channels
             if not text_channels:
@@ -88,9 +87,9 @@ class JetBrains(commands.Bot):
     # Find an emoji
     async def product_emoji(self, name: str) -> str:
         if name:
-            guild = self.get_guild(self.jb_guild_id)
+            guild = self.get_guild(self.config.guild)
             if not guild:
-                guild = await self.fetch_guild(self.jb_guild_id)
+                guild = await self.fetch_guild(self.config.guild)
 
             emojis = guild.emojis
             if not emojis:
@@ -104,9 +103,9 @@ class JetBrains(commands.Bot):
     # Find a category
     async def product_category(self, name: str) -> Optional[CategoryChannel]:
         if name:
-            guild = self.get_guild(self.jb_guild_id)
+            guild = self.get_guild(self.config.guild)
             if not guild:
-                guild = await self.fetch_guild(self.jb_guild_id)
+                guild = await self.fetch_guild(self.config.guild)
 
             categories = guild.categories
             if not categories:
@@ -137,8 +136,8 @@ class JetBrains(commands.Bot):
             channel = await self.product_channel(data["channel_name"], data["category_name"])
             if channel:
                 message.append("\N{PAGE FACING UP} Discord Channel: " + channel.mention +
-                               ("" if ctx.guild and ctx.guild.id == self.jb_guild_id else " - Join with " +
-                                                                                          self.jb_invite))
+                               ("" if ctx.guild and ctx.guild.id == self.config.guild else " - Join with " +
+                                                                                          self.config.invite))
             await ctx.send("\n".join(message))
 
         return func
@@ -198,8 +197,8 @@ class JetBrains(commands.Bot):
             channel = await self.product_channel(data["channel_name"], data["category_name"])
             if channel:
                 message.append("**Please chat about " + data["name"] + " in " + channel.mention + "**" +
-                               ("" if ctx.guild and ctx.guild.id == self.jb_guild_id else " - Join with " +
-                                                                                          self.jb_invite))
+                               ("" if ctx.guild and ctx.guild.id == self.config.guild else " - Join with " +
+                                                                                          self.config.invite))
             else:
                 message.append("*Sorry, there is no channel*")
             await ctx.send("\n".join(message))
@@ -256,10 +255,8 @@ class JetBrains(commands.Bot):
             self.add_command(group)
 
     # Check for admin commands
-    async def admin_check(self, ctx: commands.Context) -> bool:
-        if ctx.author.id in [541305895544422430]:
-            return True
-        return False
+    def admin_check(self, ctx: commands.Context) -> bool:
+        return ctx.author.id in self.config.admins
 
     # Ignore some errors
     async def on_command_error(self, ctx: commands.Context, error):
@@ -278,7 +275,7 @@ class JetBrains(commands.Bot):
 
     # Employee email verification
     async def email_verify(self, message: Message):
-        guild = self.get_guild(self.jb_guild_id)
+        guild = self.get_guild(self.config.guild)
         if guild:
             channel = [f for f in guild.text_channels if f.name.lower().strip() == "employee-verification"]
             if channel:
@@ -324,17 +321,13 @@ class JetBrains(commands.Bot):
         self.load_data()
         self.create_customs()
 
+    def run(self):
+        super().run(self.config.token)
+
 
 if __name__ == "__main__":
-
-    # Dev Mode
-    dev_mode = False
-    if (len(sys.argv) > 1 and sys.argv[1] and sys.argv[1].strip() == "dev") or dev_mode:
-        dev_mode = True
-
     # Create the bot instance
-    bot = JetBrains(command_prefix="?", dev_mode=dev_mode,
-                    intents=Intents(emojis=True, guilds=True, guild_messages=True, message_content=True))
+    bot = JetBrains(config=Config, intents=Intents(emojis=True, guilds=True, guild_messages=True, message_content=True))
 
 
     @bot.command(aliases=["info", "about", "invite", "add", "author", "owner", "server", "support",
@@ -360,7 +353,7 @@ if __name__ == "__main__":
             "have.",
             "> Chat with other developers, see what they're working on using JetBrains tools and bounce "
             "ideas around.",
-            "\N{BLACK RIGHTWARDS ARROW} **Join the JetBrains Community Discord server: <" + bot.jb_invite +
+            "\N{BLACK RIGHTWARDS ARROW} **Join the JetBrains Community Discord server: <" + bot.config.invite +
             ">**", "", await bot.product_emoji("jetbrains") + " **JetBrains s.r.o**",
             "JetBrains is a cutting-edge software vendor specializing in the creation of intelligent "
             "development tools, including IntelliJ IDEA – the leading Java IDE, and the Kotlin programming "
@@ -485,7 +478,7 @@ if __name__ == "__main__":
         """
         Admin: Update emoji on the JetBrains server
         """
-        guild = await bot.fetch_guild(bot.jb_guild_id)
+        guild = await bot.fetch_guild(bot.config.guild)
         new = []
         for item in bot.data:
             if item["icon_path"] and item["emoji_name"]:
@@ -508,7 +501,7 @@ if __name__ == "__main__":
         """
         Admin: Update channels on the JetBrains server
         """
-        guild = await bot.fetch_guild(bot.jb_guild_id)
+        guild = await bot.fetch_guild(bot.config.guild)
         new = []
         categories = {}
         default_title = "Discuss anything about {} here."
@@ -580,11 +573,4 @@ if __name__ == "__main__":
         # Done
         await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
 
-
-    # Start the bot with token from token.txt
-    with open("token" + ("_dev" if dev_mode else "") + ".txt", "r") as f:
-        token = [str(f).strip("\n\r") for f in f.readlines()]
-    bot.run(token[0], reconnect=False)
-
-else:
-    print("Run this by itself")
+    bot.run()

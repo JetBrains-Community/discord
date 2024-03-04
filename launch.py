@@ -32,8 +32,8 @@ def run():
     else:
         path = "venv/bin/python3"
 
-    print("\n\nSpawning (w/ autoreboot): {} {}\n\n".format(os.path.abspath(path), "bot.py"))
-    proc = Popen([os.path.abspath(path), "bot.py", *sys.argv[1:]],
+    print("\n\nSpawning (w/ autoreboot): {} {}\n\n".format(os.path.abspath(path), "jetbot/bot.py"))
+    proc = Popen([os.path.abspath(path), "jetbot/bot.py", *sys.argv[1:]],
                  cwd=os.getcwd(), env=env)
 
     result = proc.communicate()

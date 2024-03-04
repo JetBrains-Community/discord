@@ -1,5 +1,6 @@
-token_dev.txt
-token.txt
-venv/
+/venv/
+/.idea/
+/.vscode/
+__pycache__/
 .DS_Store
-.idea/
+config.py
