@@ -23,6 +23,10 @@ class JetBrains(commands.Bot):
         self.config = kwargs.pop("config")
         super().__init__(*args, **kwargs, command_prefix=commands.when_mentioned_or(*self.config.prefixes))
 
+        self.load_data()
+        self.create_commands_products()
+        self.create_commands_extras()
+
     # Start the loops on boot
     async def setup_hook(self) -> None:
         self.status_loop.start()
@@ -205,8 +209,8 @@ class JetBrains(commands.Bot):
 
         return func
 
-    # Register all custom commands
-    def create_customs(self):
+    # Register all custom commands for products
+    def create_commands_products(self):
         for item in self.data:
             group = commands.Group(
                 self.group_callback(item),
@@ -253,6 +257,250 @@ class JetBrains(commands.Bot):
             group.add_command(channel)
 
             self.add_command(group)
+    
+    # Register all extra commands
+    def create_commands_extras(self):
+        @self.command(aliases=["info", "about", "invite", "add", "author", "owner", "server", "support", "jetbot", "jetbrains"])
+        async def information(ctx: commands.Context):
+            """
+            JetBot & JetBrains Community Discord Server info
+            """
+            await ctx.send("\n".join([
+                await self.product_emoji("jetbrainscommunity") + " **JetBrains Server Bot (JetBot)**",
+                "*The bot responsible for providing information in, and managing, the JetBrains server.*",
+                "View all the commands for JetBrains product and project inforamtion JetBot has in the help "
+                "command `?help`.",
+                "\N{LINK SYMBOL} You can use JetBot in your server, invite it with: <https://discord.com/"
+                "oauth2/authorize?client_id=" + str(self.user.id) + "&scope=bot&permissions=8>.",
+                "*JetBot was created and is maintained by v4#1503 but is also open source at <https://github.com/"
+                "JetBrains-Community/discord>.*", "",
+                await self.product_emoji("jetbrainscommunity") + " **JetBrains Community Discord Server**",
+                "The community home of all the JetBrains products and projects on Discord.",
+                "Are you currently a user of JetBrains products or projects?",
+                "Would you like to learn more about what JetBrains offers and what licensing options there are?",
+                "> Talk to fellow users of the JetBrains software packages and get help with problems you may "
+                "have.",
+                "> Chat with other developers, see what they're working on using JetBrains tools and bounce "
+                "ideas around.",
+                "\N{BLACK RIGHTWARDS ARROW} **Join the JetBrains Community Discord server: <" + self.config.invite +
+                ">**", "", await self.product_emoji("jetbrains") + " **JetBrains s.r.o**",
+                "JetBrains is a cutting-edge software vendor specializing in the creation of intelligent "
+                "development tools, including IntelliJ IDEA – the leading Java IDE, and the Kotlin programming "
+                "language.", "\N{LINK SYMBOL} You can find out more on their website: <https://www.jetbrains.com/>"
+            ]))
+
+
+        def license_t_student(title: bool = True) -> list:
+            message = []
+            if title:
+                message.append("`Student Licensing`")
+            message.append("As a student in higher education you can request a free student license to use all JetBrains "
+                        "products.")
+            message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/student/>")
+            message.append("\N{CLIPBOARD} Request Form: <https://www.jetbrains.com/shop/eform/students>")
+            return message
+
+
+        def license_t_opensource(title: bool = True) -> list:
+            message = []
+            if title:
+                message.append("`Open Source Licensing`")
+            message.append("Do you actively maintain an open source project? If so, you may be able to get a free license "
+                        "to all JetBrains products.")
+            message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/buy/opensource/>")
+            message.append("\N{CLIPBOARD} Request Form: <https://www.jetbrains.com/shop/eform/opensource>")
+            return message
+
+
+        def license_t_personal(title: bool = True) -> list:
+            message = []
+            if title:
+                message.append("`Personal Licenses`")
+            message.append("As a normal, personal, user of JetBrains products, you can buy an all products license or a "
+                        "specific license for the JetBrains products you use.")
+            message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/store/#edition=personal>")
+            return message
+
+
+        def license_t_organization(title: bool = True) -> list:
+            message = []
+            if title:
+                message.append("`Organization Licenses`")
+            message.append("If you run an organization, there is different pricing and licensing packages available for "
+                        "all JetBrains products individually and as a whole.")
+            message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/store/#edition=commercial>")
+            return message
+
+
+        @self.group(aliases=["licensing", "buy", "shop", "store"],
+                invoke_without_command=True, case_insensitive=True)
+        async def license(ctx: commands.Context):
+            """
+            JetBrains product licensing options
+            """
+            await ctx.send("\n".join([
+                await self.product_emoji("jetbrains") + " **JetBrains Product Licensing Options**",
+                "", *license_t_student(),
+                "", *license_t_opensource(),
+                "", *license_t_personal(),
+                "", *license_t_organization()
+            ]))
+
+
+        @license.command(name="student", aliases=["school"])
+        async def license_student(ctx: commands.Context):
+            """
+            JetBrains student licensing info
+            """
+            await ctx.send("\n".join([
+                await self.product_emoji("jetbrains") + " **JetBrains Student Licensing**",
+                *license_t_student(False)
+            ]))
+
+
+        @self.command(help=license_student.help, aliases=license_student.aliases)
+        async def student(ctx: commands.Context):
+            await ctx.invoke(license_student)
+
+
+        @license.command(name="opensource", aliases=["open", "os"])
+        async def license_opensource(ctx: commands.Context):
+            """
+            JetBrains open source licensing info
+            """
+            await ctx.send("\n".join([
+                await self.product_emoji("jetbrains") + " **JetBrains Open Source Licensing**",
+                *license_t_opensource(False)
+            ]))
+
+
+        @self.command(help=license_opensource.help, aliases=license_opensource.aliases)
+        async def opensource(ctx: commands.Context):
+            await ctx.invoke(license_opensource)
+
+
+        @license.command(name="personal", aliases=["normal", "home"])
+        async def license_personal(ctx: commands.Context):
+            """
+            JetBrains personal licensing info
+            """
+            await ctx.send("\n".join([
+                await self.product_emoji("jetbrains") + " **JetBrains Personal Licenses**",
+                *license_t_personal(False)
+            ]))
+
+
+        @license.command(name="organization", aliases=["organisation", "business", "work"])
+        async def license_organization(ctx: commands.Context):
+            """
+            JetBrains organization licensing info
+            """
+            await ctx.send("\n".join([
+                await self.product_emoji("jetbrains") + " **JetBrains Organization Licenses**",
+                *license_t_organization(False)
+            ]))
+
+
+        @self.command()
+        @commands.check(self.admin_check)
+        async def emoji(ctx: commands.Context):
+            """
+            Admin: Update emoji on the JetBrains server
+            """
+            guild = await self.fetch_guild(self.config.guild)
+            new = []
+            for item in self.data:
+                if item["icon_path"] and item["emoji_name"]:
+                    if not await self.product_emoji(item["emoji_name"]):
+                        if os.path.isfile("icons/" + item["icon_path"]):
+                            with open("icons/" + item["icon_path"], "rb") as f:
+                                print("Creating icon... " + item["icon_path"])
+                                await guild.create_custom_emoji(name=item["emoji_name"], image=f.read())
+                            new.append(item["emoji_name"])
+                    else:
+                        print(item["icon_path"] + " icon already exists")
+
+            # Done
+            await ctx.send("Done\n" + "\n".join([await self.product_emoji(f) for f in new]))
+
+
+        @self.command()
+        @commands.check(self.admin_check)
+        async def channels(ctx: commands.Context):
+            """
+            Admin: Update channels on the JetBrains server
+            """
+            guild = await self.fetch_guild(self.config.guild)
+            new = []
+            categories = {}
+            default_title = "Discuss anything about {} here."
+            title_map = {
+                "open source": "Chat about the open source project {} here.",
+                "educational": "Chat about the educational tool {} here."
+            }
+            # Create product channels
+            for item in self.data:
+                if item["channel_name"] and item["category_name"]:
+                    # Get the category
+                    if item["category_name"].lower().strip() in categories:
+                        category = categories[item["category_name"].lower().strip()]
+                    else:
+                        category = await self.product_category(item["category_name"])
+                        if not category:
+                            print("Creating category... " + item["category_name"])
+                            category = await guild.create_category(item["category_name"])
+                        categories[item["category_name"].lower().strip()] = category
+
+                    # Get the channel
+                    channel = await self.product_channel(item["channel_name"], item["category_name"])
+                    if not channel:
+                        print("Creating channel... " + item["channel_name"])
+                        channel = await guild.create_text_channel(item["channel_name"], category=category)
+                        new.append(channel)
+
+                    # Set permissions
+                    print("Updating channel... " + item["channel_name"] + " in " + item["category_name"])
+                    for overwrite in channel.overwrites:
+                        await channel.set_permissions(overwrite, overwrite=None)
+                    await channel.edit(slowmode_delay=5, sync_permissions=True)
+
+                    # Handle read-only
+                    if "read_only" in item and item["read_only"]:
+                        # Send the read-only message
+                        last = [f async for f in channel.history(limit=1)]
+                        if not last or last[0].content != item["read_only"]:
+                            await channel.send(item["read_only"])
+
+                        # Set the topic
+                        product_emoji = await self.product_emoji(item["emoji_name"])
+                        title = "{0} {1} {0}".format(product_emoji, item["name"]) if product_emoji else item["name"]
+                        if channel.topic != title:
+                            await channel.edit(topic=title)
+
+                        # Set permissions
+                        await channel.set_permissions(guild.default_role,
+                                                    send_messages=False,
+                                                    send_messages_in_threads=False,
+                                                    create_private_threads=False,
+                                                    create_public_threads=False)
+                    else:
+                        # Set the topic
+                        product_category = category.name.lower().strip()
+                        product_emoji = await self.product_emoji(item["emoji_name"])
+                        title = title_map[product_category] if product_category in title_map else default_title
+                        title = title.format(item["name"])
+                        title = "{0} {1} {0}".format(product_emoji, title) if product_emoji else title
+                        if channel.topic != title:
+                            await channel.edit(topic=title)
+
+            # Set category perms
+            for category in categories.values():
+                print("Updating category... " + category.name)
+                for overwrite in category.overwrites:
+                    await category.set_permissions(overwrite, overwrite=None)
+
+            # Done
+            await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
 
     # Check for admin commands
     def admin_check(self, ctx: commands.Context) -> bool:
@@ -314,12 +562,10 @@ class JetBrains(commands.Bot):
     # Acknowledge bot is ready to go
     async def on_ready(self):
         print("Logged in as")
-        print(bot.user.name)
-        print(bot.user.id)
-        print("https://discord.com/oauth2/authorize?client_id=" + str(bot.user.id) + "&scope=bot&permissions=8")
+        print(self.user.name)
+        print(self.user.id)
+        print("https://discord.com/oauth2/authorize?client_id=" + str(self.user.id) + "&scope=bot&permissions=8")
         print("------")
-        self.load_data()
-        self.create_customs()
 
     def run(self):
         super().run(self.config.token)
@@ -328,249 +574,4 @@ class JetBrains(commands.Bot):
 if __name__ == "__main__":
     # Create the bot instance
     bot = JetBrains(config=Config, intents=Intents(emojis=True, guilds=True, guild_messages=True, message_content=True))
-
-
-    @bot.command(aliases=["info", "about", "invite", "add", "author", "owner", "server", "support",
-                          "jetbot", "jetbrains"])
-    async def information(ctx: commands.Context):
-        """
-        JetBot & JetBrains Community Discord Server info
-        """
-        await ctx.send("\n".join([
-            await bot.product_emoji("jetbrainscommunity") + " **JetBrains Server Bot (JetBot)**",
-            "*The bot responsible for providing information in, and managing, the JetBrains server.*",
-            "View all the commands for JetBrains product and project inforamtion JetBot has in the help "
-            "command `?help`.",
-            "\N{LINK SYMBOL} You can use JetBot in your server, invite it with: <https://discord.com/"
-            "oauth2/authorize?client_id=" + str(bot.user.id) + "&scope=bot&permissions=8>.",
-            "*JetBot was created and is maintained by v4#1503 but is also open source at <https://github.com/"
-            "JetBrains-Community/discord>.*", "",
-            await bot.product_emoji("jetbrainscommunity") + " **JetBrains Community Discord Server**",
-            "The community home of all the JetBrains products and projects on Discord.",
-            "Are you currently a user of JetBrains products or projects?",
-            "Would you like to learn more about what JetBrains offers and what licensing options there are?",
-            "> Talk to fellow users of the JetBrains software packages and get help with problems you may "
-            "have.",
-            "> Chat with other developers, see what they're working on using JetBrains tools and bounce "
-            "ideas around.",
-            "\N{BLACK RIGHTWARDS ARROW} **Join the JetBrains Community Discord server: <" + bot.config.invite +
-            ">**", "", await bot.product_emoji("jetbrains") + " **JetBrains s.r.o**",
-            "JetBrains is a cutting-edge software vendor specializing in the creation of intelligent "
-            "development tools, including IntelliJ IDEA – the leading Java IDE, and the Kotlin programming "
-            "language.", "\N{LINK SYMBOL} You can find out more on their website: <https://www.jetbrains.com/>"
-        ]))
-
-
-    def license_t_student(title: bool = True) -> list:
-        message = []
-        if title:
-            message.append("`Student Licensing`")
-        message.append("As a student in higher education you can request a free student license to use all JetBrains "
-                       "products.")
-        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/student/>")
-        message.append("\N{CLIPBOARD} Request Form: <https://www.jetbrains.com/shop/eform/students>")
-        return message
-
-
-    def license_t_opensource(title: bool = True) -> list:
-        message = []
-        if title:
-            message.append("`Open Source Licensing`")
-        message.append("Do you actively maintain an open source project? If so, you may be able to get a free license "
-                       "to all JetBrains products.")
-        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/buy/opensource/>")
-        message.append("\N{CLIPBOARD} Request Form: <https://www.jetbrains.com/shop/eform/opensource>")
-        return message
-
-
-    def license_t_personal(title: bool = True) -> list:
-        message = []
-        if title:
-            message.append("`Personal Licenses`")
-        message.append("As a normal, personal, user of JetBrains products, you can buy an all products license or a "
-                       "specific license for the JetBrains products you use.")
-        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/store/#edition=personal>")
-        return message
-
-
-    def license_t_organization(title: bool = True) -> list:
-        message = []
-        if title:
-            message.append("`Organization Licenses`")
-        message.append("If you run an organization, there is different pricing and licensing packages available for "
-                       "all JetBrains products individually and as a whole.")
-        message.append("\N{LINK SYMBOL} Information: <https://www.jetbrains.com/store/#edition=commercial>")
-        return message
-
-
-    @bot.group(aliases=["licensing", "buy", "shop", "store"],
-               invoke_without_command=True, case_insensitive=True)
-    async def license(ctx: commands.Context):
-        """
-        JetBrains product licensing options
-        """
-        await ctx.send("\n".join([
-            await bot.product_emoji("jetbrains") + " **JetBrains Product Licensing Options**",
-            "", *license_t_student(),
-            "", *license_t_opensource(),
-            "", *license_t_personal(),
-            "", *license_t_organization()
-        ]))
-
-
-    @license.command(name="student", aliases=["school"])
-    async def license_student(ctx: commands.Context):
-        """
-        JetBrains student licensing info
-        """
-        await ctx.send("\n".join([
-            await bot.product_emoji("jetbrains") + " **JetBrains Student Licensing**",
-            *license_t_student(False)
-        ]))
-
-
-    @bot.command(help=license_student.help, aliases=license_student.aliases)
-    async def student(ctx: commands.Context):
-        await ctx.invoke(license_student)
-
-
-    @license.command(name="opensource", aliases=["open", "os"])
-    async def license_opensource(ctx: commands.Context):
-        """
-        JetBrains open source licensing info
-        """
-        await ctx.send("\n".join([
-            await bot.product_emoji("jetbrains") + " **JetBrains Open Source Licensing**",
-            *license_t_opensource(False)
-        ]))
-
-
-    @bot.command(help=license_opensource.help, aliases=license_opensource.aliases)
-    async def opensource(ctx: commands.Context):
-        await ctx.invoke(license_opensource)
-
-
-    @license.command(name="personal", aliases=["normal", "home"])
-    async def license_personal(ctx: commands.Context):
-        """
-        JetBrains personal licensing info
-        """
-        await ctx.send("\n".join([
-            await bot.product_emoji("jetbrains") + " **JetBrains Personal Licenses**",
-            *license_t_personal(False)
-        ]))
-
-
-    @license.command(name="organization", aliases=["organisation", "business", "work"])
-    async def license_organization(ctx: commands.Context):
-        """
-        JetBrains organization licensing info
-        """
-        await ctx.send("\n".join([
-            await bot.product_emoji("jetbrains") + " **JetBrains Organization Licenses**",
-            *license_t_organization(False)
-        ]))
-
-
-    @bot.command()
-    @commands.check(bot.admin_check)
-    async def emoji(ctx: commands.Context):
-        """
-        Admin: Update emoji on the JetBrains server
-        """
-        guild = await bot.fetch_guild(bot.config.guild)
-        new = []
-        for item in bot.data:
-            if item["icon_path"] and item["emoji_name"]:
-                if not await bot.product_emoji(item["emoji_name"]):
-                    if os.path.isfile("icons/" + item["icon_path"]):
-                        with open("icons/" + item["icon_path"], "rb") as f:
-                            print("Creating icon... " + item["icon_path"])
-                            await guild.create_custom_emoji(name=item["emoji_name"], image=f.read())
-                        new.append(item["emoji_name"])
-                else:
-                    print(item["icon_path"] + " icon already exists")
-
-        # Done
-        await ctx.send("Done\n" + "\n".join([await bot.product_emoji(f) for f in new]))
-
-
-    @bot.command()
-    @commands.check(bot.admin_check)
-    async def channels(ctx: commands.Context):
-        """
-        Admin: Update channels on the JetBrains server
-        """
-        guild = await bot.fetch_guild(bot.config.guild)
-        new = []
-        categories = {}
-        default_title = "Discuss anything about {} here."
-        title_map = {
-            "open source": "Chat about the open source project {} here.",
-            "educational": "Chat about the educational tool {} here."
-        }
-        # Create product channels
-        for item in bot.data:
-            if item["channel_name"] and item["category_name"]:
-                # Get the category
-                if item["category_name"].lower().strip() in categories:
-                    category = categories[item["category_name"].lower().strip()]
-                else:
-                    category = await bot.product_category(item["category_name"])
-                    if not category:
-                        print("Creating category... " + item["category_name"])
-                        category = await guild.create_category(item["category_name"])
-                    categories[item["category_name"].lower().strip()] = category
-
-                # Get the channel
-                channel = await bot.product_channel(item["channel_name"], item["category_name"])
-                if not channel:
-                    print("Creating channel... " + item["channel_name"])
-                    channel = await guild.create_text_channel(item["channel_name"], category=category)
-                    new.append(channel)
-
-                # Set permissions
-                print("Updating channel... " + item["channel_name"] + " in " + item["category_name"])
-                for overwrite in channel.overwrites:
-                    await channel.set_permissions(overwrite, overwrite=None)
-                await channel.edit(slowmode_delay=5, sync_permissions=True)
-
-                # Handle read-only
-                if "read_only" in item and item["read_only"]:
-                    # Send the read-only message
-                    last = [f async for f in channel.history(limit=1)]
-                    if not last or last[0].content != item["read_only"]:
-                        await channel.send(item["read_only"])
-
-                    # Set the topic
-                    product_emoji = await bot.product_emoji(item["emoji_name"])
-                    title = "{0} {1} {0}".format(product_emoji, item["name"]) if product_emoji else item["name"]
-                    if channel.topic != title:
-                        await channel.edit(topic=title)
-
-                    # Set permissions
-                    await channel.set_permissions(guild.default_role,
-                                                  send_messages=False,
-                                                  send_messages_in_threads=False,
-                                                  create_private_threads=False,
-                                                  create_public_threads=False)
-                else:
-                    # Set the topic
-                    product_category = category.name.lower().strip()
-                    product_emoji = await bot.product_emoji(item["emoji_name"])
-                    title = title_map[product_category] if product_category in title_map else default_title
-                    title = title.format(item["name"])
-                    title = "{0} {1} {0}".format(product_emoji, title) if product_emoji else title
-                    if channel.topic != title:
-                        await channel.edit(topic=title)
-
-        # Set category perms
-        for category in categories.values():
-            print("Updating category... " + category.name)
-            for overwrite in category.overwrites:
-                await category.set_permissions(overwrite, overwrite=None)
-
-        # Done
-        await ctx.send("Done\n" + "\n".join([f.mention for f in new]))
-
     bot.run()
