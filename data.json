@@ -511,8 +511,21 @@
         "name": "WebStorm",
         "icon_path": "icon_WebStorm.png",
         "emoji_name": "webstorm",
-        "channel_name": "webstorm",
-        "category_name": "Products",
+        "channels": [
+            {
+                "name": "webstorm-announcements",
+                "description": "Product announcements and updates"
+            },
+            {
+                "name": "webstorm-general",
+                "description": "General discussions about WebStorm"
+            },
+            {
+                "name": "webstorm-help-hub",
+                "description": "Get help with WebStorm"
+            }
+        ],
+        "category_name": "WebStorm",
         "subreddit": "WebStorm",
         "github": "",
         "product_page": "https://www.jetbrains.com/webstorm/",

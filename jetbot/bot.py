@@ -69,7 +69,42 @@ class JetBrains(commands.Bot):
     def issue_url(self, data: str) -> str:
         return "<https://youtrack.jetbrains.com/issues/" + data + ">"
 
-    # Find a product channel
+    # Find product channels
+    async def product_channels(self, data: dict) -> list[TextChannel]:
+        channels = []
+        if not data.get("category_name"):
+            return channels
+
+        guild = self.get_guild(self.config.guild)
+        if not guild:
+            guild = await self.fetch_guild(self.config.guild)
+
+        text_channels = guild.text_channels
+        if not text_channels:
+            text_channels = await guild.fetch_channels()
+            text_channels = [f for f in text_channels if isinstance(f, TextChannel)]
+
+        # Handle multi-channel configuration
+        if "channels" in data:
+            for channel_config in data["channels"]:
+                for channel in text_channels:
+                    if channel.name == channel_config["name"] \
+                            and channel.category \
+                            and channel.category.name.lower().strip() == data["category_name"].lower().strip():
+                        channels.append(channel)
+                        break
+        # Handle legacy single-channel configuration
+        elif data.get("channel_name"):
+            for channel in text_channels:
+                if channel.name == data["channel_name"] \
+                        and channel.category \
+                        and channel.category.name.lower().strip() == data["category_name"].lower().strip():
+                    channels.append(channel)
+                    break
+
+        return channels
+
+    # Find a product channel (legacy support)
     async def product_channel(self, name: str, category: str) -> Optional[TextChannel]:
         if name and category:
             guild = self.get_guild(self.config.guild)
@@ -137,11 +172,23 @@ class JetBrains(commands.Bot):
             if data["issue_tracker"]:
                 message.append("\N{LEFT-POINTING MAGNIFYING GLASS} Issue Tracker: " + self.issue_url(
                     data["issue_tracker"]))
-            channel = await self.product_channel(data["channel_name"], data["category_name"])
-            if channel:
-                message.append("\N{PAGE FACING UP} Discord Channel: " + channel.mention +
-                               ("" if ctx.guild and ctx.guild.id == self.config.guild else " - Join with " +
-                                                                                          self.config.invite))
+            channels = await self.product_channels(data)
+            if channels:
+                if len(channels) == 1:
+                    message.append("\N{PAGE FACING UP} Discord Channel: " + channels[0].mention +
+                                 ("" if ctx.guild and ctx.guild.id == self.config.guild else " - Join with " +
+                                                                                           self.config.invite))
+                else:
+                    message.append("\N{PAGE FACING UP} Discord Channels:")
+                    for channel in channels:
+                        desc = ""
+                        if "channels" in data:
+                            for ch_config in data["channels"]:
+                                if ch_config["name"] == channel.name:
+                                    desc = f" - {ch_config['description']}"
+                                    break
+                        message.append(f"• {channel.mention}{desc}" +
+                                     ("" if ctx.guild and ctx.guild.id == self.config.guild else f" - Join with {self.config.invite}"))
             await ctx.send("\n".join(message))
 
         return func
@@ -257,7 +304,7 @@ class JetBrains(commands.Bot):
             group.add_command(channel)
 
             self.add_command(group)
-    
+
     # Register all extra commands
     def create_commands_extras(self):
         @self.command(aliases=["info", "about", "invite", "add", "author", "owner", "server", "support", "jetbot", "jetbrains"])
@@ -440,7 +487,7 @@ class JetBrains(commands.Bot):
             }
             # Create product channels
             for item in self.data:
-                if item["channel_name"] and item["category_name"]:
+                if item["category_name"]:
                     # Get the category
                     if item["category_name"].lower().strip() in categories:
                         category = categories[item["category_name"].lower().strip()]
@@ -451,47 +498,85 @@ class JetBrains(commands.Bot):
                             category = await guild.create_category(item["category_name"])
                         categories[item["category_name"].lower().strip()] = category
 
-                    # Get the channel
-                    channel = await self.product_channel(item["channel_name"], item["category_name"])
-                    if not channel:
-                        print("Creating channel... " + item["channel_name"])
-                        channel = await guild.create_text_channel(item["channel_name"], category=category)
-                        new.append(channel)
+                    # Handle multi-channel configuration
+                    if "channels" in item:
+                        for channel_config in item["channels"]:
+                            channel = await self.product_channel(channel_config["name"], item["category_name"])
+                            if not channel:
+                                print("Creating channel... " + channel_config["name"])
+                                channel = await guild.create_text_channel(channel_config["name"], category=category)
+                                new.append(channel)
 
-                    # Set permissions
-                    print("Updating channel... " + item["channel_name"] + " in " + item["category_name"])
-                    for overwrite in channel.overwrites:
-                        await channel.set_permissions(overwrite, overwrite=None)
-                    await channel.edit(slowmode_delay=5, sync_permissions=True)
+                            # Set permissions
+                            print("Updating channel... " + channel_config["name"] + " in " + item["category_name"])
+                            for overwrite in channel.overwrites:
+                                await channel.set_permissions(overwrite, overwrite=None)
+                            await channel.edit(slowmode_delay=5, sync_permissions=True)
 
-                    # Handle read-only
-                    if "read_only" in item and item["read_only"]:
-                        # Send the read-only message
-                        last = [f async for f in channel.history(limit=1)]
-                        if not last or last[0].content != item["read_only"]:
-                            await channel.send(item["read_only"])
-
-                        # Set the topic
-                        product_emoji = await self.product_emoji(item["emoji_name"])
-                        title = "{0} {1} {0}".format(product_emoji, item["name"]) if product_emoji else item["name"]
-                        if channel.topic != title:
-                            await channel.edit(topic=title)
+                    # Handle legacy single-channel configuration
+                    elif item.get("channel_name"):
+                        channel = await self.product_channel(item["channel_name"], item["category_name"])
+                        if not channel:
+                            print("Creating channel... " + item["channel_name"])
+                            channel = await guild.create_text_channel(item["channel_name"], category=category)
+                            new.append(channel)
 
                         # Set permissions
-                        await channel.set_permissions(guild.default_role,
-                                                    send_messages=False,
-                                                    send_messages_in_threads=False,
-                                                    create_private_threads=False,
-                                                    create_public_threads=False)
-                    else:
-                        # Set the topic
-                        product_category = category.name.lower().strip()
-                        product_emoji = await self.product_emoji(item["emoji_name"])
-                        title = title_map[product_category] if product_category in title_map else default_title
-                        title = title.format(item["name"])
-                        title = "{0} {1} {0}".format(product_emoji, title) if product_emoji else title
-                        if channel.topic != title:
-                            await channel.edit(topic=title)
+                        print("Updating channel... " + item["channel_name"] + " in " + item["category_name"])
+                        for overwrite in channel.overwrites:
+                            await channel.set_permissions(overwrite, overwrite=None)
+                        await channel.edit(slowmode_delay=5, sync_permissions=True)
+
+                    channels_to_update = []
+                    if "channels" in item:
+                        channels_to_update.extend(await self.product_channels(item))
+                    elif item.get("channel_name"):
+                        channel = await self.product_channel(item["channel_name"], item["category_name"])
+                        if channel:
+                            channels_to_update.append(channel)
+
+                    for channel in channels_to_update:
+                        # Handle read-only
+                        if "read_only" in item and item["read_only"]:
+                            # Send the read-only message
+                            last = [f async for f in channel.history(limit=1)]
+                            if not last or last[0].content != item["read_only"]:
+                                await channel.send(item["read_only"])
+
+                            # Set the topic
+                            product_emoji = await self.product_emoji(item["emoji_name"])
+                            title = "{0} {1} {0}".format(product_emoji, item["name"]) if product_emoji else item["name"]
+                            if channel.topic != title:
+                                await channel.edit(topic=title)
+
+                            # Set permissions
+                            await channel.set_permissions(guild.default_role,
+                                                        send_messages=False,
+                                                        send_messages_in_threads=False,
+                                                        create_private_threads=False,
+                                                        create_public_threads=False)
+                        else:
+                            # Set the topic
+                            product_category = category.name.lower().strip()
+                            product_emoji = await self.product_emoji(item["emoji_name"])
+
+                            # Get channel description for multi-channel setup
+                            channel_description = None
+                            if "channels" in item:
+                                for ch_config in item["channels"]:
+                                    if ch_config["name"] == channel.name:
+                                        channel_description = ch_config["description"]
+                                        break
+
+                            if channel_description:
+                                title = channel_description
+                            else:
+                                title = title_map[product_category] if product_category in title_map else default_title
+                                title = title.format(item["name"])
+
+                            title = "{0} {1} {0}".format(product_emoji, title) if product_emoji else title
+                            if channel.topic != title:
+                                await channel.edit(topic=title)
 
             # Set category perms
             for category in categories.values():
