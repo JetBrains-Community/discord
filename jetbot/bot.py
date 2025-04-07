@@ -7,7 +7,7 @@ import re
 import traceback
 from typing import Optional
 
-from discord import Activity, ActivityType, Status, CategoryChannel, TextChannel, Message, Intents
+from discord import Activity, ActivityType, Status, CategoryChannel, TextChannel, ForumChannel, StageChannel, Message, Intents, PermissionOverwrite, ChannelType, utils
 from discord.ext import commands, tasks
 
 from jetbot.config import Config
@@ -70,58 +70,52 @@ class JetBrains(commands.Bot):
         return "<https://youtrack.jetbrains.com/issues/" + data + ">"
 
     # Find product channels
-    async def product_channels(self, data: dict) -> list[TextChannel]:
+    async def product_channels(self, data: dict) -> list[TextChannel | ForumChannel | StageChannel]:
         channels = []
-        if not data.get("category_name"):
+        if not data.get("category_name") or not data.get("channels"):
             return channels
 
         guild = self.get_guild(self.config.guild)
         if not guild:
             guild = await self.fetch_guild(self.config.guild)
 
-        text_channels = guild.text_channels
-        if not text_channels:
-            text_channels = await guild.fetch_channels()
-            text_channels = [f for f in text_channels if isinstance(f, TextChannel)]
+        all_channels = await guild.fetch_channels()
+        valid_channels = [c for c in all_channels if isinstance(c, (TextChannel, ForumChannel, StageChannel))]
 
-        # Handle multi-channel configuration
-        if "channels" in data:
-            for channel_config in data["channels"]:
-                for channel in text_channels:
-                    if channel.name == channel_config["name"] \
-                            and channel.category \
-                            and channel.category.name.lower().strip() == data["category_name"].lower().strip():
-                        channels.append(channel)
-                        break
-        # Handle legacy single-channel configuration
-        elif data.get("channel_name"):
-            for channel in text_channels:
-                if channel.name == data["channel_name"] \
+        for channel_config in data["channels"]:
+            for channel in valid_channels:
+                if channel.name == channel_config["name"] \
                         and channel.category \
                         and channel.category.name.lower().strip() == data["category_name"].lower().strip():
+                    # Handle channel permissions
+                    if "permissions" in channel_config:
+                        perms = channel_config["permissions"]
+                        if "send_messages" in perms:
+                            # Lock channel for everyone except specified roles
+                            await channel.set_permissions(guild.default_role, send_messages=False)
+                            for role_name in perms["send_messages"]:
+                                role = utils.get(guild.roles, name=role_name)
+                                if role:
+                                    await channel.set_permissions(role, send_messages=True)
+                        if "reply_messages" in perms:
+                            # Lock replies for everyone except specified roles
+                            await channel.set_permissions(guild.default_role, send_messages=False)
+                            for role_name in perms["reply_messages"]:
+                                role = utils.get(guild.roles, name=role_name)
+                                if role:
+                                    await channel.set_permissions(role, send_messages=True)
+                    # Handle channel type
+                    if "type" in channel_config:
+                        if channel_config["type"] == "forum" and not isinstance(channel, ForumChannel):
+                            # Convert to forum if needed
+                            await channel.edit(type=ChannelType.forum)
+                        elif channel_config["type"] == "stage_voice" and not isinstance(channel, StageChannel):
+                            # Convert to stage if needed
+                            await channel.edit(type=ChannelType.stage_voice)
                     channels.append(channel)
                     break
 
         return channels
-
-    # Find a product channel (legacy support)
-    async def product_channel(self, name: str, category: str) -> Optional[TextChannel]:
-        if name and category:
-            guild = self.get_guild(self.config.guild)
-            if not guild:
-                guild = await self.fetch_guild(self.config.guild)
-
-            text_channels = guild.text_channels
-            if not text_channels:
-                text_channels = await guild.fetch_channels()
-                text_channels = [f for f in text_channels if isinstance(f, TextChannel)]
-
-            for channel in text_channels:
-                if channel.name == name \
-                        and channel.category \
-                        and channel.category.name.lower().strip() == category.lower().strip():
-                    return channel
-        return None
 
     # Find an emoji
     async def product_emoji(self, name: str) -> str:
@@ -244,14 +238,15 @@ class JetBrains(commands.Bot):
     # Channel callback
     def channel_callback(self, data):
         async def func(ctx: commands.Context):
-            message = [await self.product_emoji(data["emoji_name"]) + " " + data["name"] + " - Discord Channel"]
-            channel = await self.product_channel(data["channel_name"], data["category_name"])
-            if channel:
-                message.append("**Please chat about " + data["name"] + " in " + channel.mention + "**" +
-                               ("" if ctx.guild and ctx.guild.id == self.config.guild else " - Join with " +
-                                                                                          self.config.invite))
+            message = [await self.product_emoji(data["emoji_name"]) + " " + data["name"] + " - Discord Channels"]
+            channels = await self.product_channels(data)
+            if channels:
+                join_info = "" if ctx.guild and ctx.guild.id == self.config.guild else " - Join with " + self.config.invite
+                for channel in channels:
+                    desc = next((c["description"] for c in data["channels"] if c["name"] == channel.name), "")
+                    message.append("**" + channel.mention + "** - " + desc + join_info)
             else:
-                message.append("*Sorry, there is no channel*")
+                message.append("*Sorry, there are no channels available*")
             await ctx.send("\n".join(message))
 
         return func
@@ -480,6 +475,7 @@ class JetBrains(commands.Bot):
             guild = await self.fetch_guild(self.config.guild)
             new = []
             categories = {}
+            valid_channels = [c for c in await guild.fetch_channels() if isinstance(c, (TextChannel, ForumChannel, StageChannel))]
             default_title = "Discuss anything about {} here."
             title_map = {
                 "open source": "Chat about the open source project {} here.",
@@ -498,10 +494,16 @@ class JetBrains(commands.Bot):
                             category = await guild.create_category(item["category_name"])
                         categories[item["category_name"].lower().strip()] = category
 
-                    # Handle multi-channel configuration
+                    # Handle channels configuration
                     if "channels" in item:
                         for channel_config in item["channels"]:
-                            channel = await self.product_channel(channel_config["name"], item["category_name"])
+                            channel = None
+                            for existing in valid_channels:
+                                if existing.name == channel_config["name"] and existing.category and \
+                                   existing.category.name.lower().strip() == item["category_name"].lower().strip():
+                                    channel = existing
+                                    break
+
                             if not channel:
                                 print("Creating channel... " + channel_config["name"])
                                 channel = await guild.create_text_channel(channel_config["name"], category=category)
@@ -513,27 +515,7 @@ class JetBrains(commands.Bot):
                                 await channel.set_permissions(overwrite, overwrite=None)
                             await channel.edit(slowmode_delay=5, sync_permissions=True)
 
-                    # Handle legacy single-channel configuration
-                    elif item.get("channel_name"):
-                        channel = await self.product_channel(item["channel_name"], item["category_name"])
-                        if not channel:
-                            print("Creating channel... " + item["channel_name"])
-                            channel = await guild.create_text_channel(item["channel_name"], category=category)
-                            new.append(channel)
-
-                        # Set permissions
-                        print("Updating channel... " + item["channel_name"] + " in " + item["category_name"])
-                        for overwrite in channel.overwrites:
-                            await channel.set_permissions(overwrite, overwrite=None)
-                        await channel.edit(slowmode_delay=5, sync_permissions=True)
-
-                    channels_to_update = []
-                    if "channels" in item:
-                        channels_to_update.extend(await self.product_channels(item))
-                    elif item.get("channel_name"):
-                        channel = await self.product_channel(item["channel_name"], item["category_name"])
-                        if channel:
-                            channels_to_update.append(channel)
+                    channels_to_update = await self.product_channels(item)
 
                     for channel in channels_to_update:
                         # Handle read-only
