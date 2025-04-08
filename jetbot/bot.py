@@ -71,6 +71,7 @@ class JetBrains(commands.Bot):
 
     # Find product channels
     async def product_channels(self, data: dict) -> list[TextChannel | ForumChannel | StageChannel]:
+        """Find product channels without modifying them."""
         channels = []
         if not data.get("category_name") or not data.get("channels"):
             return channels
@@ -87,31 +88,6 @@ class JetBrains(commands.Bot):
                 if channel.name == channel_config["name"] \
                         and channel.category \
                         and channel.category.name.lower().strip() == data["category_name"].lower().strip():
-                    # Handle channel permissions
-                    if "permissions" in channel_config:
-                        perms = channel_config["permissions"]
-                        if "send_messages" in perms:
-                            # Lock channel for everyone except specified roles
-                            await channel.set_permissions(guild.default_role, send_messages=False)
-                            for role_name in perms["send_messages"]:
-                                role = utils.get(guild.roles, name=role_name)
-                                if role:
-                                    await channel.set_permissions(role, send_messages=True)
-                        if "reply_messages" in perms:
-                            # Lock replies for everyone except specified roles
-                            await channel.set_permissions(guild.default_role, send_messages=False)
-                            for role_name in perms["reply_messages"]:
-                                role = utils.get(guild.roles, name=role_name)
-                                if role:
-                                    await channel.set_permissions(role, send_messages=True)
-                    # Handle channel type
-                    if "type" in channel_config:
-                        if channel_config["type"] == "forum" and not isinstance(channel, ForumChannel):
-                            # Convert to forum if needed
-                            await channel.edit(type=ChannelType.forum)
-                        elif channel_config["type"] == "stage_voice" and not isinstance(channel, StageChannel):
-                            # Convert to stage if needed
-                            await channel.edit(type=ChannelType.stage_voice)
                     channels.append(channel)
                     break
 
@@ -504,61 +480,58 @@ class JetBrains(commands.Bot):
                                     channel = existing
                                     break
 
-                            if not channel:
-                                print("Creating channel... " + channel_config["name"])
-                                channel = await guild.create_text_channel(channel_config["name"], category=category)
-                                new.append(channel)
-
-                            # Set permissions
+                            # Reset permissions and set basic configuration
                             print("Updating channel... " + channel_config["name"] + " in " + item["category_name"])
                             for overwrite in channel.overwrites:
                                 await channel.set_permissions(overwrite, overwrite=None)
                             await channel.edit(slowmode_delay=5, sync_permissions=True)
 
+                            # Handle channel type first
+                            if "type" in channel_config:
+                                if channel_config["type"] == "forum" and not isinstance(channel, ForumChannel):
+                                    await channel.edit(type=ChannelType.forum)
+                                elif channel_config["type"] == "stage_voice" and not isinstance(channel, StageChannel):
+                                    await channel.edit(type=ChannelType.stage_voice)
+
                     channels_to_update = await self.product_channels(item)
 
                     for channel in channels_to_update:
-                        # Handle read-only
-                        if "read_only" in item and item["read_only"]:
-                            # Send the read-only message
-                            last = [f async for f in channel.history(limit=1)]
-                            if not last or last[0].content != item["read_only"]:
-                                await channel.send(item["read_only"])
+                        product_emoji = await self.product_emoji(item["emoji_name"])
+                        product_category = category.name.lower().strip()
+                        channel_description = None
 
-                            # Set the topic
-                            product_emoji = await self.product_emoji(item["emoji_name"])
-                            title = "{0} {1} {0}".format(product_emoji, item["name"]) if product_emoji else item["name"]
-                            if channel.topic != title:
-                                await channel.edit(topic=title)
+                        if "channels" in item:
+                            for ch_config in item["channels"]:
+                                if ch_config["name"] == channel.name:
+                                    channel_description = ch_config["description"]
+                                    break
 
-                            # Set permissions
-                            await channel.set_permissions(guild.default_role,
-                                                        send_messages=False,
-                                                        send_messages_in_threads=False,
-                                                        create_private_threads=False,
-                                                        create_public_threads=False)
+                        if channel_description:
+                            title = channel_description
                         else:
-                            # Set the topic
-                            product_category = category.name.lower().strip()
-                            product_emoji = await self.product_emoji(item["emoji_name"])
+                            title = title_map[product_category] if product_category in title_map else default_title
+                            title = title.format(item["name"])
+                        title = "{0} {1} {0}".format(product_emoji, title) if product_emoji else title
 
-                            # Get channel description for multi-channel setup
-                            channel_description = None
-                            if "channels" in item:
-                                for ch_config in item["channels"]:
-                                    if ch_config["name"] == channel.name:
-                                        channel_description = ch_config["description"]
-                                        break
+                        if channel.topic != title:
+                            await channel.edit(topic=title)
 
-                            if channel_description:
-                                title = channel_description
-                            else:
-                                title = title_map[product_category] if product_category in title_map else default_title
-                                title = title.format(item["name"])
-
-                            title = "{0} {1} {0}".format(product_emoji, title) if product_emoji else title
-                            if channel.topic != title:
-                                await channel.edit(topic=title)
+                        # Handle permissions
+                        for ch_config in item["channels"]:
+                            if ch_config["name"] == channel.name and "permissions" in ch_config:
+                                perms = ch_config["permissions"]
+                                if "send_messages" in perms:
+                                    await channel.set_permissions(guild.default_role, send_messages=False)
+                                    for role_name in perms["send_messages"]:
+                                        role = utils.get(guild.roles, name=role_name)
+                                        if role:
+                                            await channel.set_permissions(role, send_messages=True)
+                                if "reply_messages" in perms:
+                                    await channel.set_permissions(guild.default_role, send_messages=False)
+                                    for role_name in perms["reply_messages"]:
+                                        role = utils.get(guild.roles, name=role_name)
+                                        if role:
+                                            await channel.set_permissions(role, send_messages=True)
 
             # Set category perms
             for category in categories.values():

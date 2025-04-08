@@ -613,7 +613,10 @@
         "channels": [
             {
                 "name": "scala",
-                "description": "A programming language that scales with you"
+                "description": "A programming language that scales with you. Join folks developing and using the Scala plugin in their dedicated Discord server: https://discord.gg/aUKpZzeHCK",
+                "permissions": {
+                    "send_messages": ["JetBrains"]
+                }
             }
         ],
         "category_name": "Open Source",
@@ -622,8 +625,7 @@
         "product_page": "",
         "description": "Scala plugin for IntelliJ IDEA",
         "issue_tracker": "SCL",
-        "aliases": ["scl"],
-        "read_only": "Join folks developing and using the Scala plugin in their dedicated Discord server: https://discord.gg/aUKpZzeHCK"
+        "aliases": ["scl"]
     },
     {
         "name": "Space",
