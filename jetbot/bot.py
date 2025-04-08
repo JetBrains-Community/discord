@@ -478,7 +478,6 @@ class JetBrains(commands.Bot):
                                 if existing.name == channel_config["name"] and existing.category and \
                                    existing.category.name.lower().strip() == item["category_name"].lower().strip():
                                     channel = existing
-                                    break
 
                             # Reset permissions and set basic configuration
                             print("Updating channel... " + channel_config["name"] + " in " + item["category_name"])
