@@ -522,16 +522,12 @@ class JetBrains(commands.Bot):
                             # Handle permissions
                             if "permissions" in channel_config:
                                 if "send_messages" in channel_config["permissions"]:
+                                    print("Removing send messages... @everyone in " + channel_config["name"])
                                     await channel.set_permissions(guild.default_role, send_messages=False)
                                     for role_name in channel_config["permissions"]["send_messages"]:
                                         role = utils.get(guild.roles, name=role_name)
                                         if role:
-                                            await channel.set_permissions(role, send_messages=True)
-                                if "reply_messages" in channel_config["permissions"]:
-                                    await channel.set_permissions(guild.default_role, send_messages=False)
-                                    for role_name in channel_config["permissions"]["reply_messages"]:
-                                        role = utils.get(guild.roles, name=role_name)
-                                        if role:
+                                            print("Adding send messages... " + role_name + " in " + channel_config["name"])
                                             await channel.set_permissions(role, send_messages=True)
 
             # Set category perms

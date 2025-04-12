@@ -726,10 +726,10 @@
                 "type": "stage_voice"
             },
             {
-                "name": "webstorm_ama",
+                "name": "webstorm-ama",
                 "description": "Ask Me Anything about WebStorm",
                 "permissions": {
-                    "reply_messages": ["JetBrains"]
+                    "send_messages": ["JetBrains"]
                 }
             }
         ],
