@@ -454,13 +454,6 @@ class JetBrains(commands.Bot):
                 "stage_voice": lambda category: category.create_stage_channel,
             }
 
-            # Topic formatting
-            default_title = "Discuss anything about {} here."
-            title_map = {
-                "open source": "Chat about the open source project {} here.",
-                "educational": "Chat about the educational tool {} here."
-            }
-
             # Store all the categories we encounter
             categories = {}
 
@@ -509,12 +502,8 @@ class JetBrains(commands.Bot):
                                 await channel.set_permissions(overwrite, overwrite=None)
 
                             # Set basic channel settings
-                            if channel_config.get("description"):
-                                title = channel_config["description"]
-                            else:
-                                title = title_map[product_category] if product_category in title_map else default_title
-                                title = title.format(item["name"])
-                                title = "{0} {1} {0}".format(product_emoji, title) if product_emoji else title
+                            title = "{} - {}".format(item["name"], channel_config.get("description", item["description"]))
+                            title = "{0} {1} {0}".format(product_emoji, title) if product_emoji else title
                             if channel.topic != title or channel.slowmode_delay != 5 or not channel.permissions_synced:
                                 print("Updating channel settings... " + channel_config["name"])
                                 await channel.edit(topic=title, slowmode_delay=5, sync_permissions=True)
