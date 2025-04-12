@@ -3,7 +3,12 @@
         "name": "AppCode",
         "icon_path": "icon_AppCode.png",
         "emoji_name": "appcode",
-        "channel_name": "appcode",
+        "channels": [
+            {
+                "name": "appcode",
+                "description": "Smart IDE for iOS/macOS development"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "AppCode",
         "github": "",
@@ -16,7 +21,12 @@
         "name": "Aqua",
         "icon_path": "icon_Aqua.png",
         "emoji_name": "aqua",
-        "channel_name": "aqua",
+        "channels": [
+            {
+                "name": "aqua",
+                "description": "A powerful IDE for test automation"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "",
         "github": "",
@@ -29,7 +39,12 @@
         "name": "CLion",
         "icon_path": "icon_CLion.png",
         "emoji_name": "clion",
-        "channel_name": "clion",
+        "channels": [
+            {
+                "name": "clion",
+                "description": "A cross-platform IDE for C and C++"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "",
         "github": "",
@@ -42,7 +57,12 @@
         "name": "DataGrip",
         "icon_path": "icon_DataGrip.png",
         "emoji_name": "datagrip",
-        "channel_name": "datagrip",
+        "channels": [
+            {
+                "name": "datagrip",
+                "description": "Many databases, one tool"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "DataGrip",
         "github": "",
@@ -55,7 +75,12 @@
         "name": "Datalore",
         "icon_path": "icon_Datalore.png",
         "emoji_name": "datalore",
-        "channel_name": "datalore",
+        "channels": [
+            {
+                "name": "datalore",
+                "description": "An intelligent web application for data analysis"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "Datalore",
         "github": "",
@@ -68,7 +93,12 @@
         "name": "DataSpell",
         "icon_path": "icon_DataSpell.png",
         "emoji_name": "dataspell",
-        "channel_name": "dataspell",
+        "channels": [
+            {
+                "name": "dataspell",
+                "description": "A new IDE by JetBrains for data science"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "dataspell",
         "github": "",
@@ -81,7 +111,12 @@
         "name": "dotCover",
         "icon_path": "icon_dotCover.png",
         "emoji_name": "dotcover",
-        "channel_name": "dotcover",
+        "channels": [
+            {
+                "name": "dotcover",
+                "description": "The .NET Unit Test Runner and Code Coverage Tool"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "dotCover",
         "github": "",
@@ -94,7 +129,12 @@
         "name": "dotMemory",
         "icon_path": "icon_dotMemory.png",
         "emoji_name": "dotmemory",
-        "channel_name": "dotmemory",
+        "channels": [
+            {
+                "name": "dotmemory",
+                "description": "The .NET Memory Profiler"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "dotMemory",
         "github": "",
@@ -107,7 +147,12 @@
         "name": "dotPeek",
         "icon_path": "icon_dotPeek.png",
         "emoji_name": "dotpeek",
-        "channel_name": "dotpeek",
+        "channels": [
+            {
+                "name": "dotpeek",
+                "description": "Free .NET Decompiler and Assembly Browser"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "dotPeek",
         "github": "",
@@ -120,7 +165,12 @@
         "name": "dotTrace",
         "icon_path": "icon_dotTrace.png",
         "emoji_name": "dottrace",
-        "channel_name": "dottrace",
+        "channels": [
+            {
+                "name": "dottrace",
+                "description": "The .NET Performance Profiler"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "dotTrace",
         "github": "",
@@ -133,7 +183,12 @@
         "name": "Fleet",
         "icon_path": "icon_Fleet.png",
         "emoji_name": "fleet",
-        "channel_name": "fleet",
+        "channels": [
+            {
+                "name": "fleet",
+                "description": "Next-generation IDE by JetBrains"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "Fleet",
         "github": "",
@@ -146,7 +201,12 @@
         "name": "Gateway",
         "icon_path": "icon_Gateway.png",
         "emoji_name": "gateway",
-        "channel_name": "gateway",
+        "channels": [
+            {
+                "name": "gateway",
+                "description": "An API gateway for your microservices"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "JetBrains_Gateway",
         "github": "",
@@ -159,7 +219,12 @@
         "name": "GoLand",
         "icon_path": "icon_GoLand.png",
         "emoji_name": "goland",
-        "channel_name": "goland",
+        "channels": [
+            {
+                "name": "goland",
+                "description": "Capable and Ergonomic Go IDE"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "Goland",
         "github": "",
@@ -172,7 +237,12 @@
         "name": "Hub",
         "icon_path": "icon_Hub.png",
         "emoji_name": "hub",
-        "channel_name": "hub",
+        "channels": [
+            {
+                "name": "hub",
+                "description": "The team tool that helps you track, organize and prioritize"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "JetBrains_Hub",
         "github": "",
@@ -185,7 +255,12 @@
         "name": "IdeaVim",
         "icon_path": "icon_IdeaVim.png",
         "emoji_name": "ideavim",
-        "channel_name": "ideavim",
+        "channels": [
+            {
+                "name": "ideavim",
+                "description": "Vim emulation plug-in for IDEs based on the IntelliJ platform"
+            }
+        ],
         "category_name": "Open Source",
         "subreddit": "",
         "github": "ideavim",
@@ -198,7 +273,12 @@
         "name": "IntelliJ IDEA Community",
         "icon_path": "icon_IntelliJ_Community.png",
         "emoji_name": "intellijcommunity",
-        "channel_name": "intellij-idea-community",
+        "channels": [
+            {
+                "name": "intellij-idea-community",
+                "description": "Capable and Ergonomic Java IDE - Community Edition"
+            }
+        ],
         "category_name": "Open Source",
         "subreddit": "",
         "github": "intellij-community",
@@ -211,7 +291,12 @@
         "name": "IntelliJ IDEA Edu",
         "icon_path": "icon_IntelliJ_Edu.png",
         "emoji_name": "intellijedu",
-        "channel_name": "intellij-idea-edu",
+        "channels": [
+            {
+                "name": "intellij-idea-edu",
+                "description": "Capable and Ergonomic Java IDE - Educational Edition"
+            }
+        ],
         "category_name": "Educational",
         "subreddit": "",
         "github": "intellij-community",
@@ -224,7 +309,12 @@
         "name": "IntelliJ IDEA Ultimate",
         "icon_path": "icon_IntelliJ_IDEA.png",
         "emoji_name": "intellijidea",
-        "channel_name": "intellij-idea-ultimate",
+        "channels": [
+            {
+                "name": "intellij-idea-ultimate",
+                "description": "Capable and Ergonomic Java IDE - Ultimate Edition"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "",
         "github": "",
@@ -237,7 +327,12 @@
         "name": "Kotlin",
         "icon_path": "icon_Kotlin.png",
         "emoji_name": "kotlin",
-        "channel_name": "kotlin",
+        "channels": [
+            {
+                "name": "kotlin",
+                "description": "A modern programming language that makes developers happier"
+            }
+        ],
         "category_name": "Open Source",
         "subreddit": "",
         "github": "kotlin",
@@ -250,7 +345,12 @@
         "name": "MPS",
         "icon_path": "icon_MPS.png",
         "emoji_name": "mps",
-        "channel_name": "mps",
+        "channels": [
+            {
+                "name": "mps",
+                "description": "Create your own domain-specific language"
+            }
+        ],
         "category_name": "Open Source",
         "subreddit": "jetbrains_mps",
         "github": "MPS",
@@ -263,7 +363,12 @@
         "name": "PhpStorm",
         "icon_path": "icon_PhpStorm.png",
         "emoji_name": "phpstorm",
-        "channel_name": "phpstorm",
+        "channels": [
+            {
+                "name": "phpstorm",
+                "description": "Lightning-smart PHP IDE"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "",
         "github": "",
@@ -276,7 +381,12 @@
         "name": "Projector",
         "icon_path": "icon_Projector.png",
         "emoji_name": "projector",
-        "channel_name": "projector",
+        "channels": [
+            {
+                "name": "projector",
+                "description": "Run JetBrains IDEs remotely in the browser"
+            }
+        ],
         "category_name": "Open Source",
         "subreddit": "JetBrains_Projector",
         "github": "https://github.com/JetBrains/projector-server",
@@ -289,7 +399,12 @@
         "name": "PyCharm",
         "icon_path": "icon_PyCharm.png",
         "emoji_name": "pycharm",
-        "channel_name": "pycharm",
+        "channels": [
+            {
+                "name": "pycharm",
+                "description": "Python IDE for Professional Developers"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "pycharm",
         "github": "",
@@ -302,7 +417,12 @@
         "name": "PyCharm Community",
         "icon_path": "icon_PyCharm_Community.png",
         "emoji_name": "pycharmcommunity",
-        "channel_name": "pycharm-community",
+        "channels": [
+            {
+                "name": "pycharm-community",
+                "description": "Python IDE for Professional Developers - Community Edition"
+            }
+        ],
         "category_name": "Open Source",
         "subreddit": "pycharm",
         "github": "intellij-community/tree/master/python",
@@ -315,7 +435,12 @@
         "name": "PyCharm Edu",
         "icon_path": "icon_PyCharm_Edu.png",
         "emoji_name": "pycharmedu",
-        "channel_name": "pycharm-edu",
+        "channels": [
+            {
+                "name": "pycharm-edu",
+                "description": "Python IDE for Professional Developers - Educational Edition"
+            }
+        ],
         "category_name": "Educational",
         "subreddit": "pycharm",
         "github": "",
@@ -328,7 +453,12 @@
         "name": "Qodana",
         "icon_path": "icon_Qodana.png",
         "emoji_name": "qodana",
-        "channel_name": "qodana",
+        "channels": [
+            {
+                "name": "qodana",
+                "description": "Code Quality Platform for CI/CD"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "Qodana",
         "github": "",
@@ -341,7 +471,12 @@
         "name": "ReSharper",
         "icon_path": "icon_ReSharper.png",
         "emoji_name": "resharper",
-        "channel_name": "resharper",
+        "channels": [
+            {
+                "name": "resharper",
+                "description": "The Visual Studio Extension for .NET Developers"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "ReSharper",
         "github": "",
@@ -354,7 +489,12 @@
         "name": "ReSharper C++",
         "icon_path": "icon_ReSharper_CPP.png",
         "emoji_name": "resharpercpp",
-        "channel_name": "resharper-cpp",
+        "channels": [
+            {
+                "name": "resharper-cpp",
+                "description": "The Visual Studio Extension for C++ Developers"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "ReSharper",
         "github": "",
@@ -380,7 +520,12 @@
         "name": "Rider",
         "icon_path": "icon_Rider.png",
         "emoji_name": "rider",
-        "channel_name": "rider",
+        "channels": [
+            {
+                "name": "rider",
+                "description": "Cross-Platform .NET IDE"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "JetBrains_Rider",
         "github": "",
@@ -393,7 +538,12 @@
         "name": "RiderFlow",
         "icon_path": "icon_RiderFlow.png",
         "emoji_name": "riderflow",
-        "channel_name": "riderflow",
+        "channels": [
+            {
+                "name": "riderflow",
+                "description": "Level Design Tools for Unity"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "",
         "github": "",
@@ -406,7 +556,12 @@
         "name": "Ring UI",
         "icon_path": "icon_Ring_UI.png",
         "emoji_name": "ringui",
-        "channel_name": "ring-ui",
+        "channels": [
+            {
+                "name": "ring-ui",
+                "description": "A collection of UI components for web applications"
+            }
+        ],
         "category_name": "Open Source",
         "subreddit": "",
         "github": "ring-ui",
@@ -419,7 +574,12 @@
         "name": "RubyMine",
         "icon_path": "icon_RubyMine.png",
         "emoji_name": "rubymine",
-        "channel_name": "rubymine",
+        "channels": [
+            {
+                "name": "rubymine",
+                "description": "The Most Intelligent Ruby and Rails IDE"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "RubyMine",
         "github": "",
@@ -432,7 +592,12 @@
         "name": "RustRover",
         "icon_path": "icon_RustRover.png",
         "emoji_name": "rustrover",
-        "channel_name": "rustrover",
+        "channels": [
+            {
+                "name": "rustrover",
+                "description": "A dedicated IDE for Rust developers"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "RustRover",
         "github": "",
@@ -445,21 +610,33 @@
         "name": "Scala",
         "icon_path": "icon_IntelliJ_Scala.png",
         "emoji_name": "scala",
-        "channel_name": "scala",
+        "channels": [
+            {
+                "name": "scala",
+                "description": "A programming language that scales with you. Join folks developing and using the Scala plugin in their dedicated Discord server: https://discord.gg/aUKpZzeHCK",
+                "permissions": {
+                    "send_messages": ["JetBrains"]
+                }
+            }
+        ],
         "category_name": "Open Source",
         "subreddit": "",
         "github": "https://github.com/JetBrains/intellij-scala",
         "product_page": "",
         "description": "Scala plugin for IntelliJ IDEA",
         "issue_tracker": "SCL",
-        "aliases": ["scl"],
-        "read_only": "Join folks developing and using the Scala plugin in their dedicated Discord server: https://discord.gg/aUKpZzeHCK"
+        "aliases": ["scl"]
     },
     {
         "name": "Space",
         "icon_path": "icon_Space.png",
         "emoji_name": "space",
-        "channel_name": "space",
+        "channels": [
+            {
+                "name": "space",
+                "description": "The All-in-One Solution for Software Teams"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "JetBrains_Space",
         "github": "",
@@ -472,7 +649,12 @@
         "name": "TeamCity",
         "icon_path": "icon_TeamCity.png",
         "emoji_name": "teamcity",
-        "channel_name": "teamcity",
+        "channels": [
+            {
+                "name": "teamcity",
+                "description": "Powerful Continuous Integration out of the box"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "teamcity",
         "github": "",
@@ -485,7 +667,12 @@
         "name": "Toolbox",
         "icon_path": "icon_Toolbox.png",
         "emoji_name": "toolbox",
-        "channel_name": "toolbox",
+        "channels": [
+            {
+                "name": "toolbox",
+                "description": "Manage your tools and projects in one place"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "",
         "github": "",
@@ -498,7 +685,12 @@
         "name": "Upsource",
         "icon_path": "icon_Upsource.png",
         "emoji_name": "upsource",
-        "channel_name": "upsource",
+        "channels": [
+            {
+                "name": "upsource",
+                "description": "Code review, team collaboration, project analytics"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "Upsource",
         "github": "",
@@ -511,8 +703,37 @@
         "name": "WebStorm",
         "icon_path": "icon_WebStorm.png",
         "emoji_name": "webstorm",
-        "channel_name": "webstorm",
-        "category_name": "Products",
+        "channels": [
+            {
+                "name": "webstorm-announcements",
+                "description": "Product announcements and updates",
+                "permissions": {
+                    "send_messages": ["JetBrains"]
+                }
+            },
+            {
+                "name": "webstorm-general",
+                "description": "General discussions about WebStorm"
+            },
+            {
+                "name": "webstorm-help-hub",
+                "description": "Get help with WebStorm",
+                "type": "forum"
+            },
+            {
+                "name": "webstorm-office-hours",
+                "description": "Voice channel for WebStorm office hours",
+                "type": "stage_voice"
+            },
+            {
+                "name": "webstorm-ama",
+                "description": "Ask Me Anything about WebStorm",
+                "permissions": {
+                    "send_messages": ["JetBrains"]
+                }
+            }
+        ],
+        "category_name": "WebStorm",
         "subreddit": "WebStorm",
         "github": "",
         "product_page": "https://www.jetbrains.com/webstorm/",
@@ -524,7 +745,12 @@
         "name": "Writerside",
         "icon_path": "icon_Writerside.png",
         "emoji_name": "writerside",
-        "channel_name": "writerside",
+        "channels": [
+            {
+                "name": "writerside",
+                "description": "A technical authoring and publishing environment"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "",
         "github": "",
@@ -537,7 +763,12 @@
         "name": "YouTrack",
         "icon_path": "icon_YouTrack.png",
         "emoji_name": "youtrack",
-        "channel_name": "youtrack",
+        "channels": [
+            {
+                "name": "youtrack",
+                "description": "The issue tracker designed for agile software teams"
+            }
+        ],
         "category_name": "Products",
         "subreddit": "YouTrack",
         "github": "",
