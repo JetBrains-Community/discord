@@ -84,6 +84,7 @@ class JetBrains(commands.Bot):
         for channel_config in data["channels"]:
             for channel in valid_channels:
                 if channel.name == channel_config["name"] \
+                        and channel.type == ChannelType[channel_config.get("type", "text")] \
                         and channel.category \
                         and channel.category.name.lower().strip() == data["category_name"].lower().strip():
                     channels.append(channel)
@@ -447,6 +448,13 @@ class JetBrains(commands.Bot):
             Admin: Update channels on the JetBrains server
             """
             guild = await self.fetch_guild(self.config.guild)
+            channel_methods = {
+                "text": lambda category: category.create_text_channel,
+                "forum": lambda category: category.create_forum,
+                "stage_voice": lambda category: category.create_stage_channel,
+            }
+
+            # Topic formatting
             default_title = "Discuss anything about {} here."
             title_map = {
                 "open source": "Chat about the open source project {} here.",
@@ -492,9 +500,7 @@ class JetBrains(commands.Bot):
                             # Create the channel if it doesn't exist
                             if not channel:
                                 print("Creating channel... " + channel_config["name"] + " in " + item["category_name"])
-                                channel = await category.create_text_channel(channel_config["name"],
-                                                                             topic=channel_config["description"],
-                                                                             reason="Creating product channel")
+                                channel = await channel_methods[channel_config.get("type", "text")](category)(channel_config["name"])
                                 new.append(channel)
 
                             # Reset permissions
@@ -512,15 +518,6 @@ class JetBrains(commands.Bot):
                             if channel.topic != title or channel.slowmode_delay != 5 or not channel.permissions_synced:
                                 print("Updating channel settings... " + channel_config["name"])
                                 await channel.edit(topic=title, slowmode_delay=5, sync_permissions=True)
-
-                            # Handle mismatched channel type
-                            if "type" in channel_config:
-                                if channel_config["type"] == "text" and not isinstance(channel, TextChannel):
-                                    await channel.edit(type=ChannelType.text)
-                                elif channel_config["type"] == "forum" and not isinstance(channel, ForumChannel):
-                                    await channel.edit(type=ChannelType.forum)
-                                elif channel_config["type"] == "stage_voice" and not isinstance(channel, StageChannel):
-                                    await channel.edit(type=ChannelType.stage_voice)
 
                             # Handle permissions
                             if "permissions" in channel_config:
