@@ -728,6 +728,7 @@
             {
                 "name": "webstorm-ama",
                 "description": "Ask Me Anything about WebStorm",
+                "type": "forum",
                 "permissions": {
                     "send_messages": ["JetBrains"]
                 }
