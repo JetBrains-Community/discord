@@ -496,6 +496,17 @@ class JetBrains(commands.Bot):
                                 channel = await channel_methods[channel_config.get("type", "text")](category)(channel_config["name"])
                                 new.append(channel)
 
+                                # Create forum tags if it's a forum channel and has available_tags
+                                if isinstance(channel, ForumChannel) and "available_tags" in channel_config:
+                                    print("Creating forum tags... " + channel_config["name"])
+                                    for tag_name in channel_config["available_tags"]:
+                                        try:
+                                            await channel.create_tag(name=tag_name)
+                                            print(f"Created tag: {tag_name}")
+                                        except Exception as e:
+                                            print(f"Failed to create tag {tag_name}: {str(e)}")
+                                            continue
+
                             # Reset permissions
                             for overwrite in channel.overwrites:
                                 print("Resetting channel permissions... " + channel_config["name"], overwrite)
