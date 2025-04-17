@@ -496,16 +496,24 @@ class JetBrains(commands.Bot):
                                 channel = await channel_methods[channel_config.get("type", "text")](category)(channel_config["name"])
                                 new.append(channel)
 
-                                # Create forum tags if it's a forum channel and has available_tags
-                                if isinstance(channel, ForumChannel) and "available_tags" in channel_config:
-                                    print("Creating forum tags... " + channel_config["name"])
-                                    for tag_name in channel_config["available_tags"]:
-                                        try:
-                                            await channel.create_tag(name=tag_name)
-                                            print(f"Created tag: {tag_name}")
-                                        except Exception as e:
-                                            print(f"Failed to create tag {tag_name}: {str(e)}")
-                                            continue
+                            # Create or update forum tags if it's a forum channel and has available_tags
+                            if isinstance(channel, ForumChannel) and "available_tags" in channel_config:
+                                print("Processing forum tags for... " + channel_config["name"])
+                                # Get existing tags
+                                existing_tags = [tag.name for tag in channel.available_tags]
+
+                                for tag_name in channel_config["available_tags"]:
+                                    # Skip if tag already exists
+                                    if tag_name in existing_tags:
+                                        print(f"Tag already exists: {tag_name}")
+                                        continue
+
+                                    try:
+                                        await channel.create_tag(name=tag_name)
+                                        print(f"Created tag: {tag_name}")
+                                    except Exception as e:
+                                        print(f"Failed to create tag {tag_name}: {str(e)}")
+                                        continue
 
                             # Reset permissions
                             for overwrite in channel.overwrites:
