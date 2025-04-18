@@ -501,8 +501,22 @@ class JetBrains(commands.Bot):
                                 print("Processing forum tags for... " + channel_config["name"])
                                 # Get existing tags
                                 existing_tags = [tag.name for tag in channel.available_tags]
+                                existing_tag_objects = {tag.name: tag for tag in channel.available_tags}
+
+                                # Validate total number of tags
+                                new_tags = [tag for tag in channel_config["available_tags"] if tag not in existing_tags]
+                                if len(existing_tags) + len(new_tags) > 20:
+                                    error_msg = f"Error: Channel '{channel_config['name']}' would exceed the maximum of 20 tags. Current: {len(existing_tags)}, Attempting to add: {len(new_tags)}"
+                                    print(error_msg)
+                                    raise ValueError(error_msg)
 
                                 for tag_name in channel_config["available_tags"]:
+                                    # Validate tag length
+                                    if len(tag_name) > 20:
+                                        error_msg = f"Error: Tag '{tag_name}' exceeds the maximum length of 20 characters"
+                                        print(error_msg)
+                                        raise ValueError(error_msg)
+
                                     # Skip if tag already exists
                                     if tag_name in existing_tags:
                                         print(f"Tag already exists: {tag_name}")
@@ -513,6 +527,16 @@ class JetBrains(commands.Bot):
                                         print(f"Created tag: {tag_name}")
                                     except Exception as e:
                                         print(f"Failed to create tag {tag_name}: {str(e)}")
+                                        continue
+
+                                # Remove tags that exist in the channel but are not in the config
+                                tags_to_remove = [tag_name for tag_name in existing_tags if tag_name not in channel_config["available_tags"]]
+                                for tag_name in tags_to_remove:
+                                    try:
+                                        await channel.delete_tag(existing_tag_objects[tag_name])
+                                        print(f"Removed tag: {tag_name}")
+                                    except Exception as e:
+                                        print(f"Failed to remove tag {tag_name}: {str(e)}")
                                         continue
 
                             # Reset permissions
@@ -563,6 +587,11 @@ class JetBrains(commands.Bot):
         error = getattr(error, "original", error)
 
         if isinstance(error, ignored):
+            return
+
+        # Handle tag validation errors
+        if isinstance(error, ValueError) and ("maximum of 20 tags" in str(error) or "maximum length of 20 characters" in str(error)):
+            await ctx.send(f"Error: {str(error)}")
             return
 
         # Unhandled error
