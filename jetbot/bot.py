@@ -509,6 +509,16 @@ class JetBrains(commands.Bot):
                                     print(error_msg)
                                     raise ValueError(error_msg)
 
+                                # Remove tags that exist in the channel but are not in the config
+                                tags_to_remove = [tag_name for tag_name in existing_tags if tag_name not in channel_config["available_tags"]]
+                                for tag_name in tags_to_remove:
+                                    try:
+                                        await channel.delete_tag(existing_tag_objects[tag_name])
+                                        print(f"Removed tag: {tag_name}")
+                                    except Exception as e:
+                                        print(f"Failed to remove tag {tag_name}: {str(e)}")
+                                        continue
+
                                 for tag_name in channel_config["available_tags"]:
                                     # Validate tag length
                                     if len(tag_name) > 20:
@@ -526,16 +536,6 @@ class JetBrains(commands.Bot):
                                         print(f"Created tag: {tag_name}")
                                     except Exception as e:
                                         print(f"Failed to create tag {tag_name}: {str(e)}")
-                                        continue
-
-                                # Remove tags that exist in the channel but are not in the config
-                                tags_to_remove = [tag_name for tag_name in existing_tags if tag_name not in channel_config["available_tags"]]
-                                for tag_name in tags_to_remove:
-                                    try:
-                                        await channel.delete_tag(existing_tag_objects[tag_name])
-                                        print(f"Removed tag: {tag_name}")
-                                    except Exception as e:
-                                        print(f"Failed to remove tag {tag_name}: {str(e)}")
                                         continue
 
                             # Reset permissions
