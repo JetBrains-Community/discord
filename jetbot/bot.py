@@ -504,9 +504,8 @@ class JetBrains(commands.Bot):
                                 existing_tag_objects = {tag.name: tag for tag in channel.available_tags}
 
                                 # Validate total number of tags
-                                new_tags = [tag for tag in channel_config["available_tags"] if tag not in existing_tags]
-                                if len(existing_tags) + len(new_tags) > 20:
-                                    error_msg = f"Error: Channel '{channel_config['name']}' would exceed the maximum of 20 tags. Current: {len(existing_tags)}, Attempting to add: {len(new_tags)}"
+                                if len(channel_config["available_tags"]) > 20:
+                                    error_msg = f"Error: Channel '{channel_config['name']}' would exceed the maximum of 20 tags. Config has {len(channel_config['available_tags'])} tags."
                                     print(error_msg)
                                     raise ValueError(error_msg)
 
