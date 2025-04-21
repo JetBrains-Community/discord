@@ -718,7 +718,29 @@
             {
                 "name": "webstorm-help-hub",
                 "description": "Get help with WebStorm",
-                "type": "forum"
+                "type": "forum",
+                "available_tags": [
+                    "Angular",
+                    "Astro",
+                    "CSS",
+                    "ESLint",
+                    "GraphQL",
+                    "HTML",
+                    "JS/TS",
+                    "JSDocs/TSDoc",
+                    "Testing",
+                    "Node/Bun/Deno",
+                    "npm/pnpm/yarn",
+                    "Prettier",
+                    "Prisma",
+                    "React",
+                    "Vue",
+                    "Tailwind",
+                    "Vite",
+                    "Bug",
+                    "Feature Request",
+                    "Performance problem"
+                ]
             },
             {
                 "name": "webstorm-office-hours",
@@ -730,7 +752,7 @@
                 "description": "Ask Me Anything about WebStorm",
                 "type": "forum",
                 "permissions": {
-                    "send_messages": ["JetBrains"]
+                    "send_messages_in_threads": ["JetBrains"]
                 }
             }
         ],

@@ -7,7 +7,7 @@ import re
 import traceback
 from typing import Optional
 
-from discord import Activity, ActivityType, Status, CategoryChannel, TextChannel, ForumChannel, StageChannel, Message, Intents, PermissionOverwrite, ChannelType, utils
+from discord import Activity, ActivityType, Status, CategoryChannel, TextChannel, ForumChannel, StageChannel, ForumTag, Message, Intents, PermissionOverwrite, ChannelType, utils
 from discord.ext import commands, tasks
 
 from jetbot.config import Config
@@ -496,6 +496,38 @@ class JetBrains(commands.Bot):
                                 channel = await channel_methods[channel_config.get("type", "text")](category)(channel_config["name"])
                                 new.append(channel)
 
+                            # Create or update forum tags if it's a forum channel and has available_tags
+                            if isinstance(channel, ForumChannel) and "available_tags" in channel_config:
+                                print("Processing forum tags for... " + channel_config["name"])
+
+                                # Validate total number of tags
+                                if len(channel_config["available_tags"]) > 20:
+                                    error_msg = f"Error: Channel '{channel_config['name']}' would exceed the maximum of 20 tags. Config has {len(channel_config['available_tags'])} tags."
+                                    print(error_msg)
+                                    raise ValueError(error_msg)
+                                
+                                # Validate tag length
+                                for tag_name in channel_config["available_tags"]:
+                                    if len(tag_name) > 20:
+                                        error_msg = f"Error: Tag '{tag_name}' exceeds the maximum length of 20 characters"
+                                        print(error_msg)
+                                        raise ValueError(error_msg)
+                                
+                                # Compute expected tags 
+                                existing_tags = {tag.name: tag for tag in channel.available_tags if tag.name in channel_config["available_tags"]}
+                                new_tags = [ForumTag(name=tag_name) for tag_name in channel_config["available_tags"] if tag_name not in existing_tags]
+                                expected_tags = list(existing_tags.values()) + new_tags
+
+                                # Match the expected tag order in the config
+                                expected_tags.sort(key=lambda tag: channel_config["available_tags"].index(tag.name))
+                                
+                                # Sync tags
+                                try:
+                                    await channel.edit(available_tags=expected_tags)
+                                except Exception as e:
+                                    print(f"Failed to sync tags for {channel_config['name']} ... {str(e)}")
+                                    continue
+
                             # Reset permissions
                             for overwrite in channel.overwrites:
                                 print("Resetting channel permissions... " + channel_config["name"], overwrite)
@@ -510,14 +542,17 @@ class JetBrains(commands.Bot):
 
                             # Handle permissions
                             if "permissions" in channel_config:
-                                if "send_messages" in channel_config["permissions"]:
-                                    print("Removing send messages... @everyone in " + channel_config["name"])
-                                    await channel.set_permissions(guild.default_role, send_messages=False)
-                                    for role_name in channel_config["permissions"]["send_messages"]:
+                                for permission_name, role_names in channel_config["permissions"].items():
+                                    print(f"Removing {permission_name}... @everyone in {channel_config['name']}")
+                                    # Create permission kwargs dynamically
+                                    permission_kwargs = {permission_name: False}
+                                    await channel.set_permissions(guild.default_role, **permission_kwargs)
+                                    for role_name in role_names:
                                         role = utils.get(guild.roles, name=role_name)
                                         if role:
-                                            print("Adding send messages... " + role_name + " in " + channel_config["name"])
-                                            await channel.set_permissions(role, send_messages=True)
+                                            print(f"Adding {permission_name}... {role_name} in {channel_config['name']}")
+                                            permission_kwargs[permission_name] = True
+                                            await channel.set_permissions(role, **permission_kwargs)
 
             # Set category perms
             for category in categories.values():
@@ -541,6 +576,11 @@ class JetBrains(commands.Bot):
         error = getattr(error, "original", error)
 
         if isinstance(error, ignored):
+            return
+
+        # Handle tag validation errors
+        if isinstance(error, ValueError) and ("maximum of 20 tags" in str(error) or "maximum length of 20 characters" in str(error)):
+            await ctx.send(f"Error: {str(error)}")
             return
 
         # Unhandled error
