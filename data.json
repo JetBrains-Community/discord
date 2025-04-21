@@ -731,7 +731,6 @@
                     "Testing",
                     "Node/Bun/Deno",
                     "npm/pnpm/yarn",
-                    "PostCSS",
                     "Prettier",
                     "Prisma",
                     "React",
