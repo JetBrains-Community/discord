@@ -7,7 +7,7 @@ import re
 import traceback
 from typing import Optional
 
-from discord import Activity, ActivityType, Status, CategoryChannel, TextChannel, ForumChannel, StageChannel, Message, Intents, PermissionOverwrite, ChannelType, utils
+from discord import Activity, ActivityType, Status, CategoryChannel, TextChannel, ForumChannel, StageChannel, ForumTag, Message, Intents, PermissionOverwrite, ChannelType, utils
 from discord.ext import commands, tasks
 
 from jetbot.config import Config
@@ -499,44 +499,34 @@ class JetBrains(commands.Bot):
                             # Create or update forum tags if it's a forum channel and has available_tags
                             if isinstance(channel, ForumChannel) and "available_tags" in channel_config:
                                 print("Processing forum tags for... " + channel_config["name"])
-                                # Get existing tags
-                                existing_tags = [tag.name for tag in channel.available_tags]
-                                existing_tag_objects = {tag.name: tag for tag in channel.available_tags}
 
                                 # Validate total number of tags
                                 if len(channel_config["available_tags"]) > 20:
                                     error_msg = f"Error: Channel '{channel_config['name']}' would exceed the maximum of 20 tags. Config has {len(channel_config['available_tags'])} tags."
                                     print(error_msg)
                                     raise ValueError(error_msg)
-
-                                # Remove tags that exist in the channel but are not in the config
-                                tags_to_remove = [tag_name for tag_name in existing_tags if tag_name not in channel_config["available_tags"]]
-                                for tag_name in tags_to_remove:
-                                    try:
-                                        await channel.delete_tag(existing_tag_objects[tag_name])
-                                        print(f"Removed tag: {tag_name}")
-                                    except Exception as e:
-                                        print(f"Failed to remove tag {tag_name}: {str(e)}")
-                                        continue
-
+                                
+                                # Validate tag length
                                 for tag_name in channel_config["available_tags"]:
-                                    # Validate tag length
                                     if len(tag_name) > 20:
                                         error_msg = f"Error: Tag '{tag_name}' exceeds the maximum length of 20 characters"
                                         print(error_msg)
                                         raise ValueError(error_msg)
+                                
+                                # Compute expected tags 
+                                existing_tags = {tag.name: tag for tag in channel.available_tags if tag.name in channel_config["available_tags"]}
+                                new_tags = [ForumTag(name=tag_name) for tag_name in channel_config["available_tags"] if tag_name not in existing_tags]
+                                expected_tags = list(existing_tags.values()) + new_tags
 
-                                    # Skip if tag already exists
-                                    if tag_name in existing_tags:
-                                        print(f"Tag already exists: {tag_name}")
-                                        continue
-
-                                    try:
-                                        await channel.create_tag(name=tag_name)
-                                        print(f"Created tag: {tag_name}")
-                                    except Exception as e:
-                                        print(f"Failed to create tag {tag_name}: {str(e)}")
-                                        continue
+                                # Match the expected tag order in the config
+                                expected_tags.sort(key=lambda tag: channel_config["available_tags"].index(tag.name))
+                                
+                                # Sync tags
+                                try:
+                                    await channel.edit(available_tags=expected_tags)
+                                except Exception as e:
+                                    print(f"Failed to sync tags for {channel_config['name']} ... {str(e)}")
+                                    continue
 
                             # Reset permissions
                             for overwrite in channel.overwrites:
