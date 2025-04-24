@@ -323,6 +323,27 @@
         "issue_tracker": "IDEA",
         "aliases": ["intellij", "idea"]
     },
+     {
+        "name": "Junie",
+        "icon_path": "icon_Junie.png",
+        "emoji_name": "junie",
+        "channels": [
+            {
+                "name": "junie",
+                "description": "Your smart coding agent",
+                "permissions": {
+                    "send_messages": ["JetBrains"]
+                }
+            }
+        ],
+        "category_name": "Products",
+        "subreddit": "",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/junie/",
+        "description": "Your smart coding agent",
+        "issue_tracker": "JUNIE",
+        "aliases": []
+    },
     {
         "name": "Kotlin",
         "icon_path": "icon_Kotlin.png",
@@ -789,7 +810,7 @@
         "channels": [
             {
                 "name": "youtrack",
-                "description": "The issue tracker designed for agile software teams"
+                "description": "The issue tracker designed for agile software teams",
             }
         ],
         "category_name": "Products",
