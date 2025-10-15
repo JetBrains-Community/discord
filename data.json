@@ -323,7 +323,7 @@
         "issue_tracker": "IDEA",
         "aliases": ["intellij", "idea"]
     },
-     {
+    {
         "name": "Junie",
         "icon_path": "icon_Junie.png",
         "emoji_name": "junie",
