@@ -481,6 +481,7 @@ class JetBrains(commands.Bot):
 
                         for channel_config in item["channels"]:
                             channel = None
+                            created = False
 
                             # Attempt to find the channel
                             # Assumes that an item doesn't have two channels of the same name with different types
@@ -495,6 +496,7 @@ class JetBrains(commands.Bot):
                                 print("Creating channel... " + channel_config["name"] + " in " + item["category_name"])
                                 channel = await channel_methods[channel_config.get("type", "text")](category)(channel_config["name"])
                                 new.append(channel)
+                                created = True
 
                             # Create or update forum tags if it's a forum channel and has available_tags
                             if isinstance(channel, ForumChannel) and "available_tags" in channel_config:
@@ -505,22 +507,22 @@ class JetBrains(commands.Bot):
                                     error_msg = f"Error: Channel '{channel_config['name']}' would exceed the maximum of 20 tags. Config has {len(channel_config['available_tags'])} tags."
                                     print(error_msg)
                                     raise ValueError(error_msg)
-                                
+
                                 # Validate tag length
                                 for tag_name in channel_config["available_tags"]:
                                     if len(tag_name) > 20:
                                         error_msg = f"Error: Tag '{tag_name}' exceeds the maximum length of 20 characters"
                                         print(error_msg)
                                         raise ValueError(error_msg)
-                                
-                                # Compute expected tags 
+
+                                # Compute expected tags
                                 existing_tags = {tag.name: tag for tag in channel.available_tags if tag.name in channel_config["available_tags"]}
                                 new_tags = [ForumTag(name=tag_name) for tag_name in channel_config["available_tags"] if tag_name not in existing_tags]
                                 expected_tags = list(existing_tags.values()) + new_tags
 
                                 # Match the expected tag order in the config
                                 expected_tags.sort(key=lambda tag: channel_config["available_tags"].index(tag.name))
-                                
+
                                 # Sync tags
                                 try:
                                     await channel.edit(available_tags=expected_tags)
@@ -543,16 +545,36 @@ class JetBrains(commands.Bot):
                             # Handle permissions
                             if "permissions" in channel_config:
                                 for permission_name, role_names in channel_config["permissions"].items():
-                                    print(f"Removing {permission_name}... @everyone in {channel_config['name']}")
-                                    # Create permission kwargs dynamically
+                                    print(f"Removing {permission_name}... @everyone in {channel_config['name']}") # Create permission kwargs dynamically
                                     permission_kwargs = {permission_name: False}
                                     await channel.set_permissions(guild.default_role, **permission_kwargs)
                                     for role_name in role_names:
                                         role = utils.get(guild.roles, name=role_name)
                                         if role:
-                                            print(f"Adding {permission_name}... {role_name} in {channel_config['name']}")
-                                            permission_kwargs[permission_name] = True
+                                            print(f"Adding {permission_name}... {role_name} in {channel_config['name']}") permission_kwargs[permission_name] = True
                                             await channel.set_permissions(role, **permission_kwargs)
+
+                            # Post a configurable welcome message on creation (optional)
+                            if created and isinstance(channel, TextChannel) and "welcome_message" in channel_config:
+                                try:
+                                    print("Posting welcome message... " + channel_config["name"])
+                                    msg: Message = await channel.send(channel_config["welcome_message"])
+                                    if channel_config.get("welcome_pin", False):
+                                        try:
+                                            await msg.pin()
+                                        except Exception as e:
+                                            logging.error(f"Failed to pin welcome message in {channel_config['name']}: {e}")
+                                except Exception as e:
+                                    logging.error(f"Failed to post welcome message in {channel_config['name']}: {e}")
+
+                            # Enforce read-only when configured, for both new and existing channels
+                            if channel_config.get("readonly", False):
+                                try:
+                                    print("Enforcing read-only... @everyone in " + channel_config["name"])
+                                    await channel.set_permissions(guild.default_role, send_messages=False)
+                                except Exception as e:
+                                    logging.error(f"Failed to enforce read-only in {channel_config['name']}: {e}")
+
 
             # Set category perms
             for category in categories.values():
