@@ -545,13 +545,15 @@ class JetBrains(commands.Bot):
                             # Handle permissions
                             if "permissions" in channel_config:
                                 for permission_name, role_names in channel_config["permissions"].items():
-                                    print(f"Removing {permission_name}... @everyone in {channel_config['name']}") # Create permission kwargs dynamically
+                                    # Create permission kwargs dynamically
+                                    print(f"Removing {permission_name}... @everyone in {channel_config['name']}")
                                     permission_kwargs = {permission_name: False}
                                     await channel.set_permissions(guild.default_role, **permission_kwargs)
                                     for role_name in role_names:
                                         role = utils.get(guild.roles, name=role_name)
                                         if role:
-                                            print(f"Adding {permission_name}... {role_name} in {channel_config['name']}") permission_kwargs[permission_name] = True
+                                            print(f"Adding {permission_name}... {role_name} in {channel_config['name']}")
+                                            permission_kwargs[permission_name] = True
                                             await channel.set_permissions(role, **permission_kwargs)
 
                             # Post a configurable welcome message on creation (optional)
@@ -559,21 +561,13 @@ class JetBrains(commands.Bot):
                                 try:
                                     print("Posting welcome message... " + channel_config["name"])
                                     msg: Message = await channel.send(channel_config["welcome_message"])
-                                    if channel_config.get("welcome_pin", False):
-                                        try:
-                                            await msg.pin()
-                                        except Exception as e:
-                                            logging.error(f"Failed to pin welcome message in {channel_config['name']}: {e}")
+                                    try:
+                                        await msg.pin()
+                                    except Exception as e:
+                                        logging.error(f"Failed to pin welcome message in {channel_config['name']}: {e}")
                                 except Exception as e:
                                     logging.error(f"Failed to post welcome message in {channel_config['name']}: {e}")
 
-                            # Enforce read-only when configured, for both new and existing channels
-                            if channel_config.get("readonly", False):
-                                try:
-                                    print("Enforcing read-only... @everyone in " + channel_config["name"])
-                                    await channel.set_permissions(guild.default_role, send_messages=False)
-                                except Exception as e:
-                                    logging.error(f"Failed to enforce read-only in {channel_config['name']}: {e}")
 
 
             # Set category perms

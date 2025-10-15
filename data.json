@@ -331,10 +331,9 @@
             {
                 "name": "junie",
                 "description": "Your smart coding agent. Join folks developing and using Junie in their dedicated Discord server: https://jb.gg/junie/discord",
-                "readonly": true,
                 "welcome_message": "Join folks developing and using Junie in their dedicated Discord server: https://jb.gg/junie/discord",
                 "permissions": {
-                    "send_messages": ["JetBrains"]
+                    "send_messages": ["JetBrains", "Bots"]
                 }
             }
         ],
