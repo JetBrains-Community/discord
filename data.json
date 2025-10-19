@@ -333,7 +333,9 @@
                 "description": "Your smart coding agent. Join folks developing and using Junie in their dedicated Discord server: https://jb.gg/junie/discord",
                 "welcome_message": "Join folks developing and using Junie in their dedicated Discord server: https://jb.gg/junie/discord",
                 "permissions": {
-                    "send_messages": ["JetBrains", "Bots"]
+                    "send_messages": ["JetBrains", "Bots"],
+                    "create_public_threads": ["JetBrains", "Bots"],
+                    "create_private_threads": ["JetBrains", "Bots"]
                 }
             }
         ],
@@ -636,8 +638,11 @@
             {
                 "name": "scala",
                 "description": "A programming language that scales with you. Join folks developing and using the Scala plugin in their dedicated Discord server: https://discord.gg/aUKpZzeHCK",
+                "welcome_message": "Join folks developing and using the Scala plugin in their dedicated Discord server: https://discord.gg/aUKpZzeHCK",
                 "permissions": {
-                    "send_messages": ["JetBrains"]
+                    "send_messages": ["JetBrains", "Bots"],
+                    "create_public_threads": ["JetBrains", "Bots"],
+                    "create_private_threads": ["JetBrains", "Bots"]
                 }
             }
         ],
@@ -730,7 +735,9 @@
                 "name": "webstorm-announcements",
                 "description": "Product announcements and updates",
                 "permissions": {
-                    "send_messages": ["JetBrains"]
+                    "send_messages": ["JetBrains", "Bots"],
+                    "create_public_threads": ["JetBrains", "Bots"],
+                    "create_private_threads": ["JetBrains", "Bots"]
                 }
             },
             {
