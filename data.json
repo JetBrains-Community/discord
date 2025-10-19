@@ -324,6 +324,28 @@
         "aliases": ["intellij", "idea"]
     },
     {
+        "name": "Junie",
+        "icon_path": "icon_Junie.png",
+        "emoji_name": "junie",
+        "channels": [
+            {
+                "name": "junie",
+                "description": "Your smart coding agent. Join folks developing and using Junie in their dedicated Discord server: https://jb.gg/junie/discord",
+                "welcome_message": "Join folks developing and using Junie in their dedicated Discord server: https://jb.gg/junie/discord",
+                "permissions": {
+                    "send_messages": ["JetBrains", "Bots"]
+                }
+            }
+        ],
+        "category_name": "Products",
+        "subreddit": "",
+        "github": "",
+        "product_page": "https://www.jetbrains.com/junie/",
+        "description": "Your smart coding agent",
+        "issue_tracker": "JUNIE",
+        "aliases": []
+    },
+    {
         "name": "Kotlin",
         "icon_path": "icon_Kotlin.png",
         "emoji_name": "kotlin",
@@ -799,5 +821,23 @@
         "description": "The issue tracker designed for agile software teams",
         "issue_tracker": "JT",
         "aliases": ["yt", "track", "jt"]
+    },
+    {
+        "name": "AI Assistant",
+        "icon_path": "icon_AIA.png",
+        "emoji_name": "aia",
+        "channels": [
+            {
+                "name": "ai-assistant",
+                "description": "Discuss JetBrains AI Assistant features, tips, and updates"
+            }
+        ],
+        "category_name": "Products",
+        "subreddit": "",
+        "github": "",
+        "product_page": "",
+        "description": "JetBrains AI features and integrations",
+        "issue_tracker": "",
+        "aliases": ["aia", "ai"]
     }
 ]
