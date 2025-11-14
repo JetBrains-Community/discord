@@ -7,7 +7,7 @@ import re
 import traceback
 from typing import Optional
 
-from discord import Activity, ActivityType, Status, CategoryChannel, TextChannel, ForumChannel, StageChannel, ForumTag, Message, Intents, PermissionOverwrite, ChannelType, utils
+from discord import Activity, ActivityType, Status, CategoryChannel, TextChannel, ForumChannel, StageChannel, ForumTag, Message, Intents, ChannelType, utils
 from discord.ext import commands, tasks
 
 from jetbot.config import Config
@@ -547,14 +547,16 @@ class JetBrains(commands.Bot):
                                 for permission_name, role_names in channel_config["permissions"].items():
                                     # Create permission kwargs dynamically
                                     print(f"Removing {permission_name}... @everyone in {channel_config['name']}")
-                                    permission_kwargs = {permission_name: False}
-                                    await channel.set_permissions(guild.default_role, **permission_kwargs)
+                                    overwrite = channel.overwrites_for(guild.default_role)
+                                    overwrite.update(**{permission_name: False})
+                                    await channel.set_permissions(guild.default_role, overwrite=overwrite)
                                     for role_name in role_names:
                                         role = utils.get(guild.roles, name=role_name)
                                         if role:
                                             print(f"Adding {permission_name}... {role_name} in {channel_config['name']}")
-                                            permission_kwargs[permission_name] = True
-                                            await channel.set_permissions(role, **permission_kwargs)
+                                            overwrite = channel.overwrites_for(role)
+                                            overwrite.update(**{permission_name: True})
+                                            await channel.set_permissions(role, overwrite=overwrite)
 
                             # Post a configurable welcome message on creation (optional)
                             if created and isinstance(channel, TextChannel) and "welcome_message" in channel_config:
