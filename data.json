@@ -15,7 +15,7 @@
         "product_page": "https://air.dev/",
         "description": "Agentic Development Environment",
         "issue_tracker": "AIR",
-        "aliases": ["air"]
+        "aliases": []
     },
     {
         "name": "AppCode",
