@@ -1,5 +1,23 @@
 [
     {
+        "name": "Air",
+        "icon_path": "icon_Air.png",
+        "emoji_name": "air",
+        "channels": [
+            {
+                "name": "air",
+                "description": "Agentic Development Environment"
+            }
+        ],
+        "category_name": "Products",
+        "subreddit": "",
+        "github": "",
+        "product_page": "https://air.dev/",
+        "description": "Agentic Development Environment",
+        "issue_tracker": "AIR",
+        "aliases": ["air"]
+    },
+    {
         "name": "AppCode",
         "icon_path": "icon_AppCode.png",
         "emoji_name": "appcode",
