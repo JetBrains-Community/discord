@@ -608,32 +608,60 @@ class JetBrains(commands.Bot):
     # Employee email verification
     async def email_verify(self, message: Message):
         guild = self.get_guild(self.config.guild)
-        if guild:
-            channel = [f for f in guild.text_channels if f.name.lower().strip() == "employee-verification"]
+        if not guild:
+            return
+        
+        channel = [f for f in guild.text_channels if f.name.lower().strip() == "employee-verification"]
+        if not channel:
+            return
+        channel = channel[0]
+        
+        if message.channel.id != channel.id:
+            return
+        
+        pattern = re.compile("(?:.*\s+)*(\S+@jetbrains\.com).*", re.DOTALL)
+        match = pattern.match(message.content)
+        if not match:
+            try:
+                await message.author.send("Sorry, I could not find a valid JetBrains.com email in the"
+                                            " message you sent to {}.".format(channel.mention))
+            except:
+                pass
+        else:
+            try:
+                await message.author.send("Thank you, your email ({}) has been passed onto the server"
+                                            " admins for verification!".format(match.group(1)))
+            except:
+                pass
+            role = [f for f in guild.roles if f.name.lower().strip() == "admin"]
+            channel = await self.product_channel("admin-chat", "admins")
             if channel:
-                channel = channel[0]
-                if message.channel.id == channel.id:
-                    pattern = re.compile("(?:.*\s+)*(\S+@jetbrains\.com).*", re.DOTALL)
-                    match = pattern.match(message.content)
-                    if not match:
-                        try:
-                            await message.author.send("Sorry, I could not find a valid JetBrains.com email in the"
-                                                      " message you sent to {}.".format(channel.mention))
-                        except:
-                            pass
-                    else:
-                        try:
-                            await message.author.send("Thank you, your email ({}) has been passed onto the server"
-                                                      " admins for verification!".format(match.group(1)))
-                        except:
-                            pass
-                        role = [f for f in guild.roles if f.name.lower().strip() == "admin"]
-                        channel = await self.product_channel("admin-chat", "admins")
-                        if channel:
-                            await channel.send("{0.mention} `{0.name}#{0.discriminator} {0.id}` has requested"
-                                               " JetBrains employee verification with the email `{1}` {2}".format(
-                                message.author, match.group(1), role[0].mention if role else ""))
-                    await message.delete()
+                await channel.send("{0.mention} `{0.name}#{0.discriminator} {0.id}` has requested"
+                                    " JetBrains employee verification with the email `{1}` {2}".format(
+                    message.author, match.group(1), role[0].mention if role else ""))
+        await message.delete()
+
+    # Honeypot bot detection
+    async def honeypot_check(self, message: Message):
+        guild = self.get_guild(self.config.guild)
+        if not guild:
+            return
+        
+        channel = [f for f in guild.text_channels if f.name.lower().strip() == "honeypot"]
+        if not channel:
+            return
+        channel = channel[0]
+        
+        if message.channel.id != channel.id:
+            return
+        
+        try:
+            await message.author.send("You've been automatically removed from the JetBrains Community Discord server for sending a message in the honeypot channel."
+                                      " If you are not a bot, you are welcome to rejoin the server: {}.".format(self.config.invite))
+        except:
+            pass
+        await message.author.ban(reason="Honeypot bot detection", delete_message_days=1)
+        await message.author.unban(reason="Honeypot bot detection")
 
     # Handle messages
     async def on_message(self, message: Message):
@@ -641,6 +669,7 @@ class JetBrains(commands.Bot):
             return
 
         await self.email_verify(message)
+        await self.honeypot_check(message)
         await self.process_commands(message)
 
     # Acknowledge bot is ready to go
